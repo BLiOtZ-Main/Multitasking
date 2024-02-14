@@ -6,7 +6,7 @@ _This README contains basic information about the project and its artifacts. If 
 ## Team Members
 - Maxwell Lucier
 - Mateo Alves
-- MEMBER3
+- Jett Moreno
 - Antonio Golfo
 - MEMBER5
 
