@@ -11,6 +11,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Multitasking
 {
+    /*
+     * Additional Improvements
+     * - Translucent bar highlighting your current line
+     * - Animations for correctly/incorrectly typing a key
+     * - Character spacing and line spacing needs to be improved
+     */
+
     internal class TypePrompt
     {
         private KeyboardState previousKeyBoardState;
