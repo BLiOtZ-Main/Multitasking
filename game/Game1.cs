@@ -79,7 +79,7 @@ namespace Multitasking
 
 
                     //Temp code to swap states
-                    if(SingleKeyPress(swapKBState, Keys.LeftShift))
+                    if(SingleKeyPress(swapKBState, Keys.Tab))
                     {
                         currentState = GameState.Tutorial;
                     }
@@ -92,7 +92,7 @@ namespace Multitasking
                     typingGame.Update();
 
                     //Temp code to swap states
-                    if (SingleKeyPress(swapKBState, Keys.LeftShift))
+                    if (SingleKeyPress(swapKBState, Keys.Tab))
                     {
                         currentState = GameState.Game;
                     }
@@ -104,7 +104,7 @@ namespace Multitasking
 
                     
                     //Temp code to swap states
-                    if (SingleKeyPress(swapKBState, Keys.LeftShift))
+                    if (SingleKeyPress(swapKBState, Keys.Tab))
                     {
                         currentState = GameState.GameOver;
                     }
@@ -116,7 +116,7 @@ namespace Multitasking
 
                     
                     //Temp code to swap states
-                    if (SingleKeyPress(swapKBState, Keys.LeftShift))
+                    if (SingleKeyPress(swapKBState, Keys.Tab))
                     {
                         currentState = GameState.Menu;
                     }
@@ -147,7 +147,7 @@ namespace Multitasking
                 //Main Menu Draw Code goes here
                 case GameState.Menu:
 
-                    _spriteBatch.DrawString(arial, "Multitasking      Main      Menu", new Vector2((screenWidth / 2) - 400, 100), Color.Black);
+                    _spriteBatch.DrawString(arial, "Multitasking      Main      Menu", new Vector2((screenWidth / 2), 100), Color.Black);
 
                     break;
                 
@@ -163,6 +163,8 @@ namespace Multitasking
 
                 //GameOver Screen Draw Code goes here
                 case GameState.GameOver:
+
+                    _spriteBatch.DrawString(arial, "GAME OVER", new Vector2((screenWidth / 2), 100), Color.Black);
 
                     break;
 
