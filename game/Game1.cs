@@ -25,7 +25,9 @@ namespace Multitasking
         public int screenWidth;
         public int screenHeight;
 
-        public GameState currentState = GameState.Tutorial;
+        public GameState currentState = GameState.Menu;
+        
+        public KeyboardState previousKBState;
 
         public Game1()
         {
@@ -66,6 +68,8 @@ namespace Multitasking
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) { Exit(); }
             // write code below
+            
+            KeyboardState swapKBState = Keyboard.GetState();
 
             //FSM managing GameStates
             switch (currentState)
@@ -73,20 +77,49 @@ namespace Multitasking
                 //Main Menu Code goes here
                 case GameState.Menu:
 
+
+                    //Temp code to swap states
+                    if(SingleKeyPress(swapKBState, Keys.LeftShift))
+                    {
+                        currentState = GameState.Tutorial;
+                    }
+
                     break;
                 
                 //Typing Tutorial Code goes here
                 case GameState.Tutorial:
+                    
                     typingGame.Update();
+
+                    //Temp code to swap states
+                    if (SingleKeyPress(swapKBState, Keys.LeftShift))
+                    {
+                        currentState = GameState.Game;
+                    }
+
                     break;
 
                 //Main Game Code goes here
                 case GameState.Game:
 
+                    
+                    //Temp code to swap states
+                    if (SingleKeyPress(swapKBState, Keys.LeftShift))
+                    {
+                        currentState = GameState.GameOver;
+                    }
+
                     break;
                 
                 //GameOver Screen Code goes here
                 case GameState.GameOver:
+
+                    
+                    //Temp code to swap states
+                    if (SingleKeyPress(swapKBState, Keys.LeftShift))
+                    {
+                        currentState = GameState.Menu;
+                    }
 
                     break;
                 
@@ -96,6 +129,7 @@ namespace Multitasking
                     break;
             }
 
+            previousKBState = swapKBState;
 
             // write code above
             base.Update(gameTime);
@@ -112,7 +146,9 @@ namespace Multitasking
             {
                 //Main Menu Draw Code goes here
                 case GameState.Menu:
-                    
+
+                    _spriteBatch.DrawString(arial, "Multitasking      Main      Menu", new Vector2((screenWidth / 2) - 400, 100), Color.Black);
+
                     break;
                 
                 //Typing Tutorial Draw Code goes here
@@ -139,6 +175,20 @@ namespace Multitasking
             // write code above
             _spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        
+        /// <summary>
+        /// Method to check if a key was press once
+        /// probably here temp
+        /// needed for testing 
+        /// </summary>
+        /// <param name="currentKBState"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool SingleKeyPress(KeyboardState currentKBState, Keys key)
+        {
+            return currentKBState.IsKeyDown(key) && previousKBState.IsKeyUp(key);
         }
     }
 }
