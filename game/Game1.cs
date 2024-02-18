@@ -103,7 +103,7 @@ namespace Multitasking
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Tan);
             _spriteBatch.Begin();
             // write code below
 
@@ -112,7 +112,7 @@ namespace Multitasking
             {
                 //Main Menu Draw Code goes here
                 case GameState.Menu:
-
+                    
                     break;
                 
                 //Typing Tutorial Draw Code goes here
