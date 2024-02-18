@@ -4,6 +4,16 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Multitasking
 {
+    public enum GameState
+    {
+        Menu,
+        Tutorial,
+        Game,
+        GameOver,
+        WindowDemo
+    }
+    
+    
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
@@ -14,6 +24,8 @@ namespace Multitasking
         public SpriteFont arial;
         public int screenWidth;
         public int screenHeight;
+
+        public GameState currentState = GameState.Tutorial;
 
         public Game1()
         {
@@ -55,7 +67,35 @@ namespace Multitasking
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) { Exit(); }
             // write code below
 
-            typingGame.Update();
+            //FSM managing GameStates
+            switch (currentState)
+            {
+                //Main Menu Code goes here
+                case GameState.Menu:
+
+                    break;
+                
+                //Typing Tutorial Code goes here
+                case GameState.Tutorial:
+                    typingGame.Update();
+                    break;
+
+                //Main Game Code goes here
+                case GameState.Game:
+
+                    break;
+                
+                //GameOver Screen Code goes here
+                case GameState.GameOver:
+
+                    break;
+                
+                //Window Demo Code goes here
+                case GameState.WindowDemo:
+
+                    break;
+            }
+
 
             // write code above
             base.Update(gameTime);
@@ -67,8 +107,34 @@ namespace Multitasking
             _spriteBatch.Begin();
             // write code below
 
-            typingGame.Draw(_spriteBatch, arial, screenWidth, screenHeight);
+            //FSM managing GameStates
+            switch (currentState)
+            {
+                //Main Menu Draw Code goes here
+                case GameState.Menu:
 
+                    break;
+                
+                //Typing Tutorial Draw Code goes here
+                case GameState.Tutorial:
+                    typingGame.Draw(_spriteBatch, arial, screenWidth, screenHeight);
+                    break;
+
+                //Main Game Draw Code goes here
+                case GameState.Game:
+
+                    break;
+
+                //GameOver Screen Draw Code goes here
+                case GameState.GameOver:
+
+                    break;
+
+                //Window Demo Draw Code goes here
+                case GameState.WindowDemo:
+
+                    break;
+            }
 
             // write code above
             _spriteBatch.End();
