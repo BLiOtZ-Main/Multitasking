@@ -142,43 +142,43 @@ namespace Multitasking
                 
                 //Window Demo Code goes here
                 case GameState.WindowDemo1:
-                    //If other window is clicked swap to that window
+                    //If mouse is hovered over the other window
                     if(shooterWindow.Contains(Mouse.GetState().X, Mouse.GetState().Y))
                     {
                         //Click Swap
-                        //If click then swap to window 1
+                        //If click then swap to windows
                         if (SingleLeftClick(mouseState))
                         {
                             currentState = GameState.WindowDemo2;
                         }
-
-                        //Temp code to swap states back to menu
-                        if (SingleKeyPress(swapKBState, Keys.Enter))
-                        {
-                            currentState = GameState.Menu;
-                        }
-
                     }
+
+                    //Temp code to swap states back to menu
+                    if (SingleKeyPress(swapKBState, Keys.Enter))
+                    {
+                        currentState = GameState.Menu;
+                    }
+
                     break;
 
                 case GameState.WindowDemo2:
-                    //If other window is clicked swap to that window
+                    //If mouse is hovered over the other window
                     if (typingWindow.Contains(Mouse.GetState().X, Mouse.GetState().Y))
                     {
                         //Click Swap
-                        //If click then swap to window 1
+                        //If click then swap to window
                         if (SingleLeftClick(mouseState))
                         {
                             currentState = GameState.WindowDemo1;
                         }
-
-                        //Temp code to swap states back to menu
-                        if (SingleKeyPress(swapKBState, Keys.Enter))
-                        {
-                            currentState = GameState.Menu;
-                        }
-
                     }
+
+                    //Temp code to swap states back to menu
+                    if (SingleKeyPress(swapKBState, Keys.Enter))
+                    {
+                        currentState = GameState.Menu;
+                    }
+
                     break;
             }
 
@@ -215,6 +215,10 @@ namespace Multitasking
 
                 //Main Game Draw Code goes here
                 case GameState.Game:
+
+                    //Reset the windows to the right sizes because the demo messes them up otherwise
+                    typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
+                    shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
 
                     //Temp code to visualize the two game window
                     ShapeBatch.Box(typingWindow, Color.LightGray);
