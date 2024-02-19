@@ -29,6 +29,10 @@ namespace Multitasking
         
         public KeyboardState previousKBState;
 
+        //Windows
+        Rectangle typingWindow;
+        Rectangle shooterWindow;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -48,6 +52,11 @@ namespace Multitasking
 
             screenWidth = _graphics.GraphicsDevice.Viewport.Width;
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
+
+            //initilizes the game window sizes
+            typingWindow = new Rectangle(0, 0, screenWidth / 2, screenHeight);
+            shooterWindow = new Rectangle(screenWidth / 2, 0, screenWidth, screenHeight);
+
         }
 
         protected override void LoadContent()
@@ -147,7 +156,7 @@ namespace Multitasking
                 //Main Menu Draw Code goes here
                 case GameState.Menu:
 
-                    _spriteBatch.DrawString(arial, "Multitasking      Main      Menu", new Vector2((screenWidth / 2), 100), Color.Black);
+                    _spriteBatch.DrawString(arial, "Multitasking      Main      Menu", new Vector2((screenWidth / 2)- 200, 100), Color.Black);
 
                     break;
                 
@@ -164,7 +173,7 @@ namespace Multitasking
                 //GameOver Screen Draw Code goes here
                 case GameState.GameOver:
 
-                    _spriteBatch.DrawString(arial, "GAME OVER", new Vector2((screenWidth / 2), 100), Color.Black);
+                    _spriteBatch.DrawString(arial, "GAME OVER", new Vector2((screenWidth / 2) - 100, 100), Color.Black);
 
                     break;
 
