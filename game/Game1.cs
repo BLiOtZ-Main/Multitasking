@@ -10,7 +10,8 @@ namespace Multitasking
         Tutorial,
         Game,
         GameOver,
-        WindowDemo
+        WindowDemo1,
+        WindowDemo2
     }
     
     
@@ -28,6 +29,7 @@ namespace Multitasking
         public GameState currentState = GameState.Menu;
         
         public KeyboardState previousKBState;
+        public MouseState previousMouse;
 
         //Windows
         Rectangle typingWindow;
@@ -79,6 +81,7 @@ namespace Multitasking
             // write code below
             
             KeyboardState swapKBState = Keyboard.GetState();
+            MouseState mouseState = Mouse.GetState();
 
             //FSM managing GameStates
             switch (currentState)
@@ -96,7 +99,7 @@ namespace Multitasking
                     //Temp code to swap to demo
                     if (SingleKeyPress(swapKBState, Keys.Tab))
                     {
-                        currentState = GameState.WindowDemo;
+                        currentState = GameState.WindowDemo1;
                     }
 
                     break;
@@ -106,7 +109,7 @@ namespace Multitasking
                     
                     typingGame.Update();
 
-                    //Temp code to swap states
+                    //Temp code to swap to the main game
                     if (SingleKeyPress(swapKBState, Keys.Enter))
                     {
                         currentState = GameState.Game;
@@ -118,7 +121,7 @@ namespace Multitasking
                 case GameState.Game:
 
                     
-                    //Temp code to swap states
+                    //Temp code to swap to GameOver
                     if (SingleKeyPress(swapKBState, Keys.Enter))
                     {
                         currentState = GameState.GameOver;
@@ -129,8 +132,7 @@ namespace Multitasking
                 //GameOver Screen Code goes here
                 case GameState.GameOver:
 
-                    
-                    //Temp code to swap states
+                    //Temp code to swap back to main menu
                     if (SingleKeyPress(swapKBState, Keys.Enter))
                     {
                         currentState = GameState.Menu;
@@ -139,12 +141,49 @@ namespace Multitasking
                     break;
                 
                 //Window Demo Code goes here
-                case GameState.WindowDemo:
+                case GameState.WindowDemo1:
+                    //If other window is clicked swap to that window
+                    if(shooterWindow.Contains(Mouse.GetState().X, Mouse.GetState().Y))
+                    {
+                        //Click Swap
+                        //If click then swap to window 1
+                        if (SingleLeftClick(mouseState))
+                        {
+                            currentState = GameState.WindowDemo2;
+                        }
 
+                        //Temp code to swap states back to menu
+                        if (SingleKeyPress(swapKBState, Keys.Enter))
+                        {
+                            currentState = GameState.Menu;
+                        }
+
+                    }
+                    break;
+
+                case GameState.WindowDemo2:
+                    //If other window is clicked swap to that window
+                    if (typingWindow.Contains(Mouse.GetState().X, Mouse.GetState().Y))
+                    {
+                        //Click Swap
+                        //If click then swap to window 1
+                        if (SingleLeftClick(mouseState))
+                        {
+                            currentState = GameState.WindowDemo1;
+                        }
+
+                        //Temp code to swap states back to menu
+                        if (SingleKeyPress(swapKBState, Keys.Enter))
+                        {
+                            currentState = GameState.Menu;
+                        }
+
+                    }
                     break;
             }
 
             previousKBState = swapKBState;
+            previousMouse = mouseState;
 
             // write code above
             base.Update(gameTime);
@@ -152,7 +191,7 @@ namespace Multitasking
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Tan);
+            GraphicsDevice.Clear(Color.LightSteelBlue);
             _spriteBatch.Begin();
             ShapeBatch.Begin(GraphicsDevice);
             // write code below
@@ -163,8 +202,10 @@ namespace Multitasking
                 //Main Menu Draw Code goes here
                 case GameState.Menu:
 
-                    _spriteBatch.DrawString(arial, "Multitasking      Main      Menu", new Vector2((screenWidth / 2)- 200, 100), Color.Black);
-
+                    _spriteBatch.DrawString(arial, "Multitasking      Main      Menu", new Vector2((screenWidth / 2)- 200, 300), Color.Black);
+                    //Demo instructions
+                    _spriteBatch.DrawString(arial, "Press   enter   to   Start", new Vector2((screenWidth / 2) - 400, 400), Color.Black);
+                    _spriteBatch.DrawString(arial, "Tab   for   Window   Demo", new Vector2((screenWidth / 2) - 400, 500), Color.Black);
                     break;
                 
                 //Typing Tutorial Draw Code goes here
@@ -176,8 +217,12 @@ namespace Multitasking
                 case GameState.Game:
 
                     //Temp code to visualize the two game window
-                    ShapeBatch.Box(typingWindow, Color.Black);
-                    ShapeBatch.Box(shooterWindow, Color.Gray);
+                    ShapeBatch.Box(typingWindow, Color.LightGray);
+                    ShapeBatch.Box(shooterWindow, Color.Black);
+
+                    //Labels for game windows
+                    _spriteBatch.DrawString(arial, "Shooter", new Vector2(1300, 100), Color.White);
+                    _spriteBatch.DrawString(arial, "Typing", new Vector2(530, 100), Color.Black);
 
                     break;
 
@@ -189,14 +234,26 @@ namespace Multitasking
                     break;
 
                 //Window Demo Draw Code goes here
-                case GameState.WindowDemo:
+                case GameState.WindowDemo1:
 
-                    typingWindow = new Rectangle(100, 100, 600, 400);
-                    shooterWindow = new Rectangle(1000, 500, 600, 400);
+                    typingWindow = new Rectangle(100, 100, 650, 400);
+                    shooterWindow = new Rectangle(1000, 500, 650, 400);
 
                     ShapeBatch.Box(typingWindow, Color.Red);
 
-                    ShapeBatch.Box(shooterWindow, Color.Blue);
+                    ShapeBatch.Box(shooterWindow, Color.Black);
+
+
+                    break;
+
+                case GameState.WindowDemo2:
+
+                    typingWindow = new Rectangle(100, 100, 650, 400);
+                    shooterWindow = new Rectangle(1000, 500, 650, 400);
+
+                    ShapeBatch.Box(typingWindow, Color.Black);
+
+                    ShapeBatch.Box(shooterWindow, Color.Red);
 
 
                     break;
@@ -220,6 +277,16 @@ namespace Multitasking
         public bool SingleKeyPress(KeyboardState currentKBState, Keys key)
         {
             return currentKBState.IsKeyDown(key) && previousKBState.IsKeyUp(key);
+        }
+
+        /// <summary>
+        /// Methos to check if mouse was clicked once
+        /// </summary>
+        /// <param name="currentMouseState"></param>
+        /// <returns></returns>
+        private bool SingleLeftClick(MouseState currentMouseState)
+        {
+            return currentMouseState.LeftButton == ButtonState.Pressed && previousMouse.LeftButton != ButtonState.Pressed;
         }
     }
 }
