@@ -87,10 +87,16 @@ namespace Multitasking
                 case GameState.Menu:
 
 
-                    //Temp code to swap states
-                    if(SingleKeyPress(swapKBState, Keys.Tab))
+                    //Temp code to swap to game
+                    if (SingleKeyPress(swapKBState, Keys.Enter))
                     {
                         currentState = GameState.Tutorial;
+                    }
+
+                    //Temp code to swap to demo
+                    if (SingleKeyPress(swapKBState, Keys.Tab))
+                    {
+                        currentState = GameState.WindowDemo;
                     }
 
                     break;
@@ -101,7 +107,7 @@ namespace Multitasking
                     typingGame.Update();
 
                     //Temp code to swap states
-                    if (SingleKeyPress(swapKBState, Keys.Tab))
+                    if (SingleKeyPress(swapKBState, Keys.Enter))
                     {
                         currentState = GameState.Game;
                     }
@@ -113,7 +119,7 @@ namespace Multitasking
 
                     
                     //Temp code to swap states
-                    if (SingleKeyPress(swapKBState, Keys.Tab))
+                    if (SingleKeyPress(swapKBState, Keys.Enter))
                     {
                         currentState = GameState.GameOver;
                     }
@@ -125,7 +131,7 @@ namespace Multitasking
 
                     
                     //Temp code to swap states
-                    if (SingleKeyPress(swapKBState, Keys.Tab))
+                    if (SingleKeyPress(swapKBState, Keys.Enter))
                     {
                         currentState = GameState.Menu;
                     }
@@ -184,6 +190,14 @@ namespace Multitasking
 
                 //Window Demo Draw Code goes here
                 case GameState.WindowDemo:
+
+                    typingWindow = new Rectangle(100, 100, 600, 400);
+                    shooterWindow = new Rectangle(1000, 500, 600, 400);
+
+                    ShapeBatch.Box(typingWindow, Color.Red);
+
+                    ShapeBatch.Box(shooterWindow, Color.Blue);
+
 
                     break;
             }
