@@ -53,9 +53,9 @@ namespace Multitasking
             screenWidth = _graphics.GraphicsDevice.Viewport.Width;
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
 
-            //initilizes the game window sizes
-            typingWindow = new Rectangle(0, 0, screenWidth / 2, screenHeight);
-            shooterWindow = new Rectangle(screenWidth / 2, 0, screenWidth, screenHeight);
+            //Temp initilizes the game window sizes
+            typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
+            shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth/2 - 200, screenHeight - 200);
 
         }
 
@@ -148,6 +148,7 @@ namespace Multitasking
         {
             GraphicsDevice.Clear(Color.Tan);
             _spriteBatch.Begin();
+            ShapeBatch.Begin(GraphicsDevice);
             // write code below
 
             //FSM managing GameStates
@@ -168,6 +169,10 @@ namespace Multitasking
                 //Main Game Draw Code goes here
                 case GameState.Game:
 
+                    //Temp code to visualize the two game window
+                    ShapeBatch.Box(typingWindow, Color.Black);
+                    ShapeBatch.Box(shooterWindow, Color.Gray);
+
                     break;
 
                 //GameOver Screen Draw Code goes here
@@ -184,6 +189,7 @@ namespace Multitasking
             }
 
             // write code above
+            ShapeBatch.End();
             _spriteBatch.End();
             base.Draw(gameTime);
         }
