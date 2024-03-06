@@ -22,7 +22,7 @@ namespace Multitasking
 
         private TypingGame typingGame;
 
-        public SpriteFont arial;
+        public SpriteFont typingFont;
         public int screenWidth;
         public int screenHeight;
 
@@ -71,7 +71,7 @@ namespace Multitasking
 
 
             // load fonts
-            arial = Content.Load<SpriteFont>("arial");
+            typingFont = Content.Load<SpriteFont>("typingFont");
 
         }
 
@@ -202,15 +202,15 @@ namespace Multitasking
                 //Main Menu Draw Code goes here
                 case GameState.Menu:
 
-                    _spriteBatch.DrawString(arial, "Multitasking      Main      Menu", new Vector2((screenWidth / 2)- 200, 300), Color.Black);
+                    _spriteBatch.DrawString(typingFont, "Multitasking Main Menu", new Vector2((screenWidth / 2)- 200, 300), Color.Black);
                     //Demo instructions
-                    _spriteBatch.DrawString(arial, "Press   enter   to   Start", new Vector2((screenWidth / 2) - 400, 400), Color.Black);
-                    _spriteBatch.DrawString(arial, "Tab   for   Window   Demo", new Vector2((screenWidth / 2) - 400, 500), Color.Black);
+                    _spriteBatch.DrawString(typingFont, "Press enter to Start", new Vector2((screenWidth / 2) - 400, 400), Color.Black);
+                    _spriteBatch.DrawString(typingFont, "Tab for Window Demo", new Vector2((screenWidth / 2) - 400, 500), Color.Black);
                     break;
                 
                 //Typing Tutorial Draw Code goes here
                 case GameState.Tutorial:
-                    typingGame.Draw(_spriteBatch, arial, screenWidth, screenHeight);
+                    typingGame.Draw(_spriteBatch, typingFont, screenWidth, screenHeight);
                     break;
 
                 //Main Game Draw Code goes here
@@ -225,15 +225,15 @@ namespace Multitasking
                     ShapeBatch.Box(shooterWindow, Color.Black);
 
                     //Labels for game windows
-                    _spriteBatch.DrawString(arial, "Shooter", new Vector2(1300, 100), Color.White);
-                    _spriteBatch.DrawString(arial, "Typing", new Vector2(530, 100), Color.Black);
+                    _spriteBatch.DrawString(typingFont, "Shooter", new Vector2(1300, 100), Color.White);
+                    _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
 
                     break;
 
                 //GameOver Screen Draw Code goes here
                 case GameState.GameOver:
 
-                    _spriteBatch.DrawString(arial, "GAME OVER", new Vector2((screenWidth / 2) - 100, 100), Color.Black);
+                    _spriteBatch.DrawString(typingFont, "GAME OVER", new Vector2((screenWidth / 2) - 100, 100), Color.Black);
 
                     break;
 
@@ -271,13 +271,11 @@ namespace Multitasking
 
         
         /// <summary>
-        /// Method to check if a key was press once
-        /// probably here temp
-        /// needed for testing 
+        /// Checks if a key was pressed a single time.
         /// </summary>
-        /// <param name="currentKBState"></param>
-        /// <param name="key"></param>
-        /// <returns></returns>
+        /// <param name="currentKBState">The current keyboard state.</param>
+        /// <param name="key">The key to check.</param>
+        /// <returns>Whether the given key was pressed a single time.</returns>
         public bool SingleKeyPress(KeyboardState currentKBState, Keys key)
         {
             return currentKBState.IsKeyDown(key) && previousKBState.IsKeyUp(key);

@@ -41,7 +41,7 @@ namespace Multitasking
             currentChar = 0;
             this.staticPrompt = staticPrompt;
 
-            scrapeFile();
+            ScrapeFile();
         }
 
         public void Update()
@@ -111,7 +111,7 @@ namespace Multitasking
             }
         }
 
-        public void scrapeFile()
+        public void ScrapeFile()
         {
             StreamReader reader = new StreamReader("../../../../resources/prompts/" + filename);
             String currentLine = reader.ReadLine();
