@@ -10,11 +10,13 @@ namespace Multitasking
 {
     internal class ArcadeProjectile : ArcadeGameObject
     {
+        
         // Constant for projectile speed
         private const int Speed = 4;
 
         // field declaration
         private bool active;
+        private Rectangle startingPosition;
 
         /// <summary>
         /// public parameterized constructor for projectiles
@@ -25,6 +27,7 @@ namespace Multitasking
             : base(texture, position)
         {
             active = true;
+            startingPosition = position;
         }
 
         /// <summary>
@@ -46,14 +49,34 @@ namespace Multitasking
 
         public override void Update(GameTime gameTime)
         {
-            if(base.position.Y > 0)
+            //Determines if the player or enemy is shooting based on starting position
+            //If the player is shooting
+            if (startingPosition.Y < 880)
             {
-                base.position.Y -= Speed;
+                if (base.position.Y > 980)
+                {
+                    //The projectile goes up
+                    base.position.Y -= Speed;
+                }
+                else
+                {
+                    active = false;
+                }
             }
+            //if the enemy is shooting
             else
             {
-                active = false;
+                if (base.position.Y > 100)
+                {
+                    //The projectile goes down
+                    base.position.Y += Speed;
+                }
+                else
+                {
+                    active = false;
+                }
             }
+
         }
     }
 }
