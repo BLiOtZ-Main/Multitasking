@@ -24,10 +24,12 @@ namespace Multitasking
 
         private TypingGame typingGame;
         private ArcadePlayer player;
+        private ArcadeEnemy enemy;
 
         public SpriteFont typingFont;
         public Texture2D squareImg;
         public Texture2D playerImg;
+        public Texture2D enemyImg;
         public int screenWidth;
         public int screenHeight;
 
@@ -61,6 +63,7 @@ namespace Multitasking
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
 
             player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 100, 100), screenWidth);
+            enemy = new ArcadeEnemy(enemyImg, new Rectangle(1000, 300, 50, 50), screenHeight, screenWidth, player);
 
             //Temp initilizes the game window sizes
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
@@ -77,6 +80,7 @@ namespace Multitasking
             // load textures
             squareImg = Content.Load<Texture2D>("Square");
             playerImg = Content.Load<Texture2D>("Main Ship - Base - Full health");
+            enemyImg = Content.Load<Texture2D>("Turtle");
 
             // load fonts
             typingFont = Content.Load<SpriteFont>("typingFont");
@@ -237,7 +241,7 @@ namespace Multitasking
 
                     //Temp code to visualize the two game window
                     ShapeBatch.Box(typingWindow, Color.LightGray);
-                    ShapeBatch.Box(shooterWindow, Color.White);
+                    ShapeBatch.Box(shooterWindow, Color.Black);
                     
                     _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
 
