@@ -13,11 +13,26 @@ namespace Multitasking
         private int windowHeight;
         private int windowWidth;
 
+        //Constants for enemy shift and shoot delay
+        private const int ShiftDelay = 3;
+        private const int shootDelay = 3;
+
+        //Constant for enemy shift distance
+        private const int ShiftDistance = 3;
+
+        //Needed booleans
         private bool isAlive;
         private bool shiftedRight;
-        private int shiftDelay;
-        private int shootDelay;
+        
+        //Timer related variables
+        private double shootTimer;
+        private double shiftTimer;
+        
+        //Rng
         private Random rng;
+
+        //List of all enemies
+        public List<ArcadeEnemy> enemyList = new List<ArcadeEnemy>();
 
         /// <summary>
         /// public parameterized constructor for arcade enemies
@@ -31,43 +46,60 @@ namespace Multitasking
         {
             this.windowHeight = windowHeight;
             this.windowWidth = windowWidth;
+            
+            shiftedRight = false;
+            shiftTimer = ShiftDelay;
+            shootTimer = shootDelay;
+            
+            //Adds the new enemy to the enemy list
+            enemyList.Add(this);
+            
         }
 
         /// <summary>
         /// Property to tell if an enemy is alive or dead
         /// </summary>
-        public bool IsAlive { get { return isAlive; } }
+        public bool IsAlive { get { return isAlive; } set { IsAlive = value;  } }
 
         /// <summary>
-        /// Update placeholder
+        /// Property to get the list of enemies
+        /// </summary>
+        public List<ArcadeEnemy> EnemyList
+        {
+            get { return enemyList; }
+        }
+
+
+        /// <summary>
+        /// Update method
         /// </summary>
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
 
-            /*
+            //Tracks time to know when to shift
+            shiftTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            if (shiftTimer < 0)
+            {
+                //If the enemy shifted right last shift
+                if(shiftedRight)
+                {
+                    //Shift Left
+                    position.X -= 5;
+                }
+                //Otherwise
+                else
+                {
+                    //Shift right
+                    position.X += 5;
+                }
+            }
 
-            If Projectile collides with enemy
-            {
-                isAlive = false;
-            }
-            
-            
-            Enemies shift left and right every "shiftDelay" seconds
-             
-            If Bool "shiftedRight" -> shift left
-            {
-            position.X -= 5;
-            }
-            else
-            {
-            position.X -= 5;
-            }
-            
-            //Enemies constantly move downward no matter what
+            //The enemy constantly moves downward
             position.Y -= 1;
-            
-            //every 3 seconds % chance to shoot a projectile
+
+            /*
+            every 3 seconds % chance to shoot a projectile
             
             If "shootDelay" seconds passed
             {
@@ -76,8 +108,8 @@ namespace Multitasking
                   create new projectile object
                }
             }
-            
-             */
+            */
+
 
         }
 
