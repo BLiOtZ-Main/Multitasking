@@ -30,6 +30,7 @@ namespace Multitasking
         public Texture2D squareImg;
         public Texture2D playerImg;
         public Texture2D enemyImg;
+        public Texture2D playerBulletImg;
         public int screenWidth;
         public int screenHeight;
 
@@ -62,8 +63,8 @@ namespace Multitasking
             screenWidth = _graphics.GraphicsDevice.Viewport.Width;
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
 
-            player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 100, 100), screenWidth);
-            enemy = new ArcadeEnemy(enemyImg, new Rectangle(1000, 300, 50, 50), screenHeight, screenWidth, player, squareImg);
+            player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 100, 100), screenWidth, playerBulletImg);
+            enemy = new ArcadeEnemy(enemyImg, new Rectangle(1000, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
 
             //Temp initilizes the game window sizes
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
@@ -81,6 +82,7 @@ namespace Multitasking
             squareImg = Content.Load<Texture2D>("Square");
             playerImg = Content.Load<Texture2D>("Main Ship - Base - Full health");
             enemyImg = Content.Load<Texture2D>("Turtle");
+            playerBulletImg = Content.Load<Texture2D>("PlayerBullet");
 
             // load fonts
             typingFont = Content.Load<SpriteFont>("typingFont");
@@ -132,7 +134,21 @@ namespace Multitasking
                 //Main Game Code goes here
                 case GameState.Game:
 
-                    
+                    foreach (ArcadeEnemy enemy in enemy.EnemyList)
+                    {
+                        if (enemy.IsAlive)
+                        {
+                            foreach (ArcadeProjectile projectile in player.Projectiles)
+                            {
+                                if (projectile.CheckCollision(enemy))
+                                {
+                                    enemy.IsAlive = false;
+                                    projectile.Active = false;
+                                }
+                            }
+                        } 
+                    }
+
                     //Temp code to swap to GameOver
                     if (SingleKeyPress(swapKBState, Keys.Enter))
                     {
@@ -140,15 +156,26 @@ namespace Multitasking
                     }
 
                     player.Update(gameTime);
-                    enemy.Update(gameTime);
-                    foreach(ArcadeProjectile projectile in enemy.projectiles)
+                    if (enemy.IsAlive)
+                    {
+                        enemy.Update(gameTime);
+                    }
+                    foreach (ArcadeProjectile projectile in enemy.projectiles)
                     {
                         projectile.Update(gameTime);
                     }
 
                     foreach(ArcadeProjectile projectile in player.Projectiles)
                     {
+                        if (projectile.Active)
+                        {
+                            projectile.Update(gameTime);
+                        }
+                    }
 
+                    if (!player.IsAlive)
+                    {
+                        currentState = GameState.GameOver;
                     }
 
                     break;
@@ -252,7 +279,17 @@ namespace Multitasking
 
                     // Draws player sprite
                     player.Draw(_spriteBatch, Color.White);
-                    enemy.Draw(_spriteBatch, Color.White);
+                    foreach(ArcadeProjectile projectile in player.Projectiles)
+                    {
+                        if (projectile.Active)
+                        {
+                            projectile.Draw(_spriteBatch, Color.White);
+                        } 
+                    }
+                    if (enemy.IsAlive)
+                    {
+                        enemy.Draw(_spriteBatch, Color.White);
+                    }
                     foreach(ArcadeProjectile projectile in enemy.projectiles)
                     {
                         projectile.Draw(_spriteBatch, Color.White);

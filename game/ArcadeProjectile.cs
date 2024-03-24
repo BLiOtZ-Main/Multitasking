@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +31,11 @@ namespace Multitasking
             startingPosition = position;
         }
 
+        public bool Active
+        {
+            get { return active; }
+            set { active = value; }
+        }
         /// <summary>
         /// Checks for collision between projectile and a GameObject (i.e enemies)
         /// </summary>
@@ -51,12 +57,13 @@ namespace Multitasking
         {
             //Determines if the player or enemy is shooting based on starting position
             //If the player is shooting
-            if (startingPosition.Y < 880)
+            
+            if (startingPosition.Y > 700)
             {
-                if (base.position.Y > 980)
+                if (position.Y > 100)
                 {
                     //The projectile goes up
-                    base.position.Y -= Speed;
+                    position.Y -= Speed;
                 }
                 else
                 {
@@ -66,17 +73,22 @@ namespace Multitasking
             //if the enemy is shooting
             else
             {
-                if (base.position.Y > 100)
+                if (position.Y < 980)
                 {
                     //The projectile goes down
-                    base.position.Y += Speed;
+                    position.Y += Speed;
                 }
                 else
                 {
                     active = false;
                 }
             }
+            
+        }
 
+        public override void Draw(SpriteBatch sb, Color color)
+        {
+            sb.Draw(texture, position, color);
         }
     }
 }

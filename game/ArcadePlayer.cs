@@ -21,6 +21,7 @@ namespace Multitasking
         private int windowWidth;
         private double timer;
         private bool isAlive;
+        private Texture2D projectileTexture;
         private List<ArcadeProjectile> projectiles;
 
         /// <summary>
@@ -30,11 +31,12 @@ namespace Multitasking
         /// <param name="position"></param>
         /// <param name="windowHeight"></param>
         /// <param name="windowWidth"></param>
-        public ArcadePlayer(Texture2D texture, Rectangle position, int windowWidth)
+        public ArcadePlayer(Texture2D texture, Rectangle position, int windowWidth, Texture2D projectileTexture)
             : base(texture, position)
         {
             this.windowWidth = windowWidth;
             timer = TimePerShot;
+            this.projectileTexture = projectileTexture;
             projectiles = new List<ArcadeProjectile>();
             isAlive = true;
         }
@@ -91,7 +93,8 @@ namespace Multitasking
             timer -= gameTime.ElapsedGameTime.TotalSeconds;
             if(timer < 0)
             {
-                projectiles.Add(new ArcadeProjectile(texture, position)); // Need to add actual texture later, just using placeholder to compile
+                projectiles.Add(new ArcadeProjectile(projectileTexture, position)); // Need to add actual texture later, just using placeholder to compile
+                timer = TimePerShot;
             }
             
         }

@@ -60,7 +60,8 @@ namespace Multitasking
             shiftTimer = ShiftDelay;
             shootTimer = ShootDelay;
             moveTimer = MoveDelay;
-            
+            isAlive = true;
+
             //Adds the new enemy to the enemy list
             enemyList.Add(this);
             projectiles = new List<ArcadeProjectile>();
@@ -76,7 +77,7 @@ namespace Multitasking
         /// <summary>
         /// Property to tell if an enemy is alive or dead
         /// </summary>
-        public bool IsAlive { get { return isAlive; } set { IsAlive = value;  } }
+        public bool IsAlive { get { return isAlive; } set {  isAlive = value;  } }
 
         /// <summary>
         /// Property to get the list of enemies
@@ -134,22 +135,20 @@ namespace Multitasking
                 moveTimer = MoveDelay;
             }
 
-            projectiles.Add(new ArcadeProjectile(projectileTexture, position));//add texture later
+            
             //Tracks time to know when to shoot
             shootTimer -= gameTime.ElapsedGameTime.TotalSeconds;
-            /*
+            
             if (shootTimer < 0)
-            {
-                
-                
+            {   
                 //50% chance to shoot
                 if (rng.Next(100) < 50)
                 {
-                    
+                    projectiles.Add(new ArcadeProjectile(projectileTexture, position));
                 }
                 
             }
-            */
+            
 
 
         }
