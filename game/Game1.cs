@@ -59,7 +59,7 @@ namespace Multitasking
             screenWidth = _graphics.GraphicsDevice.Viewport.Width;
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
 
-            player = new ArcadePlayer(squareImg, new Rectangle(3 * (screenWidth / 4), 50, 100, 100), screenWidth);
+            player = new ArcadePlayer(squareImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 100, 100, 100), screenWidth);
 
             //Temp initilizes the game window sizes
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
