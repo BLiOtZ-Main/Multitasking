@@ -36,7 +36,7 @@ namespace Multitasking
         private Texture2D projectileTexture;
 
         //Rng
-        private Random rng;
+        private Random rng = new Random();
 
         //List of all enemies
         public List<ArcadeEnemy> enemyList = new List<ArcadeEnemy>();
@@ -138,13 +138,13 @@ namespace Multitasking
             
             //Tracks time to know when to shoot
             shootTimer -= gameTime.ElapsedGameTime.TotalSeconds;
-            
             if (shootTimer < 0)
             {   
                 //50% chance to shoot
                 if (rng.Next(100) < 50)
                 {
                     projectiles.Add(new ArcadeProjectile(projectileTexture, position));
+                    shootTimer = ShootDelay;
                 }
                 
             }
