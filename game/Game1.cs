@@ -297,7 +297,10 @@ namespace Multitasking
                     }
                     foreach(ArcadeProjectile projectile in enemy.projectiles)
                     {
-                        projectile.Draw(_spriteBatch, Color.White);
+                        if (projectile.Active)
+                        {
+                            projectile.Draw(_spriteBatch, Color.White);
+                        }
                     }
 
                     break;

@@ -73,7 +73,7 @@ namespace Multitasking
             //if the enemy is shooting
             else
             {
-                if (position.Y < 980)
+                if (position.Y < 950)
                 {
                     //The projectile goes down
                     position.Y += Speed;
