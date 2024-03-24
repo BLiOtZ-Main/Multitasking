@@ -29,7 +29,10 @@ namespace Multitasking
         //Timer related variables
         private double shootTimer;
         private double shiftTimer;
-        
+
+        //Texture for Projectiles
+        private Texture2D projectileTexture;
+
         //Rng
         private Random rng;
 
@@ -45,7 +48,7 @@ namespace Multitasking
         /// <param name="position"></param>
         /// <param name="windowHeight"></param>
         /// <param name="windowWidth"></param>
-        public ArcadeEnemy (Texture2D texture, Rectangle position, int windowHeight, int windowWidth, ArcadePlayer player)
+        public ArcadeEnemy (Texture2D texture, Rectangle position, int windowHeight, int windowWidth, ArcadePlayer player, Texture2D projectileTexture)
             : base(texture, position)
         {
             this.windowHeight = windowHeight;
@@ -61,6 +64,9 @@ namespace Multitasking
             
             //Stores a reference to the player
             this.player = player;
+
+            //Stores projectile texture
+            this.projectileTexture = projectileTexture;
             
         }
 
@@ -123,7 +129,7 @@ namespace Multitasking
                 //50% chance to shoot
                 if (rng.Next(100) < 50)
                 {
-                    projectiles.Add(new ArcadeProjectile(texture, position));//add texture later
+                    projectiles.Add(new ArcadeProjectile(projectileTexture, position));//add texture later
                 }
             }
 

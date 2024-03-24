@@ -63,7 +63,7 @@ namespace Multitasking
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
 
             player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 100, 100), screenWidth);
-            enemy = new ArcadeEnemy(enemyImg, new Rectangle(1000, 300, 50, 50), screenHeight, screenWidth, player);
+            enemy = new ArcadeEnemy(enemyImg, new Rectangle(1000, 300, 50, 50), screenHeight, screenWidth, player, squareImg);
 
             //Temp initilizes the game window sizes
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
@@ -241,12 +241,17 @@ namespace Multitasking
 
                     //Temp code to visualize the two game window
                     ShapeBatch.Box(typingWindow, Color.LightGray);
-                    ShapeBatch.Box(shooterWindow, Color.Black);
+                    ShapeBatch.Box(shooterWindow, Color.White);
                     
                     _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
 
                     // Draws player sprite
                     player.Draw(_spriteBatch, Color.White);
+                    enemy.Draw(_spriteBatch, Color.White);
+                    foreach(ArcadeProjectile projectile in enemy.projectiles)
+                    {
+                        projectile.Draw(_spriteBatch, Color.White);
+                    }
 
                     break;
 
