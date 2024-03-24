@@ -15,7 +15,6 @@ namespace Multitasking
         private const int Speed = 4;
 
         // Field Declaration
-        private int windowHeight;
         private int windowWidth;
 
         /// <summary>
@@ -25,10 +24,9 @@ namespace Multitasking
         /// <param name="position"></param>
         /// <param name="windowHeight"></param>
         /// <param name="windowWidth"></param>
-        public ArcadePlayer(Texture2D texture, Rectangle position, int windowHeight, int windowWidth)
+        public ArcadePlayer(Texture2D texture, Rectangle position, int windowWidth)
             : base(texture, position)
         {
-            this.windowHeight = windowHeight;
             this.windowWidth = windowWidth;
         }
 

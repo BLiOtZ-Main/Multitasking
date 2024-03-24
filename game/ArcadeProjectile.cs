@@ -10,6 +10,9 @@ namespace Multitasking
 {
     internal class ArcadeProjectile : ArcadeGameObject
     {
+        // Constant for projectile speed
+        private const int Speed = 4;
+
         // field declaration
         private bool active;
 
@@ -31,12 +34,26 @@ namespace Multitasking
         /// <returns></returns>
         public bool CheckCollision (ArcadeGameObject check)
         {
-            return base.position.Intersects(check.position);
+            if (active)
+            {
+                return base.position.Intersects(check.position);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public override void Update(GameTime gameTime)
         {
-            
+            if(base.position.Y > 0)
+            {
+                base.position.Y -= Speed;
+            }
+            else
+            {
+                active = false;
+            }
         }
     }
 }
