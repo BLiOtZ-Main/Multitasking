@@ -17,12 +17,16 @@ namespace Multitasking
     
     public class Game1 : Game
     {
+        public Color backgroundColor = new Color(31, 0, 171);
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
         private TypingGame typingGame;
+        private ArcadePlayer player;
 
         public SpriteFont typingFont;
+        public Texture2D squareImg;
         public int screenWidth;
         public int screenHeight;
 
@@ -55,6 +59,8 @@ namespace Multitasking
             screenWidth = _graphics.GraphicsDevice.Viewport.Width;
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
 
+            player = new ArcadePlayer(squareImg, new Rectangle(3 * (screenWidth / 4), 50, 100, 100), screenWidth);
+
             //Temp initilizes the game window sizes
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth/2 - 200, screenHeight - 200);
@@ -68,7 +74,7 @@ namespace Multitasking
 
 
             // load textures
-
+            squareImg = Content.Load<Texture2D>("Square");
 
             // load fonts
             typingFont = Content.Load<SpriteFont>("typingFont");
@@ -125,6 +131,12 @@ namespace Multitasking
                     if (SingleKeyPress(swapKBState, Keys.Enter))
                     {
                         currentState = GameState.GameOver;
+                    }
+
+
+                    foreach(ArcadeProjectile projectile in player.Projectiles)
+                    {
+
                     }
 
                     break;
