@@ -163,6 +163,11 @@ namespace Multitasking
                     foreach (ArcadeProjectile projectile in enemy.projectiles)
                     {
                         projectile.Update(gameTime);
+                        if (projectile.CheckCollision(player))
+                        {
+                            player.IsAlive = false;
+                            projectile.Active = false;
+                        }
                     }
 
                     foreach(ArcadeProjectile projectile in player.Projectiles)
