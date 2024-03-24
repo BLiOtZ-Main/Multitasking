@@ -20,6 +20,7 @@ namespace Multitasking
         // Field Declaration
         private int windowWidth;
         private double timer;
+        private bool isAlive;
         private List<ArcadeProjectile> projectiles;
 
         /// <summary>
@@ -35,6 +36,25 @@ namespace Multitasking
             this.windowWidth = windowWidth;
             timer = TimePerShot;
             projectiles = new List<ArcadeProjectile>();
+            isAlive = true;
+        }
+
+        /// <summary>
+        /// get-only property for player position
+        /// </summary>
+        public Rectangle Position
+        {
+            get { return position; }
+        }
+
+        /// <summary>
+        /// Getter and Setter property for whether
+        /// the player is alive
+        /// </summary>
+        public bool IsAlive
+        {
+            get { return isAlive; }
+            set { isAlive = value; }
         }
 
         public List<ArcadeProjectile> Projectiles
