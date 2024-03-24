@@ -13,6 +13,12 @@ namespace Multitasking
         private int windowHeight;
         private int windowWidth;
 
+        private bool isAlive;
+        private bool shiftedRight;
+        private int shiftDelay;
+        private int shootDelay;
+        private Random rng;
+
         /// <summary>
         /// public parameterized constructor for arcade enemies
         /// </summary>
@@ -28,12 +34,54 @@ namespace Multitasking
         }
 
         /// <summary>
+        /// Property to tell if an enemy is alive or dead
+        /// </summary>
+        public bool IsAlive { get { return isAlive; } }
+
+        /// <summary>
         /// Update placeholder
         /// </summary>
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+
+            /*
+
+            If Projectile collides with enemy
+            {
+                isAlive = false;
+            }
             
+            
+            Enemies shift left and right every "shiftDelay" seconds
+             
+            If Bool "shiftedRight" -> shift left
+            {
+            position.X -= 5;
+            }
+            else
+            {
+            position.X -= 5;
+            }
+            
+            //Enemies constantly move downward no matter what
+            position.Y -= 1;
+            
+            //every 3 seconds % chance to shoot a projectile
+            
+            If "shootDelay" seconds passed
+            {
+               if rng.Next() > (whatever the percentage is decided to be
+               {
+                  create new projectile object
+               }
+            }
+            
+             */
+
         }
+
+
+
     }
 }
