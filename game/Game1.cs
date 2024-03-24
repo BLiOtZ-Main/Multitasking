@@ -74,7 +74,7 @@ namespace Multitasking
 
 
             // load textures
-            squareImg = new Texture2D(GraphicsDevice, 100, 100);
+            squareImg = Content.Load<Texture2D>("Square");
 
             // load fonts
             typingFont = Content.Load<SpriteFont>("typingFont");
