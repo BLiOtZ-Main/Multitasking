@@ -14,8 +14,13 @@ namespace Multitasking
         // Constant for speed of player
         private const int Speed = 4;
 
+        // Constant for how often a projectile is shot
+        private const double TimePerShot = 0.5;
+
         // Field Declaration
         private int windowWidth;
+        private double timer;
+        private List<ArcadeProjectile> projectiles;
 
         /// <summary>
         /// public parameterized constructor that creates an Arcade Player object
@@ -28,10 +33,20 @@ namespace Multitasking
             : base(texture, position)
         {
             this.windowWidth = windowWidth;
+            timer = TimePerShot;
+            projectiles = new List<ArcadeProjectile>();
+        }
+
+        public List<ArcadeProjectile> Projectiles
+        {
+            get { return projectiles; }
         }
 
         public override void Update(GameTime gameTime)
         {
+            // Allows player to move left and right using
+            // left and right arrow keys
+
             KeyboardState kbState = Keyboard.GetState();
 
             if (kbState.IsKeyDown(Keys.Left))
@@ -50,6 +65,13 @@ namespace Multitasking
                 {
                     position.X = windowWidth - texture.Width;
                 }
+            }
+
+            // Tracks time elapsed to know when to shoot another projectile
+            timer -= gameTime.ElapsedGameTime.TotalSeconds;
+            if(timer < 0)
+            {
+                projectiles.Add(new ArcadeProjectile(texture, position)); // Need to add actual texture later, just using placeholder to compile
             }
         }
 
