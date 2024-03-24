@@ -16,8 +16,9 @@ namespace Multitasking
         private ArcadePlayer player;
 
         //Constants for enemy shift and shoot delay
-        private const int ShiftDelay = 3;
-        private const int shootDelay = 3;
+        private const double ShiftDelay = Math.PI;
+        private const double ShootDelay = 3;
+        private const double MoveDelay = 1;
 
         //Constant for enemy shift distance
         private const int ShiftDistance = 3;
@@ -29,6 +30,7 @@ namespace Multitasking
         //Timer related variables
         private double shootTimer;
         private double shiftTimer;
+        private double moveTimer;
 
         //Texture for Projectiles
         private Texture2D projectileTexture;
@@ -56,7 +58,8 @@ namespace Multitasking
             
             shiftedRight = false;
             shiftTimer = ShiftDelay;
-            shootTimer = shootDelay;
+            shootTimer = ShootDelay;
+            moveTimer = MoveDelay;
             
             //Adds the new enemy to the enemy list
             enemyList.Add(this);
@@ -109,29 +112,44 @@ namespace Multitasking
                 if(shiftedRight)
                 {
                     //Shift Left
-                    position.X -= 5;
+                    position.X -= 20;
+                    shiftedRight = false;
+                    shiftTimer = ShiftDelay;
                 }
                 //Otherwise
                 else
                 {
                     //Shift right
-                    position.X += 5;
+                    position.X += 20;
+                    shiftedRight = true;
+                    shiftTimer = ShiftDelay;
                 }
             }
 
             //The enemy constantly moves downward
-            position.Y -= 1;
+            moveTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            if(moveTimer < 0)
+            {
+                position.Y += 15;
+                moveTimer = MoveDelay;
+            }
 
+            projectiles.Add(new ArcadeProjectile(projectileTexture, position));//add texture later
             //Tracks time to know when to shoot
             shootTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            /*
             if (shootTimer < 0)
             {
+                
+                
                 //50% chance to shoot
                 if (rng.Next(100) < 50)
                 {
-                    projectiles.Add(new ArcadeProjectile(projectileTexture, position));//add texture later
+                    
                 }
+                
             }
+            */
 
 
         }

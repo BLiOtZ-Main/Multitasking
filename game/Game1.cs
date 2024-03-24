@@ -140,6 +140,11 @@ namespace Multitasking
                     }
 
                     player.Update(gameTime);
+                    enemy.Update(gameTime);
+                    foreach(ArcadeProjectile projectile in enemy.projectiles)
+                    {
+                        projectile.Update(gameTime);
+                    }
 
                     foreach(ArcadeProjectile projectile in player.Projectiles)
                     {
