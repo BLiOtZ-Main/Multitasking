@@ -12,7 +12,7 @@ namespace Multitasking
     internal class ArcadePlayer : ArcadeGameObject
     {
         // Constant for speed of player
-        private const int Speed = 4;
+        private const int Speed = 8;
 
         // Constant for how often a projectile is shot
         private const double TimePerShot = 0.5;
@@ -61,18 +61,19 @@ namespace Multitasking
             if (kbState.IsKeyDown(Keys.Right))
             {
                 position.X += Speed;
-                if (position.X > windowWidth - texture.Width)
+                if (position.X > windowWidth - 300)
                 {
-                    position.X = windowWidth - texture.Width;
+                    position.X = windowWidth - 300;
                 }
             }
-
+            
             // Tracks time elapsed to know when to shoot another projectile
             timer -= gameTime.ElapsedGameTime.TotalSeconds;
             if(timer < 0)
             {
                 projectiles.Add(new ArcadeProjectile(texture, position)); // Need to add actual texture later, just using placeholder to compile
             }
+            
         }
 
 

@@ -133,6 +133,7 @@ namespace Multitasking
                         currentState = GameState.GameOver;
                     }
 
+                    player.Update(gameTime);
 
                     foreach(ArcadeProjectile projectile in player.Projectiles)
                     {
@@ -239,6 +240,7 @@ namespace Multitasking
                     //Labels for game windows
                     _spriteBatch.DrawString(typingFont, "Shooter", new Vector2(1300, 100), Color.White);
                     _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
+                    player.Draw(_spriteBatch, Color.Red);
 
                     break;
 
