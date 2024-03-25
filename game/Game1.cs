@@ -25,7 +25,11 @@ namespace Multitasking
         private TypingGame typingGame;
         private ArcadePlayer player;
         private ArcadeEnemy enemy;
-
+        private ArcadeEnemy enemy1;
+        private ArcadeEnemy enemy2;
+        private ArcadeEnemy enemy3;
+        private ArcadeEnemy enemy4;
+        private ArcadeEnemy enemy5;
 
         public SpriteFont typingFont;
         public Texture2D squareImg;
@@ -68,13 +72,19 @@ namespace Multitasking
 
             player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 100, 100), screenWidth, playerBulletImg);
             enemy = new ArcadeEnemy(enemyImg, new Rectangle(1000, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+            enemy1 = new ArcadeEnemy(enemyImg, new Rectangle(1100, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+            enemy2 = new ArcadeEnemy(enemyImg, new Rectangle(1200, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+            enemy3 = new ArcadeEnemy(enemyImg, new Rectangle(1300, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+            enemy4 = new ArcadeEnemy(enemyImg, new Rectangle(1400, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+            enemy5 = new ArcadeEnemy(enemyImg, new Rectangle(1500, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
 
+            /*
             for (int i = 0; i < 10; i++)
             {
                 ArcadeEnemy newEnemy  = new ArcadeEnemy(enemyImg, new Rectangle(1000 + enemyDist, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
                 enemyDist += 20;
             }
-
+            */
 
             //Temp initilizes the game window sizes
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
@@ -144,6 +154,7 @@ namespace Multitasking
                 //Main Game Code goes here
                 case GameState.Game:
 
+                    /*
                     foreach (ArcadeEnemy enemy in enemy.EnemyList)
                     {
                         if (enemy.IsAlive)
@@ -158,7 +169,7 @@ namespace Multitasking
                             }
                         } 
                     }
-
+                    */
                     //Temp code to swap to GameOver
                     if (SingleKeyPress(swapKBState, Keys.Enter))
                     {
@@ -169,6 +180,26 @@ namespace Multitasking
                     if (enemy.IsAlive)
                     {
                         enemy.Update(gameTime);
+                    }
+                    if (enemy1.IsAlive)
+                    {
+                        enemy1.Update(gameTime);
+                    }
+                    if (enemy2.IsAlive)
+                    {
+                        enemy2.Update(gameTime);
+                    }
+                    if (enemy3.IsAlive)
+                    {
+                        enemy3.Update(gameTime);
+                    }
+                    if (enemy4.IsAlive)
+                    {
+                        enemy4.Update(gameTime);
+                    }
+                    if (enemy5.IsAlive)
+                    {
+                        enemy5.Update(gameTime);
                     }
                     foreach (ArcadeProjectile projectile in enemy.projectiles)
                     {
@@ -305,7 +336,27 @@ namespace Multitasking
                     {
                         enemy.Draw(_spriteBatch, Color.White);
                     }
-                    foreach(ArcadeProjectile projectile in enemy.projectiles)
+                    if (enemy1.IsAlive)
+                    {
+                        enemy1.Draw(_spriteBatch, Color.White);
+                    }
+                    if (enemy2.IsAlive)
+                    {
+                        enemy2.Draw(_spriteBatch, Color.White);
+                    }
+                    if (enemy3.IsAlive)
+                    {
+                        enemy3.Draw(_spriteBatch, Color.White);
+                    }
+                    if (enemy4.IsAlive)
+                    {
+                        enemy4.Draw(_spriteBatch, Color.White);
+                    }
+                    if (enemy5.IsAlive)
+                    {
+                        enemy5.Draw(_spriteBatch, Color.White);
+                    }
+                    foreach (ArcadeProjectile projectile in enemy.projectiles)
                     {
                         if (projectile.Active)
                         {
