@@ -120,8 +120,8 @@ namespace Multitasking
                 
                 //Typing Tutorial Code goes here
                 case GameState.Tutorial:
-                    
-                    typingGame.Update();
+
+                    typingGame.UpdateTypingTutorial();
 
                     //Temp code to swap to the main game
                     if (SingleKeyPress(swapKBState, Keys.Enter))
@@ -247,7 +247,7 @@ namespace Multitasking
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.LightSteelBlue);
+            GraphicsDevice.Clear(backgroundColor);
             _spriteBatch.Begin();
             ShapeBatch.Begin(GraphicsDevice);
             // write code below
@@ -258,15 +258,15 @@ namespace Multitasking
                 //Main Menu Draw Code goes here
                 case GameState.Menu:
 
-                    _spriteBatch.DrawString(typingFont, "Multitasking Main Menu", new Vector2((screenWidth / 2)- 200, 300), Color.Black);
+                    _spriteBatch.DrawString(typingFont, "Multitasking Main Menu", new Vector2((screenWidth / 2)- 200, 300), Color.White);
                     //Demo instructions
-                    _spriteBatch.DrawString(typingFont, "Press enter to Start", new Vector2((screenWidth / 2) - 400, 400), Color.Black);
-                    _spriteBatch.DrawString(typingFont, "Tab for Window Demo", new Vector2((screenWidth / 2) - 400, 500), Color.Black);
+                    _spriteBatch.DrawString(typingFont, "Press enter to Start", new Vector2((screenWidth / 2) - 400, 400), Color.White);
+                    _spriteBatch.DrawString(typingFont, "Tab for Window Demo", new Vector2((screenWidth / 2) - 400, 500), Color.White);
                     break;
                 
                 //Typing Tutorial Draw Code goes here
                 case GameState.Tutorial:
-                    typingGame.Draw(_spriteBatch, typingFont, screenWidth, screenHeight);
+                    typingGame.DrawTypingTutorial(_spriteBatch, typingFont, screenWidth, screenHeight);
                     break;
 
                 //Main Game Draw Code goes here

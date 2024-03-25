@@ -1,9 +1,0 @@
-welcome to multitasking
-right now you are typing out the tutorial for this game
-after you are done typing this paragraph the screen will split in half
-on the left side you will need to keep typing
-on the right you will start playing an arcade shooter
-if you let the text on the left reach the top of the screen you lose
-if you take too much damage on the right you lose
-good luck
-this is the last sentence before the game really starts

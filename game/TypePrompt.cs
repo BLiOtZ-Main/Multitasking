@@ -11,37 +11,40 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Multitasking
 {
-    /*
-     * Additional Improvements
-     * - Translucent bar highlighting your current line
-     * - Animations for correctly/incorrectly typing a key
-     * - Character spacing and line spacing needs to be improved
-     */
+
+     //   Additional Improvements
+     // - Translucent bar highlighting your current line
+     // - Animations for correctly/incorrectly typing a key
+     // - Character spacing and line spacing needs to be improved
+     //
 
     internal class TypePrompt
     {
+        // holds last frame's KeyboardState
         private KeyboardState previousKeyBoardState;
 
+        // a list of the current prompts taken from a .txt file
         private List<String> prompts;
-
-        private String filename;
 
         private int currentLine;
         private int currentChar;
         private bool staticPrompt;
+        private const int lineSpacing = 60;
+        private const int verticalOffset = 150;
         
         
         public TypePrompt(String filename, bool staticPrompt)
         {
-            prompts = new List<String>();
+            String filepath = "../../../../resources/prompts/" + filename;
 
-            this.filename = filename;
+
+            prompts = new List<String>();
 
             currentLine = 0;
             currentChar = 0;
             this.staticPrompt = staticPrompt;
 
-            ScrapeFile();
+            ScrapeFile(filepath);
         }
 
         public void Update()
@@ -91,16 +94,17 @@ namespace Multitasking
                 {
                     if(i < currentLine)
                     {
-                        spriteBatch.DrawString(font, prompts[i], new Vector2((screenWidth / 2) - 400, 100 * i), Color.Yellow);
+                        spriteBatch.DrawString(font, prompts[i], new Vector2((screenWidth / 2) - 400, lineSpacing * i + verticalOffset), Color.Yellow);
                     }
                     else if(i > currentLine)
                     {
-                        spriteBatch.DrawString(font, prompts[i], new Vector2((screenWidth / 2) - 400, 100 * i), Color.Gray);
+                        spriteBatch.DrawString(font, prompts[i], new Vector2((screenWidth / 2) - 400, lineSpacing * i + verticalOffset), Color.Gray);
                     }
                     else
                     {
-                        spriteBatch.DrawString(font, prompts[i].Substring(0, prompts[i].Length), new Vector2((screenWidth / 2) - 400, 100 * i), Color.White);
-                        spriteBatch.DrawString(font, prompts[i].Substring(0, currentChar), new Vector2((screenWidth / 2) - 400, 100 * i), Color.Yellow);
+                        spriteBatch.DrawString(font, prompts[i].Substring(0, prompts[i].Length), new Vector2((screenWidth / 2) - 400, lineSpacing * i + verticalOffset), new Color(31, 0, 171));
+                        spriteBatch.DrawString(font, prompts[i].Substring(0, currentChar), new Vector2((screenWidth / 2) - 400, lineSpacing * i + verticalOffset), Color.White);
+                        ShapeBatch.Box(new Rectangle(0, lineSpacing * i + verticalOffset, screenWidth, 35), new Color(255, 255, 255));
                     }
                     
                 }
@@ -111,11 +115,10 @@ namespace Multitasking
             }
         }
 
-        public void ScrapeFile()
+        public void ScrapeFile(String filepath)
         {
-            StreamReader reader = new StreamReader("../../../../resources/prompts/" + filename);
+            StreamReader reader = new StreamReader(filepath);
             String currentLine = reader.ReadLine();
-            // write code below
 
             while (currentLine != null)
             {
@@ -130,7 +133,6 @@ namespace Multitasking
                 currentLine = reader.ReadLine();
             }
 
-            // write code above
             reader.Close();
         }
 
@@ -213,7 +215,7 @@ namespace Multitasking
                    pressedKeys[i] == Keys.Y || pressedKeys[i] == Keys.Z)
                 {
                     numOfNonLetterKeysPressed++;
-                }    
+                }
             }
 
             return numOfNonLetterKeysPressed;
