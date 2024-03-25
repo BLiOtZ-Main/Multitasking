@@ -1,11 +1,9 @@
 start typing...welcome to multitasking!
 this is the tutorial for the game. you may 
 have noticed that you don't have to type 
-spaces, puncuation, or make new lines. this 
+spaces, punctuation, or make new lines. this 
 is intentional! after you are finished 
 typing this, the screen will split in half, 
-into two games! You need to keep typing and 
+into two games! you need to keep typing and 
 playing both games simultaneously!
-
-Once you type this line the game will start!
-
+once you type this line the game will start!

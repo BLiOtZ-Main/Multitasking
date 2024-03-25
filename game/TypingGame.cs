@@ -95,46 +95,46 @@ namespace Multitasking
             bool fewEnoughLettersPressed = GetPressedLetterCount(keyboardState) <= 2;
             bool pressingCurrentLetter = keyboardState.IsKeyDown(GetKeyFromChar(tutorialPrompts[currentLineIndex].Substring(currentCharIndex, 1)));
             bool differentKeyboardState = previousKeyBoardState != keyboardState;
+            bool newLine = false;
 
             if(notEndOfPrompt && fewEnoughLettersPressed && pressingCurrentLetter && differentKeyboardState)
             {
+                if(CurrentLineState == LineState.Body)
+                    currentCharIndex++;
 
                 if(CurrentLineState == LineState.LastChar)
                 {
-
-                    if(CurrentPromptState == PromptState.LastLine)
-                    {
-                        currentLineIndex = -1;
-                    }
-                    else
-                    {
-                        currentLineIndex += 1;
-                        currentCharIndex = 0;
-                    }
+                    currentCharIndex = 0;
+                    newLine = true;
                 }
-                else
+                    
+            }
+
+            while(tutorialPrompts[currentLineIndex][currentCharIndex].ToString() == " " ||
+                  tutorialPrompts[currentLineIndex][currentCharIndex].ToString() == "." ||
+                  tutorialPrompts[currentLineIndex][currentCharIndex].ToString() == "!" ||
+                  tutorialPrompts[currentLineIndex][currentCharIndex].ToString() == "'" ||
+                  tutorialPrompts[currentLineIndex][currentCharIndex].ToString() == "," )
+            {
+                if(CurrentLineState == LineState.Body)
+                    currentCharIndex++;
+
+                if(CurrentLineState == LineState.LastChar)
                 {
-                    currentCharIndex += 1;
-
-                    Debug.WriteLine("currentLineLength: " + tutorialPrompts[currentLineIndex].Length);
-                    Debug.WriteLine("currentLineCharLength: " + GetCharLength(tutorialPrompts[currentLineIndex]));
-
-                    Debug.WriteLine("currentCharIndex: " + currentCharIndex);
-                    Debug.WriteLine("currentCharacter: \"" + tutorialPrompts[currentLineIndex].Substring(currentCharIndex, 1) + "\"");
-
-                    while(tutorialPrompts[currentLineIndex].Substring(currentCharIndex, 1) == " " || tutorialPrompts[currentLineIndex].Substring(currentCharIndex, 1) == "." || tutorialPrompts[currentLineIndex].Substring(currentCharIndex, 1) == "!")
-                    {
-                        if(CurrentLineState == LineState.Body)
-                        {
-                            currentCharIndex += 1;
-                        }
-                        else if(CurrentLineState == LineState.LastChar)
-                        {
-                            currentLineIndex += 1;
-                            currentCharIndex = 0;
-                        }
-                    }
+                    currentCharIndex = 0;
+                    newLine = true;
                 }
+                    
+            }
+
+            if(newLine)
+            {
+                newLine = false;
+
+                if(CurrentPromptState == PromptState.LastLine)
+                    currentLineIndex = -1;
+                else
+                    currentLineIndex++;
             }
 
             previousKeyBoardState = keyboardState;
@@ -239,21 +239,6 @@ namespace Multitasking
             }
 
             return Keys.None;
-        }
-
-        public int GetCharLength(String line)
-        {
-            int counter = 0;
-
-            for(int i = 0; i < line.Length; i++)
-            {
-                if(line.Substring(i, 1) != " " && line.Substring(i, 1) != "." && line.Substring(i, 1) != "!")
-                {
-                    counter++;
-                }
-            }
-
-            return counter;
         }
     }
 }
