@@ -94,7 +94,6 @@ namespace Multitasking
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-
             //Checks if a projectile collides
             foreach (ArcadeProjectile p in projectiles)
             {
@@ -148,12 +147,6 @@ namespace Multitasking
                 }
                 
             }
-            
-
-
         }
-
-
-
     }
 }

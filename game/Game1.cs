@@ -26,6 +26,7 @@ namespace Multitasking
         private ArcadePlayer player;
         private ArcadeEnemy enemy;
 
+
         public SpriteFont typingFont;
         public Texture2D squareImg;
         public Texture2D playerImg;
@@ -38,6 +39,8 @@ namespace Multitasking
         
         public KeyboardState previousKBState;
         public MouseState previousMouse;
+
+        public int enemyDist = 20;
 
         //Windows
         Rectangle typingWindow;
@@ -65,6 +68,13 @@ namespace Multitasking
 
             player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 100, 100), screenWidth, playerBulletImg);
             enemy = new ArcadeEnemy(enemyImg, new Rectangle(1000, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+
+            for (int i = 0; i < 10; i++)
+            {
+                ArcadeEnemy newEnemy  = new ArcadeEnemy(enemyImg, new Rectangle(1000 + enemyDist, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+                enemyDist += 20;
+            }
+
 
             //Temp initilizes the game window sizes
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
