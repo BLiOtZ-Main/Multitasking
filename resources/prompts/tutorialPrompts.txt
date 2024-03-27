@@ -1,9 +1,13 @@
-start typing...welcome to multitasking!
-this is the tutorial for the game. you may 
-have noticed that you don't have to type 
-spaces, punctuation, or make new lines. this 
-is intentional! after you are finished 
-typing this, the screen will split in half, 
-into two games! you need to keep typing and 
-playing both games simultaneously!
-once you type this line the game will start!
+looks like you finally got in today. i wish 
+you could save me the embarrassment, but i 
+guess i'm going to have to go through this 
+again, aren't i?
+
+once you finish typing this prompt, you
+will be clocked in and your work day will
+start. you need to finish the documents you
+get sent quickly, and i better not see you
+playing any of that space game again^tm.
+
+sincerely,
+your sentient computer

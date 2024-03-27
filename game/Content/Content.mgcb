@@ -37,6 +37,13 @@
 /processorParam:TextureFormat=Color
 /build:Main Ship - Base - Full health.png
 
+#begin menuFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:menuFont.spritefont
+
 #begin PlayerBullet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -79,4 +86,11 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:typingFont.spritefont
+
+#begin typingFontBold.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:typingFontBold.spritefont
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 namespace Multitasking
 {
@@ -32,6 +33,8 @@ namespace Multitasking
         private ArcadeEnemy enemy5;
 
         public SpriteFont typingFont;
+        public SpriteFont typingFontBold;
+        public SpriteFont menuFont;
         public Texture2D squareImg;
         public Texture2D playerImg;
         public Texture2D enemyImg;
@@ -65,6 +68,7 @@ namespace Multitasking
             base.Initialize();
             // write code below
 
+            currentState = GameState.Menu;
             typingGame = new TypingGame();
 
             screenWidth = _graphics.GraphicsDevice.Viewport.Width;
@@ -106,6 +110,8 @@ namespace Multitasking
 
             // load fonts
             typingFont = Content.Load<SpriteFont>("typingFont");
+            typingFontBold = Content.Load<SpriteFont>("typingFontBold");
+            menuFont = Content.Load<SpriteFont>("menuFont");
 
         }
 
@@ -116,6 +122,8 @@ namespace Multitasking
             
             KeyboardState swapKBState = Keyboard.GetState();
             MouseState mouseState = Mouse.GetState();
+
+            Debug.WriteLine("currentState:" + currentState.ToString());
 
             //FSM managing GameStates
             switch (currentState)
@@ -141,7 +149,7 @@ namespace Multitasking
                 //Typing Tutorial Code goes here
                 case GameState.Tutorial:
 
-                    typingGame.UpdateTypingTutorial();
+                    currentState = typingGame.UpdateTypingTutorial(currentState);
 
                     //Temp code to swap to the main game
                     if (SingleKeyPress(swapKBState, Keys.Enter))
@@ -299,15 +307,16 @@ namespace Multitasking
                 //Main Menu Draw Code goes here
                 case GameState.Menu:
 
-                    _spriteBatch.DrawString(typingFont, "Multitasking Main Menu", new Vector2((screenWidth / 2)- 200, 300), Color.White);
+                    _spriteBatch.DrawString(menuFont, "multitasking.exe", new Vector2((screenWidth / 2) - (menuFont.MeasureString("multitasking.exe").X / 2), 300), Color.White);
                     //Demo instructions
-                    _spriteBatch.DrawString(typingFont, "Press enter to Start", new Vector2((screenWidth / 2) - 400, 400), Color.White);
-                    _spriteBatch.DrawString(typingFont, "Tab for Window Demo", new Vector2((screenWidth / 2) - 400, 500), Color.White);
+                    _spriteBatch.DrawString(typingFont, "ENTER.........................start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.........................start").X / 2), 500), Color.White);
+                    _spriteBatch.DrawString(typingFont, "TAB.....................window demo", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB.....................window demo").X / 2), 550), Color.White);
+                    _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 600), Color.White);
                     break;
                 
                 //Typing Tutorial Draw Code goes here
                 case GameState.Tutorial:
-                    typingGame.DrawTypingTutorial(_spriteBatch, typingFont, screenWidth, screenHeight);
+                    typingGame.DrawTypingTutorial(_spriteBatch, typingFont, typingFontBold, screenWidth, screenHeight);
                     break;
 
                 //Main Game Draw Code goes here
@@ -322,6 +331,7 @@ namespace Multitasking
                     ShapeBatch.Box(shooterWindow, Color.White);
                     
                     _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
+                    _spriteBatch.DrawString(typingFont, "Space Game Again TM", new Vector2(1200, 100), Color.Black);
 
                     // Draws player sprite
                     player.Draw(_spriteBatch, Color.White);
@@ -369,7 +379,9 @@ namespace Multitasking
                 //GameOver Screen Draw Code goes here
                 case GameState.GameOver:
 
-                    _spriteBatch.DrawString(typingFont, "GAME OVER", new Vector2((screenWidth / 2) - 100, 100), Color.Black);
+                    _spriteBatch.DrawString(menuFont, "game over", new Vector2((screenWidth / 2) - (menuFont.MeasureString("game over").X / 2), 300), Color.White);
+                    _spriteBatch.DrawString(typingFont, "ENTER.....................main menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.....................main menu").X / 2), 500), Color.White);
+                    _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 550), Color.White);
 
                     break;
 

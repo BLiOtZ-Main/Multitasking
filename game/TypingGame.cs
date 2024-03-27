@@ -23,6 +23,7 @@ namespace Multitasking
         // prompts
         private List<String> tutorialPrompts;
         private List<String> gamePrompts;
+        List<String> skippedCharacters;
 
         // gameplay
         private bool inTutorial;
@@ -76,6 +77,7 @@ namespace Multitasking
             // initializing variables
             tutorialPrompts = new List<String>();
             gamePrompts = new List<String>();
+            skippedCharacters = new List<string>() { " ", ".", "!", "'", ",", "^" };
             inTutorial = true;
             currentLineIndex = 0;
             currentCharIndex = 0;
@@ -88,56 +90,62 @@ namespace Multitasking
 
         // CORE GAME METHODS
 
-        public void UpdateTypingTutorial()
+        public GameState UpdateTypingTutorial(GameState currentState)
         {
             KeyboardState keyboardState = Keyboard.GetState();
-            bool notEndOfPrompt = CurrentPromptState != PromptState.End;
-            bool fewEnoughLettersPressed = GetPressedLetterCount(keyboardState) <= 2;
-            bool pressingCurrentLetter = keyboardState.IsKeyDown(GetKeyFromChar(tutorialPrompts[currentLineIndex].Substring(currentCharIndex, 1)));
-            bool differentKeyboardState = previousKeyBoardState != keyboardState;
-            bool newLine = false;
+            bool endOfPrompt;
+            bool exceededKeysPressed;
+            bool pressingCurrentKey;
+            bool changedKeyboardState;
 
-            if(notEndOfPrompt && fewEnoughLettersPressed && pressingCurrentLetter && differentKeyboardState)
+            if(currentLineIndex == -1)
             {
-                if(CurrentLineState == LineState.Body)
-                    currentCharIndex++;
-
-                if(CurrentLineState == LineState.LastChar)
+                previousKeyBoardState = keyboardState;
+                return GameState.Game;
+            }
+            else
+            {
+                while(tutorialPrompts[currentLineIndex].Length == 0)
                 {
-                    currentCharIndex = 0;
-                    newLine = true;
+                    MoveToNewLine();
                 }
-                    
-            }
 
-            while(tutorialPrompts[currentLineIndex][currentCharIndex].ToString() == " " ||
-                  tutorialPrompts[currentLineIndex][currentCharIndex].ToString() == "." ||
-                  tutorialPrompts[currentLineIndex][currentCharIndex].ToString() == "!" ||
-                  tutorialPrompts[currentLineIndex][currentCharIndex].ToString() == "'" ||
-                  tutorialPrompts[currentLineIndex][currentCharIndex].ToString() == "," )
-            {
-                if(CurrentLineState == LineState.Body)
-                    currentCharIndex++;
-
-                if(CurrentLineState == LineState.LastChar)
+                while(skippedCharacters.Contains(tutorialPrompts[currentLineIndex][currentCharIndex].ToString()))
                 {
-                    currentCharIndex = 0;
-                    newLine = true;
+                    if(CurrentLineState == LineState.Body)
+                        currentCharIndex++;
+
+                    if(CurrentLineState == LineState.LastChar)
+                    {
+                        MoveToNewLine();
+                    }
                 }
-                    
-            }
 
-            if(newLine)
-            {
-                newLine = false;
+                endOfPrompt = CurrentPromptState != PromptState.End;
+                exceededKeysPressed = GetPressedLetterCount(keyboardState) <= 2;
+                pressingCurrentKey = keyboardState.IsKeyDown(GetKeyFromChar(tutorialPrompts[currentLineIndex].Substring(currentCharIndex, 1)));
+                changedKeyboardState = previousKeyBoardState != keyboardState;
 
-                if(CurrentPromptState == PromptState.LastLine)
-                    currentLineIndex = -1;
-                else
-                    currentLineIndex++;
-            }
+                if(endOfPrompt && exceededKeysPressed && pressingCurrentKey && changedKeyboardState)
+                {
+                    if(CurrentLineState == LineState.Body)
+                        currentCharIndex++;
 
-            previousKeyBoardState = keyboardState;
+                    if(CurrentLineState == LineState.LastChar)
+                    {
+                        currentCharIndex = 0;
+
+                        if(CurrentPromptState == PromptState.LastLine)
+                            currentLineIndex = -1;
+                        else
+                            currentLineIndex++;
+                    }
+
+                }
+
+                previousKeyBoardState = keyboardState;
+                return GameState.Tutorial;
+            }   
         }
 
         public void UpdateTypingGame()
@@ -147,7 +155,7 @@ namespace Multitasking
             previousKeyBoardState = keyboardState;
         }
 
-        public void DrawTypingTutorial(SpriteBatch spriteBatch, SpriteFont font, int screenWidth, int screenHeight)
+        public void DrawTypingTutorial(SpriteBatch spriteBatch, SpriteFont font, SpriteFont fontBold, int screenWidth, int screenHeight)
         {
             for(int i = 0; i < tutorialPrompts.Count; i++)
             {
@@ -162,7 +170,7 @@ namespace Multitasking
                 else
                 {
                     spriteBatch.DrawString(font, tutorialPrompts[i].Substring(0, tutorialPrompts[i].Length), new Vector2((screenWidth / 2) - 400, lineSpacing * i + verticalOffset), new Color(31, 0, 171));
-                    spriteBatch.DrawString(font, tutorialPrompts[i].Substring(0, currentCharIndex), new Vector2((screenWidth / 2) - 400, lineSpacing * i + verticalOffset), Color.White);
+                    spriteBatch.DrawString(fontBold, tutorialPrompts[i].Substring(0, currentCharIndex), new Vector2((screenWidth / 2) - 400, lineSpacing * i + verticalOffset), Color.White);
                     ShapeBatch.Box(new Rectangle(0, lineSpacing * i + verticalOffset, screenWidth, 35), new Color(255, 255, 255));
                 }
 
@@ -239,6 +247,16 @@ namespace Multitasking
             }
 
             return Keys.None;
+        }
+
+        public void MoveToNewLine()
+        {
+            currentCharIndex = 0;
+
+            if(CurrentPromptState == PromptState.LastLine)
+                currentLineIndex = -1;
+            else
+                currentLineIndex++;
         }
     }
 }
