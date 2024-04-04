@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Multitasking
@@ -25,7 +26,6 @@ namespace Multitasking
 
         private TypingGame typingGame;
         private ArcadePlayer player;
-        private ArcadeEnemy enemy;
 
         public SpriteFont typingFont;
         public SpriteFont typingFontBold;
@@ -42,7 +42,9 @@ namespace Multitasking
         public KeyboardState previousKBState;
         public MouseState previousMouse;
 
-        public int enemyDist = 20;
+        public const int enemyDist = 70;
+
+        private List<ArcadeEnemy> enemyList;
 
         //Windows
         Rectangle typingWindow;
@@ -70,16 +72,9 @@ namespace Multitasking
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
 
             player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 100, 100), screenWidth, playerBulletImg);
-            enemy = new ArcadeEnemy(enemyImg, new Rectangle(1000, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
 
 
-            /*
-            for (int i = 0; i < 10; i++)
-            {
-                ArcadeEnemy newEnemy  = new ArcadeEnemy(enemyImg, new Rectangle(1000 + enemyDist, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
-                enemyDist += 20;
-            }
-            */
+            enemyList = new List<ArcadeEnemy>();
 
             //Temp initilizes the game window sizes
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
@@ -153,8 +148,22 @@ namespace Multitasking
                 //Main Game Code goes here
                 case GameState.Game:
 
+
+                    //Creates a new row of enemies every ____ seconds
+                    if(enemyList.Count == 0)
+                    {
+                        for (int i = 0; i < 10; i++)
+                        {
+                            int enemyPos = enemyDist;
+                            ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + i*enemyDist, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+                            enemyList.Add(newEnemy);
+                            
+                        }
+                    }
+                    
+                    
                     //Enemy collision check
-                    foreach (ArcadeEnemy enemy in enemy.EnemyList)
+                    foreach (ArcadeEnemy enemy in enemyList)
                     {
                         if (enemy.IsAlive)
                         {
@@ -176,21 +185,31 @@ namespace Multitasking
                     }
 
                     player.Update(gameTime);
-                    if (enemy.IsAlive)
+                    
+                    //Updates every enemy
+                    foreach(ArcadeEnemy e in enemyList)
                     {
-                        enemy.Update(gameTime);
-                    }
-
-                    foreach (ArcadeProjectile projectile in enemy.projectiles)
-                    {
-                        projectile.Update(gameTime);
-                        if (projectile.CheckCollision(player))
+                        if (e.IsAlive)
                         {
-                            player.IsAlive = false;
-                            projectile.Active = false;
+                            e.Update(gameTime);
                         }
                     }
 
+                    //player collision check
+                    foreach(ArcadeEnemy e in enemyList)
+                    {
+                        foreach (ArcadeProjectile projectile in e.projectiles)
+                        {
+                            projectile.Update(gameTime);
+                            if (projectile.CheckCollision(player))
+                            {
+                                player.IsAlive = false;
+                                projectile.Active = false;
+                            }
+                        }
+                    }
+
+                    //updates the player's projectiles
                     foreach(ArcadeProjectile projectile in player.Projectiles)
                     {
                         if (projectile.Active)
@@ -199,6 +218,7 @@ namespace Multitasking
                         }
                     }
 
+                    //If the player dies game over
                     if (!player.IsAlive)
                     {
                         currentState = GameState.GameOver;
@@ -307,6 +327,8 @@ namespace Multitasking
 
                     // Draws player sprite
                     player.Draw(_spriteBatch, Color.White);
+
+                    //draws each player projectile
                     foreach(ArcadeProjectile projectile in player.Projectiles)
                     {
                         if (projectile.Active)
@@ -314,18 +336,28 @@ namespace Multitasking
                             projectile.Draw(_spriteBatch, Color.White);
                         } 
                     }
-                    if (enemy.IsAlive)
+                    
+                    //Draws each enemy
+                    foreach(ArcadeEnemy e in enemyList)
                     {
-                        enemy.Draw(_spriteBatch, Color.White);
-                    }
-
-                    foreach (ArcadeProjectile projectile in enemy.projectiles)
-                    {
-                        if (projectile.Active)
+                        if (e.IsAlive)
                         {
-                            projectile.Draw(_spriteBatch, Color.White);
+                            e.Draw(_spriteBatch, Color.White);
                         }
                     }
+
+                    //Draws each enemy projectile
+                    foreach (ArcadeEnemy e in enemyList)
+                    {
+                        foreach (ArcadeProjectile projectile in e.projectiles)
+                        {
+                            if (projectile.Active)
+                            {
+                                projectile.Draw(_spriteBatch, Color.White);
+                            }
+                        }
+                    }
+                    
 
                     break;
 

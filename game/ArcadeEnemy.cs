@@ -39,7 +39,7 @@ namespace Multitasking
         private Random rng = new Random();
 
         //List of all enemies
-        public List<ArcadeEnemy> enemyList = new List<ArcadeEnemy>();
+       
 
         public List<ArcadeProjectile> projectiles;
 
@@ -63,7 +63,7 @@ namespace Multitasking
             isAlive = true;
 
             //Adds the new enemy to the enemy list
-            enemyList.Add(this);
+
             projectiles = new List<ArcadeProjectile>();
             
             //Stores a reference to the player
@@ -82,10 +82,7 @@ namespace Multitasking
         /// <summary>
         /// Property to get the list of enemies
         /// </summary>
-        public List<ArcadeEnemy> EnemyList
-        {
-            get { return enemyList; }
-        }
+
 
 
         /// <summary>
