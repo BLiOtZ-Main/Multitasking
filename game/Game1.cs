@@ -225,6 +225,15 @@ namespace Multitasking
                         }
                     }
 
+                    //Is enemies reach the player game over
+                    foreach (ArcadeEnemy e in enemyList)
+                    {
+                        if (e.position.Y >= screenHeight-200)
+                        {
+                            currentState = GameState.GameOver;
+                        }
+                    }
+
                     //If the player dies game over
                     if (!player.IsAlive)
                     {
