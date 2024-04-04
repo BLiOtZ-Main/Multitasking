@@ -139,7 +139,7 @@ namespace Multitasking
                 //50% chance to shoot
                 if (rng.Next(100) < 50)
                 {
-                    projectiles.Add(new ArcadeProjectile(projectileTexture, position));
+                    projectiles.Add(new ArcadeProjectile(projectileTexture, new Rectangle(position.X + texture.Width/2, position.Y + texture.Height, 17, 33)));
                     shootTimer = ShootDelay;
                 }
                 

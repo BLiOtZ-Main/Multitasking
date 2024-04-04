@@ -95,7 +95,9 @@ namespace Multitasking
             timer -= gameTime.ElapsedGameTime.TotalSeconds;
             if(timer < 0)
             {
-                projectiles.Add(new ArcadeProjectile(projectileTexture, new Rectangle(position.X + texture.Width/2, position.Y, ProjectileXSize, ProjectileYSize))); // Need to add actual texture later, just using placeholder to compile
+                ArcadeProjectile newProjectile = new ArcadeProjectile(projectileTexture, new Rectangle(position.X + texture.Width / 2, position.Y, ProjectileXSize, ProjectileYSize));
+                newProjectile.PlayerProjectile = true;
+                projectiles.Add(newProjectile);
                 timer = TimePerShot;
             }
             

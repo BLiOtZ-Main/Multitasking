@@ -18,6 +18,8 @@ namespace Multitasking
         // field declaration
         private bool active;
         private Rectangle startingPosition;
+        private bool playerProjectile = false;
+ 
 
         /// <summary>
         /// public parameterized constructor for projectiles
@@ -36,6 +38,13 @@ namespace Multitasking
             get { return active; }
             set { active = value; }
         }
+
+        public bool PlayerProjectile
+        {
+            get { return playerProjectile; }
+            set { playerProjectile = value; }
+        }
+
         /// <summary>
         /// Checks for collision between projectile and a GameObject (i.e enemies)
         /// </summary>
@@ -58,7 +67,7 @@ namespace Multitasking
             //Determines if the player or enemy is shooting based on starting position
             //If the player is shooting
             
-            if (startingPosition.Y > 700)
+            if (playerProjectile)
             {
                 if (position.Y > 100)
                 {
