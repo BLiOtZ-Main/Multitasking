@@ -136,8 +136,8 @@ namespace Multitasking
             shootTimer -= gameTime.ElapsedGameTime.TotalSeconds;
             if (shootTimer < 0)
             {   
-                //50% chance to shoot
-                if (rng.Next(100) < 50)
+                //randomizes the shooting a bit
+                if (rng.Next(100) > 94 )
                 {
                     projectiles.Add(new ArcadeProjectile(projectileTexture, new Rectangle(position.X + texture.Width/2, position.Y + texture.Height, 17, 33)));
                     shootTimer = ShootDelay;
