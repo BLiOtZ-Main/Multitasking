@@ -122,6 +122,12 @@ namespace Multitasking
                     if (SingleKeyPress(swapKBState, Keys.Enter))
                     {
                         currentState = GameState.Tutorial;
+
+                        //Resets the game
+                        player.IsAlive = true;
+                        enemyList.Clear();
+                        player.Projectiles.Clear();
+                        //VVVVVV Typing tutortial reset code here VVVVV
                     }
 
                     //Temp code to swap to demo
