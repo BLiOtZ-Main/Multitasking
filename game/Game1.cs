@@ -123,7 +123,8 @@ namespace Multitasking
                     {
                         currentState = GameState.Tutorial;
 
-                        //Resets the game
+                        //Resets the game (should make a player.Reset method)
+                        //Player Positions should be store ina varible of some kind so that we can reset it here
                         player.IsAlive = true;
                         enemyList.Clear();
                         player.Projectiles.Clear();
