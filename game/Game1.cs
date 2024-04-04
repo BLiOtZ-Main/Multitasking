@@ -36,6 +36,8 @@ namespace Multitasking
         public Texture2D playerBulletImg;
         public int screenWidth;
         public int screenHeight;
+        public double timer;
+        public const double EnemySpawnTime = 5;
 
         public GameState currentState = GameState.Menu;
         
@@ -79,6 +81,8 @@ namespace Multitasking
             //Temp initilizes the game window sizes
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth/2 - 200, screenHeight - 200);
+
+            timer = EnemySpawnTime;
 
         }
 
@@ -128,6 +132,7 @@ namespace Multitasking
                         player.IsAlive = true;
                         enemyList.Clear();
                         player.Projectiles.Clear();
+                        timer = EnemySpawnTime;
                         //VVVVVV Typing tutortial reset code here VVVVV
                     }
 
@@ -155,6 +160,7 @@ namespace Multitasking
                 //Main Game Code goes here
                 case GameState.Game:
 
+                    timer -= gameTime.ElapsedGameTime.TotalSeconds;
 
                     //Creates a new row of enemies every ____ seconds
                     if(enemyList.Count == 0)
@@ -162,13 +168,24 @@ namespace Multitasking
                         for (int i = 0; i < 10; i++)
                         {
                             int enemyPos = enemyDist;
-                            ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + i*enemyDist, 300, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+                            ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + i*enemyDist, 200, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
                             enemyList.Add(newEnemy);
                             
                         }
                     }
-                    
-                    
+                    else if (timer <= 0)
+                    {
+                        for (int i = 0; i < 10; i++)
+                        {
+                            int enemyPos = enemyDist;
+                            ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + i * enemyDist, 200, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+                            enemyList.Add(newEnemy);
+
+                        }
+                        timer = EnemySpawnTime;
+                    }
+
+
                     //Enemy collision check
                     foreach (ArcadeEnemy enemy in enemyList)
                     {

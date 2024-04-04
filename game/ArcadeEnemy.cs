@@ -137,7 +137,7 @@ namespace Multitasking
             if (shootTimer < 0)
             {   
                 //randomizes the shooting a bit
-                if (rng.Next(100) > 94 )
+                if (rng.Next(100) > 98)
                 {
                     projectiles.Add(new ArcadeProjectile(projectileTexture, new Rectangle(position.X + texture.Width/2, position.Y + texture.Height, 17, 33)));
                     shootTimer = ShootDelay;
