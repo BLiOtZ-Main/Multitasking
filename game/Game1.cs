@@ -332,11 +332,13 @@ namespace Multitasking
                 //Main Menu Draw Code goes here
                 case GameState.Menu:
 
-                    _spriteBatch.DrawString(menuFont, "multitasking.exe", new Vector2((screenWidth / 2) - (menuFont.MeasureString("multitasking.exe").X / 2), 300), Color.White);
-                    //Demo instructions
+                    _spriteBatch.DrawString(menuFont, "multitasking", new Vector2((screenWidth / 2) - (menuFont.MeasureString("multitasking").X / 2), 300), Color.White);
+                    _spriteBatch.DrawString(typingFont, "by.....................omni_absence", new Vector2((screenWidth / 2) - (typingFont.MeasureString("by.....................omni_absence").X / 2), 400), backgroundColor);
                     _spriteBatch.DrawString(typingFont, "ENTER.........................start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.........................start").X / 2), 500), Color.White);
                     _spriteBatch.DrawString(typingFont, "TAB.....................window demo", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB.....................window demo").X / 2), 550), Color.White);
                     _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 600), Color.White);
+                    ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("by.....................omni_absence").X / 2 - 8 , 400, (int)typingFont.MeasureString("by.....................omni_absence").X + 16, 35), new Color(255, 255, 255));
+                    //665
                     break;
                 
                 //Typing Tutorial Draw Code goes here
