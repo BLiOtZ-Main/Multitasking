@@ -23,6 +23,8 @@ namespace Multitasking
         private bool isAlive;
         private Texture2D projectileTexture;
         private List<ArcadeProjectile> projectiles;
+        private const int ProjectileXSize = 17;
+        private const int ProjectileYSize = 33;
 
         /// <summary>
         /// public parameterized constructor that creates an Arcade Player object
@@ -93,7 +95,7 @@ namespace Multitasking
             timer -= gameTime.ElapsedGameTime.TotalSeconds;
             if(timer < 0)
             {
-                projectiles.Add(new ArcadeProjectile(projectileTexture, position)); // Need to add actual texture later, just using placeholder to compile
+                projectiles.Add(new ArcadeProjectile(projectileTexture, new Rectangle(position.X + texture.Width/2, position.Y, ProjectileXSize, ProjectileYSize))); // Need to add actual texture later, just using placeholder to compile
                 timer = TimePerShot;
             }
             

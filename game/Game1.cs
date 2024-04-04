@@ -71,7 +71,7 @@ namespace Multitasking
             screenWidth = _graphics.GraphicsDevice.Viewport.Width;
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
 
-            player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 100, 100), screenWidth, playerBulletImg);
+            player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 50, 50), screenWidth, playerBulletImg);
 
 
             enemyList = new List<ArcadeEnemy>();
