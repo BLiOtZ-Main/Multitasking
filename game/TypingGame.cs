@@ -77,7 +77,7 @@ namespace Multitasking
             // initializing variables
             tutorialPrompts = new List<String>();
             gamePrompts = new List<String>();
-            skippedCharacters = new List<string>() { " ", ".", "!", "'", ",", "^" };
+            skippedCharacters = new List<string>() { " ", ".", "!", "?", "'", ",", "^" };
             inTutorial = true;
             currentLineIndex = 0;
             currentCharIndex = 0;

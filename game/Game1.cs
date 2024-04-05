@@ -4,6 +4,10 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+// notes
+// - make the padding around highlighted words scale properly
+
+
 namespace Multitasking
 {
     public enum GameState
@@ -13,6 +17,22 @@ namespace Multitasking
         Tutorial,
         Game,
         GameOver,
+    }
+
+    public enum GameDay
+    {
+        Day0,
+        Day1,
+        Day2,
+        Day3,
+        Day4,
+        Day5,
+        Day6,
+        Day7,
+        Day8,
+        Day9,
+        Day10,
+        Day11
     }
     
     
@@ -24,6 +44,7 @@ namespace Multitasking
 
         // important
         public GameState currentState;
+        public GameDay currentDay;
         private TypingGame typingGame;
         private ArcadePlayer player;
         private List<ArcadeEnemy> enemyList;
@@ -55,7 +76,7 @@ namespace Multitasking
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            IsMouseVisible = false;
+            IsMouseVisible = true;
         }
 
         protected override void Initialize()
@@ -69,6 +90,7 @@ namespace Multitasking
 
             // important
             currentState = GameState.MainMenu;
+            currentDay = GameDay.Day0;
             typingGame = new TypingGame();
             player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 50, 50), screenWidth, playerBulletImg);
             enemyList = new List<ArcadeEnemy>();
@@ -124,6 +146,16 @@ namespace Multitasking
                     if (SingleKeyPress(swapKeyboardState, Keys.Tab))
                     {
                         currentState = GameState.Settings;
+                    }
+
+                    if(SingleKeyPress(swapKeyboardState, Keys.RightControl) && currentDay != GameDay.Day11)
+                    {
+                        currentDay++;
+                    }
+
+                    if(SingleKeyPress(swapKeyboardState, Keys.LeftControl) && currentDay != GameDay.Day0)
+                    {
+                        currentDay--;
                     }
 
                     break;
@@ -287,14 +319,130 @@ namespace Multitasking
             {
                 //Main Menu Draw Code goes here
                 case GameState.MainMenu:
+                    
+                    switch (currentDay)
+                    {
+                        case GameDay.Day0:
+                            _spriteBatch.DrawString(menuFont, "multitasking", new Vector2((screenWidth / 2) - (menuFont.MeasureString("multitasking").X / 2), 300), Color.White);
+                            _spriteBatch.DrawString(typingFont, "by.....................omni_absence", new Vector2((screenWidth / 2) - (typingFont.MeasureString("by.....................omni_absence").X / 2), 400), backgroundColor);
+                            _spriteBatch.DrawString(typingFont, "ENTER.........................start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.........................start").X / 2), 500), Color.White);
+                            _spriteBatch.DrawString(typingFont, "TAB........................settings", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB........................settings").X / 2), 550), Color.White);
+                            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 600), Color.White);
+                            ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("by.....................omni_absence").X / 2 - 8, 400, (int)typingFont.MeasureString("by.....................omni_absence").X + 16, 35), new Color(255, 255, 255));
+                            
+                            break;
 
-                    _spriteBatch.DrawString(menuFont, "multitasking", new Vector2((screenWidth / 2) - (menuFont.MeasureString("multitasking").X / 2), 300), Color.White);
-                    _spriteBatch.DrawString(typingFont, "by.....................omni_absence", new Vector2((screenWidth / 2) - (typingFont.MeasureString("by.....................omni_absence").X / 2), 400), backgroundColor);
-                    _spriteBatch.DrawString(typingFont, "ENTER.........................start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.........................start").X / 2), 500), Color.White);
-                    _spriteBatch.DrawString(typingFont, "TAB........................settings", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB........................settings").X / 2), 550), Color.White);
-                    _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 600), Color.White);
-                    ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("by.....................omni_absence").X / 2 - 8 , 400, (int)typingFont.MeasureString("by.....................omni_absence").X + 16, 35), new Color(255, 255, 255));
-                    //665
+
+                        case GameDay.Day1:
+                            _spriteBatch.DrawString(menuFont, "day 1", new Vector2((screenWidth / 2) - (menuFont.MeasureString("day 1").X / 2), 300), Color.White);
+                            _spriteBatch.DrawString(typingFont, "post payday blues", new Vector2((screenWidth / 2) - (typingFont.MeasureString("post payday blues").X / 2), 400), backgroundColor);
+                            _spriteBatch.DrawString(typingFont, "12.20.1999", new Vector2((screenWidth / 2) - (typingFont.MeasureString("12.20.1999").X / 2), 450), Color.White);
+                            _spriteBatch.DrawString(typingFont, "press any key to start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("press any key to start").X / 2), 600), Color.White);
+                            ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("post payday blues").X / 2 - 8, 400, (int)typingFont.MeasureString("post payday blues").X + 16, 35), new Color(255, 255, 255));
+
+                            break;
+
+
+                        case GameDay.Day2:
+                            _spriteBatch.DrawString(menuFont, "day 2", new Vector2((screenWidth / 2) - (menuFont.MeasureString("day 2").X / 2), 300), Color.White);
+                            _spriteBatch.DrawString(typingFont, "???", new Vector2((screenWidth / 2) - (typingFont.MeasureString("???").X / 2), 400), backgroundColor);
+                            _spriteBatch.DrawString(typingFont, "12.21.1999", new Vector2((screenWidth / 2) - (typingFont.MeasureString("12.21.1999").X / 2), 450), Color.White);
+                            _spriteBatch.DrawString(typingFont, "press any key to start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("press any key to start").X / 2), 600), Color.White);
+                            ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("???").X / 2 - 8, 400, (int)typingFont.MeasureString("???").X + 16, 35), new Color(255, 255, 255));
+                            
+                            break;
+
+
+                        case GameDay.Day3:
+                            _spriteBatch.DrawString(menuFont, "day 3", new Vector2((screenWidth / 2) - (menuFont.MeasureString("day 3").X / 2), 300), Color.White);
+                            _spriteBatch.DrawString(typingFont, "update day", new Vector2((screenWidth / 2) - (typingFont.MeasureString("update day").X / 2), 400), backgroundColor);
+                            _spriteBatch.DrawString(typingFont, "12.22.1999", new Vector2((screenWidth / 2) - (typingFont.MeasureString("12.22.1999").X / 2), 450), Color.White);
+                            _spriteBatch.DrawString(typingFont, "press any key to start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("press any key to start").X / 2), 600), Color.White);
+                            ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("update day").X / 2 - 8, 400, (int)typingFont.MeasureString("update day").X + 16, 35), new Color(255, 255, 255));
+                            
+                            break;
+
+
+                        case GameDay.Day4:
+                            _spriteBatch.DrawString(menuFont, "day 4", new Vector2((screenWidth / 2) - (menuFont.MeasureString("day 4").X / 2), 300), Color.White);
+                            _spriteBatch.DrawString(typingFont, "???", new Vector2((screenWidth / 2) - (typingFont.MeasureString("???").X / 2), 400), backgroundColor);
+                            _spriteBatch.DrawString(typingFont, "12.23.1999", new Vector2((screenWidth / 2) - (typingFont.MeasureString("12.23.1999").X / 2), 450), Color.White);
+                            _spriteBatch.DrawString(typingFont, "press any key to start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("press any key to start").X / 2), 600), Color.White);
+                            ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("???").X / 2 - 8, 400, (int)typingFont.MeasureString("???").X + 16, 35), new Color(255, 255, 255));
+                            
+                            break;
+
+
+                        case GameDay.Day5:
+                            _spriteBatch.DrawString(menuFont, "day 5", new Vector2((screenWidth / 2) - (menuFont.MeasureString("day 5").X / 2), 300), Color.White);
+                            _spriteBatch.DrawString(typingFont, "holiday party", new Vector2((screenWidth / 2) - (typingFont.MeasureString("holiday party").X / 2), 400), backgroundColor);
+                            _spriteBatch.DrawString(typingFont, "12.24.1999", new Vector2((screenWidth / 2) - (typingFont.MeasureString("12.24.1999").X / 2), 450), Color.White);
+                            _spriteBatch.DrawString(typingFont, "press any key to start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("press any key to start").X / 2), 600), Color.White);
+                            ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("holiday party").X / 2 - 8, 400, (int)typingFont.MeasureString("holiday party").X + 16, 35), new Color(255, 255, 255));
+                            
+                            break;
+
+
+                        case GameDay.Day6:
+                            _spriteBatch.DrawString(menuFont, "day 6", new Vector2((screenWidth / 2) - (menuFont.MeasureString("day 6").X / 2), 300), Color.White);
+                            _spriteBatch.DrawString(typingFont, "a blue screen of death christmas", new Vector2((screenWidth / 2) - (typingFont.MeasureString("a blue screen of death christmas").X / 2), 400), backgroundColor);
+                            _spriteBatch.DrawString(typingFont, "12.25.1999", new Vector2((screenWidth / 2) - (typingFont.MeasureString("12.25.1999").X / 2), 450), Color.White);
+                            _spriteBatch.DrawString(typingFont, "press any key to start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("press any key to start").X / 2), 600), Color.White);
+                            ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("a blue screen of death christmas").X / 2 - 8, 400, (int)typingFont.MeasureString("a blue screen of death christmas").X + 16, 35), new Color(255, 255, 255));
+                            
+                            break;
+
+
+                        case GameDay.Day7:
+                            _spriteBatch.DrawString(menuFont, "day 7", new Vector2((screenWidth / 2) - (menuFont.MeasureString("day 7").X / 2), 300), Color.White);
+                            _spriteBatch.DrawString(typingFont, "prod notes", new Vector2((screenWidth / 2) - (typingFont.MeasureString("prod notes").X / 2), 400), backgroundColor);
+                            _spriteBatch.DrawString(typingFont, "12.27.1999", new Vector2((screenWidth / 2) - (typingFont.MeasureString("12.27.1999").X / 2), 450), Color.White);
+                            _spriteBatch.DrawString(typingFont, "press any key to start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("press any key to start").X / 2), 600), Color.White);
+                            ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("prod notes").X / 2 - 8, 400, (int)typingFont.MeasureString("prod notes").X + 16, 35), new Color(255, 255, 255));
+
+                            break;
+
+
+                        case GameDay.Day8:
+                            _spriteBatch.DrawString(menuFont, "DAY 8", new Vector2((screenWidth / 2) - (menuFont.MeasureString("DAY 8").X / 2), 300), Color.White);
+                            _spriteBatch.DrawString(typingFont, "CAPS LOCK", new Vector2((screenWidth / 2) - (typingFont.MeasureString("CAPS LOCK").X / 2), 400), backgroundColor);
+                            _spriteBatch.DrawString(typingFont, "12.28.1999", new Vector2((screenWidth / 2) - (typingFont.MeasureString("12.28.1999").X / 2), 450), Color.White);
+                            _spriteBatch.DrawString(typingFont, "PRESS ANY KEY TO START", new Vector2((screenWidth / 2) - (typingFont.MeasureString("PRESS ANY KEY TO START").X / 2), 600), Color.White);
+                            ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("CAPS LOCK").X / 2 - 8, 400, (int)typingFont.MeasureString("CAPS LOCK").X + 16, 35), new Color(255, 255, 255));
+
+                            break;
+
+
+                        case GameDay.Day9:
+                            _spriteBatch.DrawString(menuFont, "day 9", new Vector2((screenWidth / 2) - (menuFont.MeasureString("day 9").X / 2), 300), Color.White);
+                            _spriteBatch.DrawString(typingFont, "???", new Vector2((screenWidth / 2) - (typingFont.MeasureString("???").X / 2), 400), backgroundColor);
+                            _spriteBatch.DrawString(typingFont, "12.29.1999", new Vector2((screenWidth / 2) - (typingFont.MeasureString("12.29.1999").X / 2), 450), Color.White);
+                            _spriteBatch.DrawString(typingFont, "press any key to start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("press any key to start").X / 2), 600), Color.White);
+                            ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("???").X / 2 - 8, 400, (int)typingFont.MeasureString("???").X + 16, 35), new Color(255, 255, 255));
+
+                            break;
+
+
+                        case GameDay.Day10:
+                            _spriteBatch.DrawString(menuFont, "day 10", new Vector2((screenWidth / 2) - (menuFont.MeasureString("day 10").X / 2), 300), Color.White);
+                            _spriteBatch.DrawString(typingFont, "millennium bug", new Vector2((screenWidth / 2) - (typingFont.MeasureString("millennium bug").X / 2), 400), backgroundColor);
+                            _spriteBatch.DrawString(typingFont, "12.30.1999", new Vector2((screenWidth / 2) - (typingFont.MeasureString("12.30.1999").X / 2), 450), Color.White);
+                            _spriteBatch.DrawString(typingFont, "press any key to start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("press any key to start").X / 2), 600), Color.White);
+                            ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("millennium bug").X / 2 - 8, 400, (int)typingFont.MeasureString("millennium bug").X + 16, 35), new Color(255, 255, 255));
+
+                            break;
+
+
+                        case GameDay.Day11:
+                            _spriteBatch.DrawString(menuFont, "day 11", new Vector2((screenWidth / 2) - (menuFont.MeasureString("day 11").X / 2), 300), Color.White);
+                            _spriteBatch.DrawString(typingFont, "payday", new Vector2((screenWidth / 2) - (typingFont.MeasureString("payday").X / 2), 400), backgroundColor);
+                            _spriteBatch.DrawString(typingFont, "12.31.1999", new Vector2((screenWidth / 2) - (typingFont.MeasureString("12.31.1999").X / 2), 450), Color.White);
+                            _spriteBatch.DrawString(typingFont, "press any key to start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("press any key to start").X / 2), 600), Color.White);
+                            ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("payday").X / 2 - 8, 400, (int)typingFont.MeasureString("payday").X + 16, 35), new Color(255, 255, 255));
+
+                            break;
+                    }
+                    
                     break;
                 
                 //Typing Tutorial Draw Code goes here
