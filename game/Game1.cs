@@ -30,6 +30,7 @@ namespace Multitasking
         private List<ArcadeEnemy> enemyList;
         public Rectangle typingWindow;
         public Rectangle shooterWindow;
+        private int score = 0;
 
         // assets
         public SpriteFont typingFont;
@@ -285,6 +286,7 @@ namespace Multitasking
                         {
                             enemy.IsAlive = false;
                             projectile.Active = false;
+                            score += 10;
                         }
                     }
                 }
@@ -328,6 +330,7 @@ namespace Multitasking
                 {
                     projectile.Update(gameTime);
                 }
+
             }
 
             //Is enemies reach the player game over
@@ -438,6 +441,7 @@ namespace Multitasking
 
             _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, "Space Game Again TM", new Vector2(1200, 100), Color.Black);
+            _spriteBatch.DrawString(typingFont, $"Score: {score}", new Vector2(1000, 100), Color.Blue);
 
             // Draws player sprite
             player.Draw(_spriteBatch, Color.White);
@@ -458,6 +462,7 @@ namespace Multitasking
                 {
                     e.Draw(_spriteBatch, Color.White);
                 }
+
             }
 
             //Draws each enemy projectile
@@ -510,6 +515,7 @@ namespace Multitasking
             player.Projectiles.Clear();
             timer = EnemySpawnTime;
             typingGame = new TypingGame();
+            score = 0;
         }
     }
 }
