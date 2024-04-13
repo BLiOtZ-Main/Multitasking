@@ -15,7 +15,7 @@ namespace Multitasking
         private const int Speed = 8;
 
         // Constant for how often a projectile is shot
-        private const double TimePerShot = 0.5;
+        private const double TimePerShot = 0.45;
 
         // Field Declaration
         private int windowWidth;
