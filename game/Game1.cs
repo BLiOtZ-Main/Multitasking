@@ -253,20 +253,20 @@ namespace Multitasking
             //Creates a new row of enemies every ____ seconds
             if(enemyList.Count == 0)
             {
-                for(int i = 0; i < 10; i++)
+                for(int i = 0; i < 7; i++)
                 {
                     int enemyPos = EnemyDist;
-                    ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + i * EnemyDist, 200, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+                    ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int) (1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
                     enemyList.Add(newEnemy);
 
                 }
             }
             else if(timer <= 0)
             {
-                for(int i = 0; i < 10; i++)
+                for(int i = 0; i < 7; i++)
                 {
                     int enemyPos = EnemyDist;
-                    ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + i * EnemyDist, 200, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+                    ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int) (1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
                     enemyList.Add(newEnemy);
 
                 }

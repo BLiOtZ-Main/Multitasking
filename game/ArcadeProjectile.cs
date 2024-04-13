@@ -12,13 +12,12 @@ namespace Multitasking
     internal class ArcadeProjectile : ArcadeGameObject
     {
         
-        // Constant for projectile speed
-        private const int Speed = 4;
 
         // field declaration
         private bool active;
         private Rectangle startingPosition;
         private bool playerProjectile = false;
+        private Random rng = new Random();
  
 
         /// <summary>
@@ -72,7 +71,7 @@ namespace Multitasking
                 if (position.Y > 100)
                 {
                     //The projectile goes up
-                    position.Y -= Speed;
+                    position.Y -= rng.Next(4,10);
                 }
                 else
                 {
@@ -85,7 +84,7 @@ namespace Multitasking
                 if (position.Y < 950)
                 {
                     //The projectile goes down
-                    position.Y += Speed;
+                    position.Y += rng.Next(4,10);
                 }
                 else
                 {
