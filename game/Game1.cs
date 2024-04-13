@@ -492,7 +492,7 @@ namespace Multitasking
                         {
                             if (projectile.Active)
                             {
-                                projectile.Draw(_spriteBatch, Color.White);
+                                projectile.Draw(_spriteBatch, Color.Red);
                             }
                         }
                     }
