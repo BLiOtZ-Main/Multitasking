@@ -3,12 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Multitasking
 {
@@ -23,9 +18,11 @@ namespace Multitasking
         // prompts
         private List<String> tutorialPrompts;
         private List<String> gamePrompts;
-        List<String> skippedCharacters;
 
         // gameplay
+        private Dictionary<String, Keys> stringToKeys;
+        private List<String> skippedCharacters;
+        private List<Keys> letterKeys;
         private bool inTutorial;
         private int currentLineIndex;
         private int currentCharIndex;
@@ -77,7 +74,14 @@ namespace Multitasking
             // initializing variables
             tutorialPrompts = new List<String>();
             gamePrompts = new List<String>();
-            skippedCharacters = new List<string>() { " ", ".", "!", "?", "'", ",", "^" };
+            skippedCharacters = new List<String>() { " ", ".", "!", "?", "'", ",", "^" };
+            letterKeys = new List<Keys>() { Keys.A, Keys.B, Keys.C, Keys.D, Keys.E, Keys.F, Keys.G, Keys.H, Keys.I, Keys.J, Keys.K, Keys.L, Keys.M,
+                                            Keys.N, Keys.O, Keys.P, Keys.Q, Keys.R, Keys.S, Keys.T, Keys.U, Keys.V, Keys.W, Keys.X, Keys.Y, Keys.Z};
+            stringToKeys = new Dictionary<string, Keys>() { { "a", Keys.A }, { "b", Keys.B }, { "c", Keys.C }, { "d", Keys.D }, { "e", Keys.E }, { "f", Keys.F },
+                                                            { "g", Keys.G }, { "h", Keys.H }, { "i", Keys.I }, { "j", Keys.J }, { "k", Keys.K }, { "l", Keys.L },
+                                                            { "m", Keys.M }, { "n", Keys.N }, { "o", Keys.O }, { "p", Keys.P }, { "q", Keys.Q }, { "r", Keys.R },
+                                                            { "s", Keys.S }, { "t", Keys.T }, { "u", Keys.U }, { "v", Keys.V }, { "w", Keys.W }, { "x", Keys.X },
+                                                            { "y", Keys.Y }, { "z", Keys.Z }};
             inTutorial = true;
             currentLineIndex = 0;
             currentCharIndex = 0;
@@ -101,7 +105,7 @@ namespace Multitasking
             if(currentLineIndex == -1)
             {
                 previousKeyBoardState = keyboardState;
-                return GameState.Game;
+                return GameState.Day;
             }
             else
             {
@@ -144,7 +148,7 @@ namespace Multitasking
                 }
 
                 previousKeyBoardState = keyboardState;
-                return GameState.Tutorial;
+                return GameState.ClockIn;
             }   
         }
 
@@ -212,41 +216,25 @@ namespace Multitasking
         public int GetPressedLetterCount(KeyboardState keyboardState)
         {
             Keys[] pressedKeys = keyboardState.GetPressedKeys();
-            int numOfNonLetterKeysPressed = 0;
+            int counter = 0;
 
             for(int i = 0; i < pressedKeys.Length; i++)
             {
-                if(pressedKeys[i] == Keys.A || pressedKeys[i] == Keys.B || pressedKeys[i] == Keys.C || pressedKeys[i] == Keys.D ||
-                   pressedKeys[i] == Keys.E || pressedKeys[i] == Keys.F || pressedKeys[i] == Keys.G || pressedKeys[i] == Keys.H ||
-                   pressedKeys[i] == Keys.I || pressedKeys[i] == Keys.J || pressedKeys[i] == Keys.K || pressedKeys[i] == Keys.L ||
-                   pressedKeys[i] == Keys.M || pressedKeys[i] == Keys.N || pressedKeys[i] == Keys.O || pressedKeys[i] == Keys.P ||
-                   pressedKeys[i] == Keys.Q || pressedKeys[i] == Keys.R || pressedKeys[i] == Keys.S || pressedKeys[i] == Keys.T ||
-                   pressedKeys[i] == Keys.U || pressedKeys[i] == Keys.V || pressedKeys[i] == Keys.W || pressedKeys[i] == Keys.X ||
-                   pressedKeys[i] == Keys.Y || pressedKeys[i] == Keys.Z)
-                {
-                    numOfNonLetterKeysPressed++;
-                }
+                if(letterKeys.Contains(pressedKeys[i]))
+                    counter++;
             }
 
-            return numOfNonLetterKeysPressed;
+            return counter;
         }
 
         public Keys GetKeyFromChar(String character)
         {
             character = character.ToLower();
 
-            switch(character)
-            {
-                case "a": return Keys.A; case "b": return Keys.B; case "c": return Keys.C; case "d": return Keys.D;
-                case "e": return Keys.E; case "f": return Keys.F; case "g": return Keys.G; case "h": return Keys.H;
-                case "i": return Keys.I; case "j": return Keys.J; case "k": return Keys.K; case "l": return Keys.L;
-                case "m": return Keys.M; case "n": return Keys.N; case "o": return Keys.O; case "p": return Keys.P;
-                case "q": return Keys.Q; case "r": return Keys.R; case "s": return Keys.S; case "t": return Keys.T;
-                case "u": return Keys.U; case "v": return Keys.V; case "w": return Keys.W; case "x": return Keys.X;
-                case "y": return Keys.Y; case "z": return Keys.Z;
-            }
-
-            return Keys.None;
+            if(stringToKeys.ContainsKey(character))
+                return stringToKeys[character];
+            else
+                return Keys.None;
         }
 
         public void MoveToNewLine()

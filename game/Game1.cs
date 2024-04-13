@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -10,30 +11,9 @@ using System.Diagnostics;
 
 namespace Multitasking
 {
-    public enum GameState
-    {
-        MainMenu,
-        Settings,
-        Tutorial,
-        Game,
-        GameOver,
-    }
+    public enum GameState { MainMenu, Settings, DayStart, ClockIn, Day, GameOver }
 
-    public enum GameDay
-    {
-        Day0,
-        Day1,
-        Day2,
-        Day3,
-        Day4,
-        Day5,
-        Day6,
-        Day7,
-        Day8,
-        Day9,
-        Day10,
-        Day11
-    }
+    public enum GameDay { Day0, Day1, Day2, Day3, Day4, Day5, Day6, Day7, Day8, Day9, Day10, Day11 }
     
     
     public class Game1 : Game
@@ -87,6 +67,10 @@ namespace Multitasking
             base.Initialize();
             // write code below
 
+            // numbers
+            screenWidth = _graphics.GraphicsDevice.Viewport.Width;
+            screenHeight = _graphics.GraphicsDevice.Viewport.Height;
+            timer = EnemySpawnTime;
 
             // important
             currentState = GameState.MainMenu;
@@ -96,11 +80,6 @@ namespace Multitasking
             enemyList = new List<ArcadeEnemy>();
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
-
-            // numbers
-            screenWidth = _graphics.GraphicsDevice.Viewport.Width;
-            screenHeight = _graphics.GraphicsDevice.Viewport.Height;
-            timer = EnemySpawnTime;
         }
 
         protected override void LoadContent()
@@ -126,182 +105,53 @@ namespace Multitasking
             
 
             // update input states
-            KeyboardState swapKeyboardState = Keyboard.GetState();
-            MouseState mouseState = Mouse.GetState();
+            KeyboardState currentKeyboardState = Keyboard.GetState();
+            MouseState currentMouseState = Mouse.GetState();
 
             // do something based on the current state
             switch (currentState)
             {
-                //Main Menu Code goes here
+                // main menu
                 case GameState.MainMenu:
 
-                    //Temp code to swap to game
-                    if (SingleKeyPress(swapKeyboardState, Keys.Enter))
-                    {
-                        currentState = GameState.Tutorial;
-                        ResetGame();
-                    }
+                    UpdateMainMenu(currentKeyboardState, currentMouseState);
 
-                    //Temp code to swap to demo
-                    if (SingleKeyPress(swapKeyboardState, Keys.Tab))
-                    {
-                        currentState = GameState.Settings;
-                    }
-
-                    if(SingleKeyPress(swapKeyboardState, Keys.RightControl) && currentDay != GameDay.Day11)
-                    {
+                    if(SingleKeyPress(currentKeyboardState, Keys.RightControl) && currentDay != GameDay.Day11)
                         currentDay++;
-                    }
 
-                    if(SingleKeyPress(swapKeyboardState, Keys.LeftControl) && currentDay != GameDay.Day0)
-                    {
+                    if(SingleKeyPress(currentKeyboardState, Keys.LeftControl) && currentDay != GameDay.Day0)
                         currentDay--;
-                    }
 
                     break;
 
-                // Settings code goes here
+                // settings screen
                 case GameState.Settings:
-                    if(SingleKeyPress(swapKeyboardState, Keys.Escape))
-                    {
-                        currentState = GameState.MainMenu;
-                    }
+                    UpdateSettings(currentKeyboardState, currentMouseState);
+                    break;
+
+                // start of day screen
+                case GameState.DayStart:
+                    UpdateDayStart(currentKeyboardState, currentMouseState);
+                    break;
+
+                // pre day message
+                case GameState.ClockIn:
+                    UpdateClockIn(currentKeyboardState, currentMouseState);
+                    break;
+
+                // gameplay
+                case GameState.Day:
+                    UpdateDay(currentKeyboardState, currentMouseState, gameTime);
                     break;
                 
-                //Typing Tutorial Code goes here
-                case GameState.Tutorial:
-
-                    currentState = typingGame.UpdateTypingTutorial(currentState);
-
-                    //Temp code to swap to the main game
-                    if (SingleKeyPress(swapKeyboardState, Keys.Enter))
-                    {
-                        currentState = GameState.Game;
-                    }
-
-                    if(SingleKeyPress(swapKeyboardState, Keys.Tab))
-                    {
-                        currentState = GameState.MainMenu;
-                    }
-
-                    break;
-
-                //Main Game Code goes here
-                case GameState.Game:
-
-                    timer -= gameTime.ElapsedGameTime.TotalSeconds;
-
-                    //Creates a new row of enemies every ____ seconds
-                    if(enemyList.Count == 0)
-                    {
-                        for (int i = 0; i < 10; i++)
-                        {
-                            int enemyPos = EnemyDist;
-                            ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + i*EnemyDist, 200, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
-                            enemyList.Add(newEnemy);
-                            
-                        }
-                    }
-                    else if (timer <= 0)
-                    {
-                        for (int i = 0; i < 10; i++)
-                        {
-                            int enemyPos = EnemyDist;
-                            ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + i * EnemyDist, 200, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
-                            enemyList.Add(newEnemy);
-
-                        }
-                        timer = EnemySpawnTime;
-                    }
-
-
-                    //Enemy collision check
-                    foreach (ArcadeEnemy enemy in enemyList)
-                    {
-                        if (enemy.IsAlive)
-                        {
-                            foreach (ArcadeProjectile projectile in player.Projectiles)
-                            {
-                                if (projectile.CheckCollision(enemy))
-                                {
-                                    enemy.IsAlive = false;
-                                    projectile.Active = false;
-                                }
-                            }
-                        } 
-                    }
-                    
-                    //Temp code to swap to GameOver
-                    if (SingleKeyPress(swapKeyboardState, Keys.Enter))
-                    {
-                        currentState = GameState.GameOver;
-                    }
-
-                    player.Update(gameTime);
-                    
-                    //Updates every enemy
-                    foreach(ArcadeEnemy e in enemyList)
-                    {
-                        if (e.IsAlive)
-                        {
-                            e.Update(gameTime);
-                        }
-                    }
-
-                    //player collision check
-                    foreach(ArcadeEnemy e in enemyList)
-                    {
-                        foreach (ArcadeProjectile projectile in e.projectiles)
-                        {
-                            projectile.Update(gameTime);
-                            if (projectile.CheckCollision(player))
-                            {
-                                player.IsAlive = false;
-                                projectile.Active = false;
-                            }
-                        }
-                    }
-
-                    //updates the player's projectiles
-                    foreach(ArcadeProjectile projectile in player.Projectiles)
-                    {
-                        if (projectile.Active)
-                        {
-                            projectile.Update(gameTime);
-                        }
-                    }
-
-                    //Is enemies reach the player game over
-                    foreach (ArcadeEnemy e in enemyList)
-                    {
-                        if (e.position.Y >= screenHeight-200)
-                        {
-                            currentState = GameState.GameOver;
-                        }
-                    }
-
-                    //If the player dies game over
-                    if (!player.IsAlive)
-                    {
-                        currentState = GameState.GameOver;
-                    }
-
-                    break;
-                
-                //GameOver Screen Code goes here
+                // game over screen
                 case GameState.GameOver:
-
-                    //Temp code to swap back to main menu
-                    if (SingleKeyPress(swapKeyboardState, Keys.Enter))
-                    {
-                        currentState = GameState.MainMenu;
-                    }
-
+                    UpdateGameOver(currentKeyboardState, currentMouseState);
                     break;
             }
 
-            previousKeyboardState = swapKeyboardState;
-            previousMouseState = mouseState;
+            previousKeyboardState = currentKeyboardState;
+            previousMouseState = currentMouseState;
 
             // write code above
             base.Update(gameTime);
@@ -446,12 +296,12 @@ namespace Multitasking
                     break;
                 
                 //Typing Tutorial Draw Code goes here
-                case GameState.Tutorial:
+                case GameState.ClockIn:
                     typingGame.DrawTypingTutorial(_spriteBatch, typingFont, typingFontBold, screenWidth, screenHeight);
                     break;
 
                 //Main Game Draw Code goes here
-                case GameState.Game:
+                case GameState.Day:
 
                     //Reset the windows to the right sizes because the demo messes them up otherwise
                     typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
@@ -516,7 +366,162 @@ namespace Multitasking
             base.Draw(gameTime);
         }
 
-        
+
+        // UPDATE METHODS
+        public void UpdateMainMenu(KeyboardState currentKeyboardState, MouseState currentMouseState)
+        {
+            if(SingleKeyPress(currentKeyboardState, Keys.Enter))
+            {
+                currentState = GameState.ClockIn;
+                ResetGame();
+            }
+            else if(SingleKeyPress(currentKeyboardState, Keys.Tab))
+            {
+                currentState = GameState.Settings;
+            }
+        }
+
+        public void UpdateSettings(KeyboardState currentKeyboardState, MouseState currentMouseState)
+        {
+            if(SingleKeyPress(currentKeyboardState, Keys.Tab))
+            {
+                currentState = GameState.MainMenu;
+            }
+        }
+
+        public void UpdateDayStart(KeyboardState currentKeyboardState, MouseState currentMouseState)
+        {
+            if(SingleKeyPress(currentKeyboardState, Keys.Space))
+            {
+                currentState = GameState.ClockIn;
+            }
+        }
+
+        public void UpdateClockIn(KeyboardState currentKeyboardState, MouseState currentMouseState)
+        {
+            currentState = typingGame.UpdateTypingTutorial(currentState);
+
+            // debug
+            if(SingleKeyPress(currentKeyboardState, Keys.Tab))
+            {
+                currentState = GameState.Day;
+            }
+        }
+
+        public void UpdateDay(KeyboardState currentKeyboardState, MouseState currentMouseState, GameTime gameTime)
+        {
+            timer -= gameTime.ElapsedGameTime.TotalSeconds;
+
+            //Creates a new row of enemies every ____ seconds
+            if(enemyList.Count == 0)
+            {
+                for(int i = 0; i < 10; i++)
+                {
+                    int enemyPos = EnemyDist;
+                    ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + i * EnemyDist, 200, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+                    enemyList.Add(newEnemy);
+
+                }
+            }
+            else if(timer <= 0)
+            {
+                for(int i = 0; i < 10; i++)
+                {
+                    int enemyPos = EnemyDist;
+                    ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + i * EnemyDist, 200, 50, 50), screenHeight, screenWidth, player, playerBulletImg);
+                    enemyList.Add(newEnemy);
+
+                }
+                timer = EnemySpawnTime;
+            }
+
+
+            //Enemy collision check
+            foreach(ArcadeEnemy enemy in enemyList)
+            {
+                if(enemy.IsAlive)
+                {
+                    foreach(ArcadeProjectile projectile in player.Projectiles)
+                    {
+                        if(projectile.CheckCollision(enemy))
+                        {
+                            enemy.IsAlive = false;
+                            projectile.Active = false;
+                        }
+                    }
+                }
+            }
+
+            //Temp code to swap to GameOver
+            if(SingleKeyPress(currentKeyboardState, Keys.Enter))
+            {
+                currentState = GameState.GameOver;
+            }
+
+            player.Update(gameTime);
+
+            //Updates every enemy
+            foreach(ArcadeEnemy e in enemyList)
+            {
+                if(e.IsAlive)
+                {
+                    e.Update(gameTime);
+                }
+            }
+
+            //player collision check
+            foreach(ArcadeEnemy e in enemyList)
+            {
+                foreach(ArcadeProjectile projectile in e.projectiles)
+                {
+                    projectile.Update(gameTime);
+                    if(projectile.CheckCollision(player))
+                    {
+                        player.IsAlive = false;
+                        projectile.Active = false;
+                    }
+                }
+            }
+
+            //updates the player's projectiles
+            foreach(ArcadeProjectile projectile in player.Projectiles)
+            {
+                if(projectile.Active)
+                {
+                    projectile.Update(gameTime);
+                }
+            }
+
+            //Is enemies reach the player game over
+            foreach(ArcadeEnemy e in enemyList)
+            {
+                if(e.position.Y >= screenHeight - 200)
+                {
+                    currentState = GameState.GameOver;
+                }
+            }
+
+            //If the player dies game over
+            if(!player.IsAlive)
+            {
+                currentState = GameState.GameOver;
+            }
+        }
+
+        public void UpdateGameOver(KeyboardState currentKeyboardState, MouseState currentMouseState)
+        {
+            if(SingleKeyPress(currentKeyboardState, Keys.Enter))
+            {
+                currentState = GameState.MainMenu;
+            }
+        }
+
+        // DRAW METHODS
+
+
+
+        // UTILITY METHODS
+
         /// <summary>
         /// Checks if a key was pressed a single time.
         /// </summary>
