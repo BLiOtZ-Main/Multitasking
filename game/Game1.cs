@@ -49,7 +49,8 @@ namespace Multitasking
         public const int EnemyDist = 70;
         public double timer;
         public const double EnemySpawnTime = 4;
-        public int time;
+        public double time;
+        public int timeFinal;
         public int score1 = 0;
         public int score2 = 0;
         public int score3 = 0;
@@ -146,7 +147,7 @@ namespace Multitasking
 
                 //endless gameplay
                 case GameState.Endless:
-                    UpdateDay(currentKeyboardState, currentMouseState, gameTime);
+                    UpdateEndless(currentKeyboardState, currentMouseState, gameTime);
                     break;
 
                 // game over screen
@@ -460,7 +461,7 @@ namespace Multitasking
         public void UpdateEndless(KeyboardState currentKeyboardState, MouseState currentMouseState, GameTime gameTime)
         {
             timer -= gameTime.ElapsedGameTime.TotalSeconds;
-            time = gameTime.ElapsedGameTime.Seconds;
+            time += gameTime.ElapsedGameTime.TotalSeconds;
 
             //Creates a new row of enemies every ____ seconds
             if (enemyList.Count == 0)
@@ -714,7 +715,7 @@ namespace Multitasking
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
 
             //time
-
+            timeFinal = (int)time;
             //Temp code to visualize the two game window
             ShapeBatch.Box(typingWindow, Color.LightGray);
             ShapeBatch.Box(shooterWindow, Color.White);
@@ -722,7 +723,7 @@ namespace Multitasking
             _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, "Space Game Again TM", new Vector2(1200, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, $"Score: {score}", new Vector2(1000, 100), Color.Blue);
-            _spriteBatch.DrawString(typingFont, $"Time: {time}", new Vector2(1550, 100), Color.Blue);
+            _spriteBatch.DrawString(typingFont, $"Time: {timeFinal}", new Vector2(1550, 100), Color.Blue);
 
             // Draws player sprite
             player.Draw(_spriteBatch, Color.White);
@@ -770,6 +771,7 @@ namespace Multitasking
         //placeholder for what leaderboard might look like when finished
         public void DrawLeaderBoard(SpriteBatch spriteBatch)
         {
+            
             if (score > score1)
             {
                 score3 = score2;
