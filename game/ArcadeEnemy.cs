@@ -18,7 +18,7 @@ namespace Multitasking
         //Constants for enemy shift and shoot delay
         private const double ShiftDelay = Math.PI;
         private const double ShootDelay = 3;
-        private const double MoveDelay = 1;
+        private const double MoveDelay = .75;
 
         //Constant for enemy shift distance
         private const int ShiftDistance = 3;

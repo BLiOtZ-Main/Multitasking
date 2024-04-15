@@ -53,7 +53,19 @@ namespace Multitasking
         {
             if (active)
             {
-                return base.position.Intersects(check.position);
+                //GodMode Logic
+                if(check is ArcadePlayer)
+                {
+                    ArcadePlayer player = check as ArcadePlayer;
+
+                    if (player.GodMode)
+                    {
+                        return false;
+                    }
+                }
+
+                    return base.position.Intersects(check.position);
+
             }
             else
             {
