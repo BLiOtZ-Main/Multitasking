@@ -570,6 +570,7 @@ namespace Multitasking
 
         public void DrawClockIn(SpriteBatch spriteBatch)
         {
+            _spriteBatch.DrawString(menuFont, "type the following", new Vector2((screenWidth / 2) - (menuFont.MeasureString("type the following").X / 2), 25), Color.White);
             typingGame.DrawTypingTutorial(_spriteBatch, typingFont, typingFontBold, screenWidth, screenHeight);
         }
 
