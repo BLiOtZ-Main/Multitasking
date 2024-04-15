@@ -54,6 +54,8 @@ namespace Multitasking
         public int score1 = 0;
         public int score2 = 0;
         public int score3 = 0;
+        public int boredomMeterWidth;
+        public int score;
 
         // input
         public KeyboardState previousKeyboardState;
