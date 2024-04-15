@@ -49,7 +49,10 @@ namespace Multitasking
         public const int EnemyDist = 70;
         public double timer;
         public const double EnemySpawnTime = 4;
-        public int time;
+        public int time = 0;
+        public int score1 = 0;
+        public int score2 = 0;
+        public int score3 = 0;
 
         // input
         public KeyboardState previousKeyboardState;
@@ -201,7 +204,7 @@ namespace Multitasking
 
                 // endless
                 case GameState.Endless:
-                    DrawEndless(_spriteBatch);
+                    DrawEndless(_spriteBatch, gameTime);
                     break;
 
                 // game over screen
@@ -233,6 +236,7 @@ namespace Multitasking
             if (SingleKeyPress(currentKeyboardState, Keys.LeftShift))
             {
                 currentState = GameState.Endless;
+                ResetGame();
             }
             if (SingleKeyPress(currentKeyboardState, Keys.Tab))
             {
@@ -703,14 +707,14 @@ namespace Multitasking
             }
         }
 
-        public void DrawEndless(SpriteBatch spriteBatch)
+        public void DrawEndless(SpriteBatch spriteBatch, GameTime gameTime)
         {
             //Reset the windows to the right sizes because the demo messes them up otherwise
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
 
             //time
-
+            time += gameTime.ElapsedGameTime.Seconds;
 
             //Temp code to visualize the two game window
             ShapeBatch.Box(typingWindow, Color.LightGray);
@@ -767,10 +771,25 @@ namespace Multitasking
         //placeholder for what leaderboard might look like when finished
         public void DrawLeaderBoard(SpriteBatch spriteBatch)
         {
+            if (score > score1)
+            {
+                score3 = score2;
+                score2 = score1;
+                score1 = score;
+            }
+            else if (score > score2 && score < score1)
+            {
+                score3 = score2;
+                score2 = score;
+            }
+            else if (score > score3 && score < score1 && score < score2)
+            {
+                score3 = score;
+            }
             _spriteBatch.DrawString(menuFont, "leaderboard", new Vector2((screenWidth / 2) - (menuFont.MeasureString("leaderboard").X / 2), 300), Color.White);
-            _spriteBatch.DrawString(typingFont, "FIRST...........AAA..........." + score, new Vector2((screenWidth / 2) - (typingFont.MeasureString("FIRST...........AAA..........." + score).X / 2), 500), Color.White);
-            _spriteBatch.DrawString(typingFont, "SECOND..........AAA...........SCORE", new Vector2((screenWidth / 2) - (typingFont.MeasureString("SECOND..........AAA...........SCORE").X / 2), 550), Color.White);
-            _spriteBatch.DrawString(typingFont, "THIRD...........AAA...........SCORE", new Vector2((screenWidth / 2) - (typingFont.MeasureString("THIRD...........AAA...........SCORE").X / 2), 600), Color.White);
+            _spriteBatch.DrawString(typingFont, "FIRST........................." + score1, new Vector2((screenWidth / 2) - (typingFont.MeasureString("FIRST.........................").X / 2), 500), Color.White);
+            _spriteBatch.DrawString(typingFont, "SECOND........................" + score2, new Vector2((screenWidth / 2) - (typingFont.MeasureString("SECOND........................").X / 2), 550), Color.White);
+            _spriteBatch.DrawString(typingFont, "THIRD........................." + score3, new Vector2((screenWidth / 2) - (typingFont.MeasureString("THIRD.........................").X / 2), 600), Color.White);
             _spriteBatch.DrawString(typingFont, "ENTER..........................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.....................main menu").X / 2), 700), Color.White);
             _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 750), Color.White);
         }
