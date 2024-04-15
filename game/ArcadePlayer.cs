@@ -25,6 +25,7 @@ namespace Multitasking
         private List<ArcadeProjectile> projectiles;
         private const int ProjectileXSize = 17;
         private const int ProjectileYSize = 33;
+        bool godMode;
 
         /// <summary>
         /// public parameterized constructor that creates an Arcade Player object
@@ -64,6 +65,12 @@ namespace Multitasking
         public List<ArcadeProjectile> Projectiles
         {
             get { return projectiles; }
+        }
+
+        public bool GodMode
+        {
+            get { return godMode; }
+            set { godMode = value; }
         }
 
         public override void Update(GameTime gameTime)

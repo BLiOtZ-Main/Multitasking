@@ -31,6 +31,7 @@ namespace Multitasking
         public Rectangle typingWindow;
         public Rectangle shooterWindow;
         private int score = 0;
+        bool swapRow;
 
         // assets
         public SpriteFont typingFont;
@@ -47,7 +48,7 @@ namespace Multitasking
         public int screenHeight;
         public const int EnemyDist = 70;
         public double timer;
-        public const double EnemySpawnTime = 5;
+        public const double EnemySpawnTime = 4;
         public int time;
 
         // input
@@ -83,6 +84,7 @@ namespace Multitasking
             enemyList = new List<ArcadeEnemy>();
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
+            swapRow = true;
         }
 
         protected override void LoadContent()
@@ -236,6 +238,10 @@ namespace Multitasking
             {
                 currentState = GameState.Settings;
             }
+            if (SingleKeyPress(currentKeyboardState, Keys.OemTilde))
+            {
+                player.GodMode = true;
+            }
         }
 
         public void UpdateSettings(KeyboardState currentKeyboardState, MouseState currentMouseState)
@@ -277,27 +283,99 @@ namespace Multitasking
         {
             timer -= gameTime.ElapsedGameTime.TotalSeconds;
 
-            //Creates a new row of enemies every ____ seconds
-            if(enemyList.Count == 0)
+            //Switch Statement for anything that changes between the days
+            switch (currentDay)
             {
-                for(int i = 0; i < 7; i++)
-                {
-                    int enemyPos = EnemyDist;
-                    ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int) (1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
-                    enemyList.Add(newEnemy);
+                //Only day 1 and 2 have something different between them so far
+                case GameDay.Day1:
+                case GameDay.Day3:
+                case GameDay.Day4:
+                case GameDay.Day5:
+                case GameDay.Day6:
+                case GameDay.Day7:
+                case GameDay.Day8:
+                case GameDay.Day9:
+                case GameDay.Day10:
+                case GameDay.Day11:
+                    //Day One Enemy Spawn Logic
+                    if (enemyList.Count == 0)
+                    {
+                        for (int i = 0; i < 7; i++)
+                        {
+                            int enemyPos = EnemyDist;
+                            ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
+                            enemyList.Add(newEnemy);
+                        }
+                    }
+                    else if (timer <= 0)
+                    {
+                        
+                        if (swapRow)
+                        {
+                            for (int i = 0; i < 6; i++)
+                            {
+                                int enemyPos = EnemyDist;
+                                ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1050 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
+                                enemyList.Add(newEnemy);
+                            }
+                            swapRow = false;
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 7; i++)
+                            {
+                                int enemyPos = EnemyDist;
+                                ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
+                                enemyList.Add(newEnemy);
+                            }
+                            swapRow = true;
+                        }
+                        
+                        timer = EnemySpawnTime;
+                    }
 
-                }
-            }
-            else if(timer <= 0)
-            {
-                for(int i = 0; i < 7; i++)
-                {
-                    int enemyPos = EnemyDist;
-                    ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int) (1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
-                    enemyList.Add(newEnemy);
 
-                }
-                timer = EnemySpawnTime;
+                    break;
+
+                case GameDay.Day2:
+                    //Day Two Enemy Spawn Logic
+                    if (enemyList.Count == 0)
+                    {
+                        for (int i = 0; i < 6; i++)
+                        {
+                            int enemyPos = EnemyDist;
+                            ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1050 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
+                            enemyList.Add(newEnemy);
+                        }
+                    }
+                    else if (timer <= 0)
+                    {
+
+                        if (swapRow)
+                        {
+                            for (int i = 0; i < 10; i++)
+                            {
+                                int enemyPos = EnemyDist;
+                                ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(990 + (int)(i * EnemyDist), 200, 60, 60), screenHeight, screenWidth, player, playerBulletImg);
+                                enemyList.Add(newEnemy);
+                            }
+                            swapRow = false;
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 7; i++)
+                            {
+                                int enemyPos = EnemyDist;
+                                ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
+                                enemyList.Add(newEnemy);
+                            }
+                            swapRow = true;
+                        }
+
+                        timer = EnemySpawnTime;
+                    }
+                    break;
+
             }
 
 
@@ -510,6 +588,7 @@ namespace Multitasking
             _spriteBatch.DrawString(typingFont, "TAB........................settings", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB........................settings").X / 2), 600), Color.White);
             _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 650), Color.White);
             ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("by.....................omni_absence").X / 2 - 8, 400, (int)typingFont.MeasureString("by.....................omni_absence").X + 16, 35), new Color(255, 255, 255));
+
         }
 
         public void DrawSettings(SpriteBatch spriteBatch)
@@ -726,6 +805,7 @@ namespace Multitasking
             timer = EnemySpawnTime;
             typingGame = new TypingGame();
             score = 0;
+            swapRow = true;
         }
     }
 }
