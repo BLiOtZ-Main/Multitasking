@@ -49,7 +49,7 @@ namespace Multitasking
         public const int EnemyDist = 70;
         public double timer;
         public const double EnemySpawnTime = 4;
-        public int time = 0;
+        public int time;
         public int score1 = 0;
         public int score2 = 0;
         public int score3 = 0;
@@ -204,7 +204,7 @@ namespace Multitasking
 
                 // endless
                 case GameState.Endless:
-                    DrawEndless(_spriteBatch, gameTime);
+                    DrawEndless(_spriteBatch);
                     break;
 
                 // game over screen
@@ -460,7 +460,7 @@ namespace Multitasking
         public void UpdateEndless(KeyboardState currentKeyboardState, MouseState currentMouseState, GameTime gameTime)
         {
             timer -= gameTime.ElapsedGameTime.TotalSeconds;
-            time += gameTime.ElapsedGameTime.Seconds;
+            time = gameTime.ElapsedGameTime.Seconds;
 
             //Creates a new row of enemies every ____ seconds
             if (enemyList.Count == 0)
@@ -707,14 +707,13 @@ namespace Multitasking
             }
         }
 
-        public void DrawEndless(SpriteBatch spriteBatch, GameTime gameTime)
+        public void DrawEndless(SpriteBatch spriteBatch)
         {
             //Reset the windows to the right sizes because the demo messes them up otherwise
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
 
             //time
-            time += gameTime.ElapsedGameTime.Seconds;
 
             //Temp code to visualize the two game window
             ShapeBatch.Box(typingWindow, Color.LightGray);
@@ -777,12 +776,12 @@ namespace Multitasking
                 score2 = score1;
                 score1 = score;
             }
-            else if (score > score2 && score < score1)
+            else if (score > score2 && score <= score1)
             {
                 score3 = score2;
                 score2 = score;
             }
-            else if (score > score3 && score < score1 && score < score2)
+            else if (score > score3 && score < score1 && score <= score2)
             {
                 score3 = score;
             }
