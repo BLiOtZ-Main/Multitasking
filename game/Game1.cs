@@ -30,7 +30,7 @@ namespace Multitasking
         private List<ArcadeEnemy> enemyList;
         public Rectangle typingWindow;
         public Rectangle shooterWindow;
-        private int score = 0;
+        public Rectangle boredomMeter;
         bool swapRow;
 
         // assets
@@ -49,6 +49,8 @@ namespace Multitasking
         public const int EnemyDist = 70;
         public double timer;
         public const double EnemySpawnTime = 4;
+        private int score = 0;
+        private int boredomMeterWidth;
         public int time;
         public int score1 = 0;
         public int score2 = 0;
@@ -336,6 +338,7 @@ namespace Multitasking
                         }
                         
                         timer = EnemySpawnTime;
+                        boredomMeterWidth -= 40;
                     }
 
 
@@ -395,6 +398,7 @@ namespace Multitasking
                             enemy.IsAlive = false;
                             projectile.Active = false;
                             score += 10;
+                            boredomMeterWidth += 10;
                         }
                     }
                 }
@@ -486,6 +490,7 @@ namespace Multitasking
             }
 
 
+
             //Enemy collision check
             foreach (ArcadeEnemy enemy in enemyList)
             {
@@ -498,6 +503,7 @@ namespace Multitasking
                             enemy.IsAlive = false;
                             projectile.Active = false;
                             score += 10;
+                            boredomMeterWidth += 15;
                         }
                     }
                 }
@@ -659,17 +665,22 @@ namespace Multitasking
 
         public void DrawDay(SpriteBatch spriteBatch)
         {
+
             //Reset the windows to the right sizes because the demo messes them up otherwise
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
+            boredomMeter = new Rectangle((screenWidth / 2) - 250, 30, boredomMeterWidth, 50);
+            
 
             //Temp code to visualize the two game window
             ShapeBatch.Box(typingWindow, Color.LightGray);
             ShapeBatch.Box(shooterWindow, Color.White);
+            ShapeBatch.Box(boredomMeter, Color.Red);
 
             _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, "Space Game Again TM", new Vector2(1200, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, $"Score: {score}", new Vector2(1000, 100), Color.Blue);
+            _spriteBatch.DrawString(typingFont, "Boredom", new Vector2((screenWidth/2)-50, 3), Color.Red);
             
 
             // Draws player sprite
@@ -704,6 +715,13 @@ namespace Multitasking
                         projectile.Draw(_spriteBatch, Color.Red);
                     }
                 }
+            }
+            
+            // boredom meter logic
+
+            if (boredomMeterWidth >= 500)
+            {
+                boredomMeterWidth = 500;
             }
         }
 
@@ -825,6 +843,7 @@ namespace Multitasking
             typingGame = new TypingGame();
             score = 0;
             swapRow = true;
+            boredomMeterWidth = 250;
         }
     }
 }
