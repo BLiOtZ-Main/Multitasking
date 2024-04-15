@@ -338,7 +338,7 @@ namespace Multitasking
                         }
                         
                         timer = EnemySpawnTime;
-                        boredomMeterWidth -= 40;
+                        boredomMeterWidth -= 30;
                     }
 
 
