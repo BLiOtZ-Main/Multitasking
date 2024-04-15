@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace Multitasking
 {
-    public enum GameState { MainMenu, Settings, DayStart, ClockIn, Day, GameOver }
+    public enum GameState { MainMenu, Settings, DayStart, ClockIn, Day, GameOver, LeaderBoard, Endless }
 
     public enum GameDay { Day1, Day2, Day3, Day4, Day5, Day6, Day7, Day8, Day9, Day10, Day11 }
     
@@ -48,6 +48,7 @@ namespace Multitasking
         public const int EnemyDist = 70;
         public double timer;
         public const double EnemySpawnTime = 5;
+        public int time;
 
         // input
         public KeyboardState previousKeyboardState;
@@ -72,6 +73,7 @@ namespace Multitasking
             screenWidth = _graphics.GraphicsDevice.Viewport.Width;
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
             timer = EnemySpawnTime;
+            time = 0;
 
             // important
             currentState = GameState.MainMenu;
@@ -132,14 +134,24 @@ namespace Multitasking
                     UpdateClockIn(currentKeyboardState, currentMouseState);
                     break;
 
-                // gameplay
+                //day gameplay
                 case GameState.Day:
                     UpdateDay(currentKeyboardState, currentMouseState, gameTime);
                     break;
-                
+
+                //endless gameplay
+                case GameState.Endless:
+                    UpdateDay(currentKeyboardState, currentMouseState, gameTime);
+                    break;
+
                 // game over screen
                 case GameState.GameOver:
                     UpdateGameOver(currentKeyboardState, currentMouseState);
+                    break;
+
+                //leaderboard screen
+                case GameState.LeaderBoard:
+                    UpdateLeaderBoard(currentKeyboardState, currentMouseState);
                     break;
             }
 
@@ -185,9 +197,19 @@ namespace Multitasking
                     DrawDay(_spriteBatch);
                     break;
 
+                // endless
+                case GameState.Endless:
+                    DrawEndless(_spriteBatch);
+                    break;
+
                 // game over screen
                 case GameState.GameOver:
                     DrawGameOver(_spriteBatch);
+                    break;
+
+                // leaderboard screen
+                case GameState.LeaderBoard:
+                    DrawLeaderBoard(_spriteBatch);
                     break;
             }
 
@@ -206,7 +228,11 @@ namespace Multitasking
                 currentState = GameState.DayStart;
                 ResetGame();
             }
-            else if(SingleKeyPress(currentKeyboardState, Keys.Tab))
+            if (SingleKeyPress(currentKeyboardState, Keys.LeftShift))
+            {
+                currentState = GameState.Endless;
+            }
+            if (SingleKeyPress(currentKeyboardState, Keys.Tab))
             {
                 currentState = GameState.Settings;
             }
@@ -349,9 +375,126 @@ namespace Multitasking
             }
         }
 
+        public void UpdateEndless(KeyboardState currentKeyboardState, MouseState currentMouseState, GameTime gameTime)
+        {
+            timer -= gameTime.ElapsedGameTime.TotalSeconds;
+            time += gameTime.ElapsedGameTime.Seconds;
+
+            //Creates a new row of enemies every ____ seconds
+            if (enemyList.Count == 0)
+            {
+                for (int i = 0; i < 7; i++)
+                {
+                    int enemyPos = EnemyDist;
+                    ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
+                    enemyList.Add(newEnemy);
+
+                }
+            }
+            else if (timer <= 0)
+            {
+                for (int i = 0; i < 7; i++)
+                {
+                    int enemyPos = EnemyDist;
+                    ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
+                    enemyList.Add(newEnemy);
+
+                }
+                timer = EnemySpawnTime;
+            }
+
+
+            //Enemy collision check
+            foreach (ArcadeEnemy enemy in enemyList)
+            {
+                if (enemy.IsAlive)
+                {
+                    foreach (ArcadeProjectile projectile in player.Projectiles)
+                    {
+                        if (projectile.CheckCollision(enemy))
+                        {
+                            enemy.IsAlive = false;
+                            projectile.Active = false;
+                            score += 10;
+                        }
+                    }
+                }
+            }
+
+            //Temp code to swap to GameOver
+            if (SingleKeyPress(currentKeyboardState, Keys.Enter))
+            {
+                currentState = GameState.GameOver;
+            }
+
+            player.Update(gameTime);
+
+            //Updates every enemy
+            foreach (ArcadeEnemy e in enemyList)
+            {
+                if (e.IsAlive)
+                {
+                    e.Update(gameTime);
+                }
+            }
+
+            //player collision check
+            foreach (ArcadeEnemy e in enemyList)
+            {
+                foreach (ArcadeProjectile projectile in e.projectiles)
+                {
+                    projectile.Update(gameTime);
+                    if (projectile.CheckCollision(player))
+                    {
+                        player.IsAlive = false;
+                        projectile.Active = false;
+                    }
+                }
+            }
+
+            //updates the player's projectiles
+            foreach (ArcadeProjectile projectile in player.Projectiles)
+            {
+                if (projectile.Active)
+                {
+                    projectile.Update(gameTime);
+                }
+
+            }
+
+            //Is enemies reach the player game over
+            foreach (ArcadeEnemy e in enemyList)
+            {
+                if (e.position.Y >= screenHeight - 200)
+                {
+                    currentState = GameState.GameOver;
+                }
+            }
+
+            //If the player dies game over
+            if (!player.IsAlive)
+            {
+                currentState = GameState.GameOver;
+            }
+        }
+
+
+
         public void UpdateGameOver(KeyboardState currentKeyboardState, MouseState currentMouseState)
         {
             if(SingleKeyPress(currentKeyboardState, Keys.Enter))
+            {
+                currentState = GameState.MainMenu;
+            }
+            if (SingleKeyPress(currentKeyboardState, Keys.Tab))
+            {
+                currentState = GameState.LeaderBoard;
+            }
+        }
+
+        public void UpdateLeaderBoard(KeyboardState currentKeyboardState, MouseState currentMouseState)
+        {
+            if (SingleKeyPress(currentKeyboardState, Keys.Enter))
             {
                 currentState = GameState.MainMenu;
             }
@@ -363,8 +506,9 @@ namespace Multitasking
             _spriteBatch.DrawString(menuFont, "multitasking", new Vector2((screenWidth / 2) - (menuFont.MeasureString("multitasking").X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, "by.....................omni_absence", new Vector2((screenWidth / 2) - (typingFont.MeasureString("by.....................omni_absence").X / 2), 400), backgroundColor);
             _spriteBatch.DrawString(typingFont, "ENTER.........................start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.........................start").X / 2), 500), Color.White);
-            _spriteBatch.DrawString(typingFont, "TAB........................settings", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB........................settings").X / 2), 550), Color.White);
-            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 600), Color.White);
+            _spriteBatch.DrawString(typingFont, "LEFT SHIFT.............endless mode", new Vector2((screenWidth / 2) - (typingFont.MeasureString("LEFT SHIFT.............endless mode").X / 2), 550), Color.White);
+            _spriteBatch.DrawString(typingFont, "TAB........................settings", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB........................settings").X / 2), 600), Color.White);
+            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 650), Color.White);
             ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("by.....................omni_absence").X / 2 - 8, 400, (int)typingFont.MeasureString("by.....................omni_absence").X + 16, 35), new Color(255, 255, 255));
         }
 
@@ -442,6 +586,7 @@ namespace Multitasking
             _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, "Space Game Again TM", new Vector2(1200, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, $"Score: {score}", new Vector2(1000, 100), Color.Blue);
+            
 
             // Draws player sprite
             player.Draw(_spriteBatch, Color.White);
@@ -478,13 +623,78 @@ namespace Multitasking
             }
         }
 
+        public void DrawEndless(SpriteBatch spriteBatch)
+        {
+            //Reset the windows to the right sizes because the demo messes them up otherwise
+            typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
+            shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
+
+            //time
+
+
+            //Temp code to visualize the two game window
+            ShapeBatch.Box(typingWindow, Color.LightGray);
+            ShapeBatch.Box(shooterWindow, Color.White);
+
+            _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
+            _spriteBatch.DrawString(typingFont, "Space Game Again TM", new Vector2(1200, 100), Color.Black);
+            _spriteBatch.DrawString(typingFont, $"Score: {score}", new Vector2(1000, 100), Color.Blue);
+            _spriteBatch.DrawString(typingFont, $"Time: {time}", new Vector2(1550, 100), Color.Blue);
+
+            // Draws player sprite
+            player.Draw(_spriteBatch, Color.White);
+
+            //draws each player projectile
+            foreach (ArcadeProjectile projectile in player.Projectiles)
+            {
+                if (projectile.Active)
+                {
+                    projectile.Draw(_spriteBatch, Color.White);
+                }
+            }
+
+            //Draws each enemy
+            foreach (ArcadeEnemy e in enemyList)
+            {
+                if (e.IsAlive)
+                {
+                    e.Draw(_spriteBatch, Color.White);
+                }
+
+            }
+
+            //Draws each enemy projectile
+            foreach (ArcadeEnemy e in enemyList)
+            {
+                foreach (ArcadeProjectile projectile in e.projectiles)
+                {
+                    if (projectile.Active)
+                    {
+                        projectile.Draw(_spriteBatch, Color.Red);
+                    }
+                }
+            }
+        }
+
         public void DrawGameOver(SpriteBatch spriteBatch)
         {
             _spriteBatch.DrawString(menuFont, "game over", new Vector2((screenWidth / 2) - (menuFont.MeasureString("game over").X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, "ENTER..........................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.....................main menu").X / 2), 500), Color.White);
-            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 550), Color.White);
+            _spriteBatch.DrawString(typingFont, "TAB.....................leaderboard", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB.....................leaderboard").X / 2), 550), Color.White);
+            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 600), Color.White);
         }
-        
+
+        //placeholder for what leaderboard might look like when finished
+        public void DrawLeaderBoard(SpriteBatch spriteBatch)
+        {
+            _spriteBatch.DrawString(menuFont, "leaderboard", new Vector2((screenWidth / 2) - (menuFont.MeasureString("leaderboard").X / 2), 300), Color.White);
+            _spriteBatch.DrawString(typingFont, "FIRST...........AAA..........." + score, new Vector2((screenWidth / 2) - (typingFont.MeasureString("FIRST...........AAA..........." + score).X / 2), 500), Color.White);
+            _spriteBatch.DrawString(typingFont, "SECOND..........AAA...........SCORE", new Vector2((screenWidth / 2) - (typingFont.MeasureString("SECOND..........AAA...........SCORE").X / 2), 550), Color.White);
+            _spriteBatch.DrawString(typingFont, "THIRD...........AAA...........SCORE", new Vector2((screenWidth / 2) - (typingFont.MeasureString("THIRD...........AAA...........SCORE").X / 2), 600), Color.White);
+            _spriteBatch.DrawString(typingFont, "ENTER..........................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.....................main menu").X / 2), 700), Color.White);
+            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 750), Color.White);
+        }
+
         // UTILITY METHODS
 
         /// <summary>
