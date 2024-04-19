@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
 
 // notes
 // - make the padding around highlighted words scale properly
@@ -32,6 +33,7 @@ namespace Multitasking
         public Rectangle shooterWindow;
         public Rectangle boredomMeterBorder;
         public Rectangle boredomMeter;
+        public string loseMessage;
         bool swapRow;
 
         // assets
@@ -179,6 +181,10 @@ namespace Multitasking
             ShapeBatch.Begin(GraphicsDevice);
             // write code below
 
+            if (player.GodMode)
+            {
+                _spriteBatch.DrawString(typingFont, "God Mode Enabled (Restart Game to Disable)", new Vector2(20, 20), Color.White);
+            }
             //FSM managing GameStates
             switch (currentState)
             {
@@ -342,7 +348,7 @@ namespace Multitasking
                         }
                         
                         timer = EnemySpawnTime;
-                        boredomMeterWidth -= 30;
+                        boredomMeterWidth += 40;
                     }
 
 
@@ -384,6 +390,7 @@ namespace Multitasking
                         }
 
                         timer = EnemySpawnTime;
+                        boredomMeterWidth += 40;
                     }
                     break;
 
@@ -402,7 +409,7 @@ namespace Multitasking
                             enemy.IsAlive = false;
                             projectile.Active = false;
                             score += 10;
-                            boredomMeterWidth += 10;
+                            boredomMeterWidth -= 10;
                         }
                     }
                 }
@@ -412,6 +419,7 @@ namespace Multitasking
             if(SingleKeyPress(currentKeyboardState, Keys.Enter))
             {
                 currentState = GameState.GameOver;
+                loseMessage = "(You're debugging right now aren't you?)";
             }
 
             player.Update(gameTime);
@@ -462,6 +470,14 @@ namespace Multitasking
             if(!player.IsAlive)
             {
                 currentState = GameState.GameOver;
+                loseMessage = "(You destroyed your computer and got fired)";
+            }
+
+            // If boredom meter fills game over
+            if (boredomMeterWidth >= maxBoredom)
+            {
+                currentState = GameState.GameOver;
+                loseMessage = "(You resigned from your job)";
             }
         }
 
@@ -507,7 +523,7 @@ namespace Multitasking
                             enemy.IsAlive = false;
                             projectile.Active = false;
                             score += 10;
-                            boredomMeterWidth += 15;
+                            boredomMeterWidth -= 15;
                         }
                     }
                 }
@@ -517,6 +533,7 @@ namespace Multitasking
             if (SingleKeyPress(currentKeyboardState, Keys.Enter))
             {
                 currentState = GameState.GameOver;
+                loseMessage = "(You should try the real game now)";
             }
 
             player.Update(gameTime);
@@ -567,7 +584,10 @@ namespace Multitasking
             if (!player.IsAlive)
             {
                 currentState = GameState.GameOver;
+                loseMessage = "(You should try the real game now)";
             }
+
+
         }
 
         public void UpdateGameOver(KeyboardState currentKeyboardState, MouseState currentMouseState)
@@ -607,6 +627,7 @@ namespace Multitasking
         public void DrawSettings(SpriteBatch spriteBatch)
         {
             _spriteBatch.DrawString(menuFont, "settings", new Vector2((screenWidth / 2) - (menuFont.MeasureString("settings").X / 2), 300), Color.White);
+            _spriteBatch.DrawString(typingFont, "TILDE(`)....................GodMode", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TILDE(`)....................GodMode").X / 2), 450), Color.White);
             _spriteBatch.DrawString(typingFont, "TAB............................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB............................menu").X / 2), 500), Color.White);
             _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 550), Color.White);
         }
@@ -724,10 +745,7 @@ namespace Multitasking
             
             // boredom meter logic
 
-            if (boredomMeterWidth >= 500)
-            {
-                boredomMeterWidth = 500;
-            }
+
         }
 
         public void DrawEndless(SpriteBatch spriteBatch)
@@ -785,6 +803,7 @@ namespace Multitasking
         public void DrawGameOver(SpriteBatch spriteBatch)
         {
             _spriteBatch.DrawString(menuFont, "game over", new Vector2((screenWidth / 2) - (menuFont.MeasureString("game over").X / 2), 300), Color.White);
+            _spriteBatch.DrawString(typingFont, loseMessage, new Vector2((screenWidth / 2) - (typingFont.MeasureString(loseMessage).X / 2), 400), Color.White);
             _spriteBatch.DrawString(typingFont, "ENTER..........................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.....................main menu").X / 2), 500), Color.White);
             _spriteBatch.DrawString(typingFont, "TAB.....................leaderboard", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB.....................leaderboard").X / 2), 550), Color.White);
             _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 600), Color.White);
