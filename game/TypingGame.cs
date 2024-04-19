@@ -28,6 +28,7 @@ namespace Multitasking
         private int currentCharIndex;
 
         // aesthetics
+        private Rectangle typingWindow;
         private const int lineSpacing = 60;
         private const int verticalOffset = 150;
 
@@ -69,7 +70,7 @@ namespace Multitasking
         }
 
 
-        public TypingGame()
+        public TypingGame(Rectangle window)
         {
             // initializing variables
             tutorialPrompts = new List<String>();
@@ -83,6 +84,7 @@ namespace Multitasking
                                                             { "s", Keys.S }, { "t", Keys.T }, { "u", Keys.U }, { "v", Keys.V }, { "w", Keys.W }, { "x", Keys.X },
                                                             { "y", Keys.Y }, { "z", Keys.Z }};
             inTutorial = true;
+            typingWindow = new Rectangle(window.X, window.Y, window.Width, window.Height);
             currentLineIndex = 0;
             currentCharIndex = 0;
 
@@ -94,7 +96,7 @@ namespace Multitasking
 
         // CORE GAME METHODS
 
-        public GameState UpdateTypingTutorial(GameState currentState)
+        public GameState UpdateStartOfDay(GameState currentState)
         {
             KeyboardState keyboardState = Keyboard.GetState();
             bool endOfPrompt;
@@ -155,27 +157,81 @@ namespace Multitasking
         public void UpdateTypingGame()
         {
             KeyboardState keyboardState = Keyboard.GetState();
-            // typing game code
-            previousKeyBoardState = keyboardState;
+
+            bool endOfPrompt;
+            bool exceededKeysPressed;
+            bool pressingCurrentKey;
+            bool changedKeyboardState;
+
+            if(currentLineIndex == -1)
+            {
+                previousKeyBoardState = keyboardState;
+                // move to next document
+            }
+            else
+            {
+                while(tutorialPrompts[currentLineIndex].Length == 0)
+                {
+                    MoveToNewLine();
+                }
+
+                while(skippedCharacters.Contains(tutorialPrompts[currentLineIndex][currentCharIndex].ToString()))
+                {
+                    if(CurrentLineState == LineState.Body)
+                        currentCharIndex++;
+
+                    if(CurrentLineState == LineState.LastChar)
+                    {
+                        MoveToNewLine();
+                    }
+                }
+
+                endOfPrompt = CurrentPromptState != PromptState.End;
+                exceededKeysPressed = GetPressedLetterCount(keyboardState) <= 2;
+                pressingCurrentKey = keyboardState.IsKeyDown(GetKeyFromChar(tutorialPrompts[currentLineIndex].Substring(currentCharIndex, 1)));
+                changedKeyboardState = previousKeyBoardState != keyboardState;
+
+                if(endOfPrompt && exceededKeysPressed && pressingCurrentKey && changedKeyboardState)
+                {
+                    if(CurrentLineState == LineState.Body)
+                        currentCharIndex++;
+
+                    if(CurrentLineState == LineState.LastChar)
+                    {
+                        currentCharIndex = 0;
+
+                        if(CurrentPromptState == PromptState.LastLine)
+                            currentLineIndex = -1;
+                        else
+                            currentLineIndex++;
+                    }
+
+                }
+
+                previousKeyBoardState = keyboardState;
+
+
+                previousKeyBoardState = keyboardState;
+            }
         }
 
-        public void DrawTypingTutorial(SpriteBatch spriteBatch, SpriteFont font, SpriteFont fontBold, int screenWidth, int screenHeight)
+        public void DrawTypingTutorial(SpriteBatch spriteBatch, SpriteFont font, SpriteFont fontBold)
         {
             for(int i = 0; i < tutorialPrompts.Count; i++)
             {
                 if(i < currentLineIndex)
                 {
-                    spriteBatch.DrawString(font, tutorialPrompts[i], new Vector2((screenWidth / 2) - 400, lineSpacing * i + verticalOffset), Color.Yellow);
+                    spriteBatch.DrawString(font, tutorialPrompts[i], new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.Yellow);
                 }
                 else if(i > currentLineIndex)
                 {
-                    spriteBatch.DrawString(font, tutorialPrompts[i], new Vector2((screenWidth / 2) - 400, lineSpacing * i + verticalOffset), Color.Gray);
+                    spriteBatch.DrawString(font, tutorialPrompts[i], new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.Gray);
                 }
                 else
                 {
-                    spriteBatch.DrawString(font, tutorialPrompts[i].Substring(0, tutorialPrompts[i].Length), new Vector2((screenWidth / 2) - 400, lineSpacing * i + verticalOffset), new Color(31, 0, 171));
-                    spriteBatch.DrawString(fontBold, tutorialPrompts[i].Substring(0, currentCharIndex), new Vector2((screenWidth / 2) - 400, lineSpacing * i + verticalOffset), Color.White);
-                    ShapeBatch.Box(new Rectangle(0, lineSpacing * i + verticalOffset, screenWidth, 35), new Color(255, 255, 255));
+                    spriteBatch.DrawString(font, tutorialPrompts[i].Substring(0, tutorialPrompts[i].Length), new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), new Color(31, 0, 171));
+                    spriteBatch.DrawString(fontBold, tutorialPrompts[i].Substring(0, currentCharIndex), new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.White);
+                    ShapeBatch.Box(new Rectangle(0, lineSpacing * i + verticalOffset, typingWindow.Width, 35), new Color(255, 255, 255));
                 }
 
             }

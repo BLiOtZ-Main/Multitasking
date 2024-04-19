@@ -87,10 +87,10 @@ namespace Multitasking
             // important
             currentState = GameState.MainMenu;
             currentDay = GameDay.Day1;
-            typingGame = new TypingGame();
             player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 50, 50), screenWidth, playerBulletImg);
             enemyList = new List<ArcadeEnemy>();
-            typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
+            typingWindow = new Rectangle(0, 0, screenWidth, screenHeight);
+            typingGame = new TypingGame(typingWindow);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
             swapRow = true;
         }
@@ -279,12 +279,13 @@ namespace Multitasking
 
         public void UpdateClockIn(KeyboardState currentKeyboardState, MouseState currentMouseState)
         {
-            currentState = typingGame.UpdateTypingTutorial(currentState);
+            currentState = typingGame.UpdateStartOfDay(currentState);
 
             // debug
             if(SingleKeyPress(currentKeyboardState, Keys.Tab))
             {
                 currentState = GameState.Day;
+                typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
             }
         }
 
@@ -663,7 +664,7 @@ namespace Multitasking
 
         public void DrawClockIn(SpriteBatch spriteBatch)
         {
-            typingGame.DrawTypingTutorial(_spriteBatch, typingFont, typingFontBold, screenWidth, screenHeight);
+            typingGame.DrawTypingTutorial(_spriteBatch, typingFont, typingFontBold);
         }
 
         public void DrawDay(SpriteBatch spriteBatch)
@@ -845,7 +846,7 @@ namespace Multitasking
             enemyList.Clear();
             player.Projectiles.Clear();
             timer = EnemySpawnTime;
-            typingGame = new TypingGame();
+            typingGame = new TypingGame(typingWindow);
             score = 0;
             swapRow = true;
             boredomMeterWidth = 250;
