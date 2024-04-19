@@ -50,8 +50,12 @@ namespace Multitasking
         public int screenWidth;
         public int screenHeight;
         public const int EnemyDist = 70;
-        public double timer;
+        public double enemyTimer;
         public const double EnemySpawnTime = 4;
+        public double typingTimer;
+        public const double TypingTimerReset = 6;
+        public int clockHour;
+        public int clockMinute;
         public double time;
         public int timeFinal;
         public int score1 = 0;
@@ -83,7 +87,10 @@ namespace Multitasking
             // numbers
             screenWidth = _graphics.GraphicsDevice.Viewport.Width;
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
-            timer = EnemySpawnTime;
+            enemyTimer = EnemySpawnTime;
+            typingTimer = TypingTimerReset;
+            clockHour = 9;
+            clockMinute = 0;
             time = 0;
 
             // important
@@ -297,7 +304,11 @@ namespace Multitasking
 
         public void UpdateDay(KeyboardState currentKeyboardState, MouseState currentMouseState, GameTime gameTime)
         {
-            timer -= gameTime.ElapsedGameTime.TotalSeconds;
+            // Timer to track when to spawn more enemies
+            enemyTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+
+            // Timer to track how much time has passed in the day
+            typingTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
             //Switch Statement for anything that changes between the days
             switch (currentDay)
@@ -323,7 +334,7 @@ namespace Multitasking
                             enemyList.Add(newEnemy);
                         }
                     }
-                    else if (timer <= 0)
+                    else if (enemyTimer <= 0)
                     {
                         
                         if (swapRow)
@@ -347,8 +358,36 @@ namespace Multitasking
                             swapRow = true;
                         }
                         
-                        timer = EnemySpawnTime;
+                        enemyTimer = EnemySpawnTime;
                         boredomMeterWidth += 40;
+                    }
+
+                    // Day One clock
+                    if(typingTimer <= 0)
+                    {
+                        // Only updates clock if it's not 5:00 pm
+                        if(clockHour != 5)
+                        {
+                            // Checks if time needs to change from 12 - 1
+                            if (clockMinute == 5 && clockHour == 12)
+                            {
+                                clockHour = 1;
+                                clockMinute = 0;
+                            }
+                            // Checks if the hour number needs to change
+                            else if (clockMinute == 5)
+                            {
+                                clockHour++;
+                                clockMinute = 0;
+                            }
+                            // Otherwise just increments minute
+                            else
+                            {
+                                clockMinute++;
+                            }
+
+                            typingTimer = TypingTimerReset;
+                        }
                     }
 
 
@@ -365,7 +404,7 @@ namespace Multitasking
                             enemyList.Add(newEnemy);
                         }
                     }
-                    else if (timer <= 0)
+                    else if (enemyTimer <= 0)
                     {
 
                         if (swapRow)
@@ -389,7 +428,7 @@ namespace Multitasking
                             swapRow = true;
                         }
 
-                        timer = EnemySpawnTime;
+                        enemyTimer = EnemySpawnTime;
                         boredomMeterWidth += 40;
                     }
                     break;
@@ -483,7 +522,7 @@ namespace Multitasking
 
         public void UpdateEndless(KeyboardState currentKeyboardState, MouseState currentMouseState, GameTime gameTime)
         {
-            timer -= gameTime.ElapsedGameTime.TotalSeconds;
+            enemyTimer -= gameTime.ElapsedGameTime.TotalSeconds;
             time += gameTime.ElapsedGameTime.TotalSeconds;
 
             //Creates a new row of enemies every ____ seconds
@@ -497,7 +536,7 @@ namespace Multitasking
 
                 }
             }
-            else if (timer <= 0)
+            else if (enemyTimer <= 0)
             {
                 for (int i = 0; i < 7; i++)
                 {
@@ -506,7 +545,7 @@ namespace Multitasking
                     enemyList.Add(newEnemy);
 
                 }
-                timer = EnemySpawnTime;
+                enemyTimer = EnemySpawnTime;
             }
 
 
@@ -707,7 +746,7 @@ namespace Multitasking
             _spriteBatch.DrawString(typingFont, "Space Game Again TM", new Vector2(1200, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, $"Score: {score}", new Vector2(1000, 100), Color.Blue);
             _spriteBatch.DrawString(typingFont, "boredom", new Vector2(boredomMeterBorder.X + (float)(0.5 * boredomMeterBorder.Width) - (typingFont.MeasureString("boredom").X / 2), 30),  Color.White);
-            
+            _spriteBatch.DrawString(typingFont, String.Format("{0}:{1}0", clockHour, clockMinute), new Vector2(220, 100), Color.Blue);
 
             // Draws player sprite
             player.Draw(_spriteBatch, Color.White);
@@ -864,7 +903,7 @@ namespace Multitasking
             player.IsAlive = true;
             enemyList.Clear();
             player.Projectiles.Clear();
-            timer = EnemySpawnTime;
+            enemyTimer = EnemySpawnTime;
             typingGame = new TypingGame(typingWindow);
             score = 0;
             swapRow = true;
