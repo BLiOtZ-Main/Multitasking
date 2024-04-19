@@ -30,6 +30,7 @@ namespace Multitasking
         private List<ArcadeEnemy> enemyList;
         public Rectangle typingWindow;
         public Rectangle shooterWindow;
+        public Rectangle boredomMeterBorder;
         public Rectangle boredomMeter;
         bool swapRow;
 
@@ -54,6 +55,7 @@ namespace Multitasking
         public int score1 = 0;
         public int score2 = 0;
         public int score3 = 0;
+        public const int maxBoredom = 500;
         public int boredomMeterWidth;
         public int score;
 
@@ -567,8 +569,6 @@ namespace Multitasking
             }
         }
 
-
-
         public void UpdateGameOver(KeyboardState currentKeyboardState, MouseState currentMouseState)
         {
             if(SingleKeyPress(currentKeyboardState, Keys.Enter))
@@ -589,15 +589,16 @@ namespace Multitasking
             }
         }
 
+
         // DRAW METHODS
         public void DrawMainMenu(SpriteBatch spriteBatch)
         {
             _spriteBatch.DrawString(menuFont, "multitasking", new Vector2((screenWidth / 2) - (menuFont.MeasureString("multitasking").X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, "by.....................omni_absence", new Vector2((screenWidth / 2) - (typingFont.MeasureString("by.....................omni_absence").X / 2), 400), backgroundColor);
             _spriteBatch.DrawString(typingFont, "ENTER.........................start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.........................start").X / 2), 500), Color.White);
-            _spriteBatch.DrawString(typingFont, "LEFT SHIFT.............endless mode", new Vector2((screenWidth / 2) - (typingFont.MeasureString("LEFT SHIFT.............endless mode").X / 2), 550), Color.White);
-            _spriteBatch.DrawString(typingFont, "TAB........................settings", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB........................settings").X / 2), 600), Color.White);
-            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 650), Color.White);
+            //_spriteBatch.DrawString(typingFont, "LEFT SHIFT.............endless mode", new Vector2((screenWidth / 2) - (typingFont.MeasureString("LEFT SHIFT.............endless mode").X / 2), 550), Color.White);
+            _spriteBatch.DrawString(typingFont, "TAB........................settings", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB........................settings").X / 2), 550), Color.White);
+            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 600), Color.White);
             ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("by.....................omni_absence").X / 2 - 8, 400, (int)typingFont.MeasureString("by.....................omni_absence").X + 16, 35), new Color(255, 255, 255));
 
         }
@@ -654,34 +655,36 @@ namespace Multitasking
             _spriteBatch.DrawString(menuFont, "day " + dayNumber, new Vector2((screenWidth / 2) - (menuFont.MeasureString("day " + dayNumber).X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, dayName, new Vector2((screenWidth / 2) - (typingFont.MeasureString(dayName).X / 2), 400), backgroundColor);
             _spriteBatch.DrawString(typingFont, date, new Vector2((screenWidth / 2) - (typingFont.MeasureString(date).X / 2), 450), Color.White);
-            _spriteBatch.DrawString(typingFont, "press SPACE to start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("press SPACE to start").X / 2), 600), Color.White);
+            _spriteBatch.DrawString(typingFont, "SPACE.........................start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("SPACE.........................start").X / 2), 550), Color.White);
+            _spriteBatch.DrawString(typingFont, "RIGHT_ALT............debug_skip_day", new Vector2((screenWidth / 2) - (typingFont.MeasureString("RIGHT_ALT............debug_skip_day").X / 2), 600), Color.White);
+            _spriteBatch.DrawString(typingFont, "LEFT_ALT.........debug_previous_day", new Vector2((screenWidth / 2) - (typingFont.MeasureString("LEFT_ALT.........debug_previous_day").X / 2), 650), Color.White);
             ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString(dayName).X / 2 - 8, 400, (int)typingFont.MeasureString(dayName).X + 16, 35), new Color(255, 255, 255));
         }
 
         public void DrawClockIn(SpriteBatch spriteBatch)
         {
-            _spriteBatch.DrawString(menuFont, "type the following", new Vector2((screenWidth / 2) - (menuFont.MeasureString("type the following").X / 2), 25), Color.White);
             typingGame.DrawTypingTutorial(_spriteBatch, typingFont, typingFontBold, screenWidth, screenHeight);
         }
 
         public void DrawDay(SpriteBatch spriteBatch)
         {
-
             //Reset the windows to the right sizes because the demo messes them up otherwise
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
-            boredomMeter = new Rectangle((screenWidth / 2) - 250, 30, boredomMeterWidth, 50);
+            boredomMeterBorder = new Rectangle((screenWidth / 2) + 125, 60, maxBoredom, 30);
+            boredomMeter = new Rectangle(boredomMeterBorder.X, boredomMeterBorder.Y, boredomMeterWidth, boredomMeterBorder.Height);
             
 
             //Temp code to visualize the two game window
             ShapeBatch.Box(typingWindow, Color.LightGray);
             ShapeBatch.Box(shooterWindow, Color.White);
-            ShapeBatch.Box(boredomMeter, Color.Red);
+            ShapeBatch.BoxOutline(boredomMeterBorder, Color.White);
+            ShapeBatch.Box(boredomMeter, Color.White);
 
             _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, "Space Game Again TM", new Vector2(1200, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, $"Score: {score}", new Vector2(1000, 100), Color.Blue);
-            _spriteBatch.DrawString(typingFont, "Boredom", new Vector2((screenWidth/2)-50, 3), Color.Red);
+            _spriteBatch.DrawString(typingFont, "boredom", new Vector2(boredomMeterBorder.X + (float)(0.5 * boredomMeterBorder.Width) - (typingFont.MeasureString("boredom").X / 2), 30),  Color.White);
             
 
             // Draws player sprite
