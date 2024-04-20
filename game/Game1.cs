@@ -12,7 +12,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace Multitasking
 {
-    public enum GameState { MainMenu, Settings, DayStart, ClockIn, Day, GameOver, LeaderBoard, Endless }
+    public enum GameState { MainMenu, Settings, DayStart, DayLetter, Day, GameOver, LeaderBoard, Endless }
 
     public enum GameDay { Day1, Day2, Day3, Day4, Day5, Day6, Day7, Day8, Day9, Day10, Day11 }
     
@@ -45,6 +45,7 @@ namespace Multitasking
         public Texture2D playerImg;
         public Texture2D enemyImg;
         public Texture2D playerBulletImg;
+        public Texture2D whitePixel;
         public Color backgroundColor = new Color(31, 0, 171);
 
         // numbers
@@ -120,6 +121,7 @@ namespace Multitasking
             playerImg = Content.Load<Texture2D>("Main Ship - Base - Full health");
             enemyImg = Content.Load<Texture2D>("Turtle");
             playerBulletImg = Content.Load<Texture2D>("PlayerBullet");
+            whitePixel = Content.Load<Texture2D>("WhitePixel");
         }
 
         protected override void Update(GameTime gameTime)
@@ -151,8 +153,8 @@ namespace Multitasking
                     break;
 
                 // pre day message
-                case GameState.ClockIn:
-                    UpdateClockIn(currentKeyboardState, currentMouseState);
+                case GameState.DayLetter:
+                    UpdateDayLetter(currentKeyboardState, currentMouseState);
                     break;
 
                 //day gameplay
@@ -213,8 +215,8 @@ namespace Multitasking
                     break;
                 
                 // pre day message
-                case GameState.ClockIn:
-                    DrawClockIn(_spriteBatch);
+                case GameState.DayLetter:
+                    DrawDayLetter(_spriteBatch);
                     break;
 
                 // gameplay
@@ -280,7 +282,7 @@ namespace Multitasking
         {
             if(SingleKeyPress(currentKeyboardState, Keys.Space))
             {
-                currentState = GameState.ClockIn;
+                currentState = GameState.DayLetter;
             }
             else if(SingleKeyPress(currentKeyboardState, Keys.RightAlt) && currentDay != GameDay.Day11)
             {
@@ -292,9 +294,9 @@ namespace Multitasking
             }
         }
 
-        public void UpdateClockIn(KeyboardState currentKeyboardState, MouseState currentMouseState)
+        public void UpdateDayLetter(KeyboardState currentKeyboardState, MouseState currentMouseState)
         {
-            currentState = typingGame.UpdateStartOfDay(currentState);
+            currentState = typingGame.UpdateDayLetter(currentState);
 
             // debug
             if(SingleKeyPress(currentKeyboardState, Keys.Tab))
@@ -548,9 +550,9 @@ namespace Multitasking
             ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString(dayName).X / 2 - 8, 400, (int)typingFont.MeasureString(dayName).X + 16, 35), new Color(255, 255, 255));
         }
 
-        public void DrawClockIn(SpriteBatch spriteBatch)
+        public void DrawDayLetter(SpriteBatch spriteBatch)
         {
-            typingGame.DrawTypingTutorial(_spriteBatch, typingFont, typingFontBold);
+            typingGame.DrawDayLetter(_spriteBatch, typingFont, typingFontBold, whitePixel);
         }
 
         public void DrawDay(SpriteBatch spriteBatch)

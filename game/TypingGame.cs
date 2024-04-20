@@ -96,7 +96,7 @@ namespace Multitasking
 
         // CORE GAME METHODS
 
-        public GameState UpdateStartOfDay(GameState currentState)
+        public GameState UpdateDayLetter(GameState currentState)
         {
             KeyboardState keyboardState = Keyboard.GetState();
             bool endOfPrompt;
@@ -150,11 +150,11 @@ namespace Multitasking
                 }
 
                 previousKeyBoardState = keyboardState;
-                return GameState.ClockIn;
+                return GameState.DayLetter;
             }   
         }
 
-        public void UpdateTypingGame()
+        public void UpdateDay()
         {
             KeyboardState keyboardState = Keyboard.GetState();
 
@@ -215,7 +215,7 @@ namespace Multitasking
             }
         }
 
-        public void DrawTypingTutorial(SpriteBatch spriteBatch, SpriteFont font, SpriteFont fontBold)
+        public void DrawDayLetter(SpriteBatch spriteBatch, SpriteFont font, SpriteFont fontBold, Texture2D whitePixel)
         {
             for(int i = 0; i < tutorialPrompts.Count; i++)
             {
@@ -231,13 +231,14 @@ namespace Multitasking
                 {
                     spriteBatch.DrawString(font, tutorialPrompts[i].Substring(0, tutorialPrompts[i].Length), new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), new Color(31, 0, 171));
                     spriteBatch.DrawString(fontBold, tutorialPrompts[i].Substring(0, currentCharIndex), new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.White);
+                    spriteBatch.Draw(whitePixel, new Rectangle(0, lineSpacing * i + verticalOffset, (int)font.MeasureString(tutorialPrompts[i].Substring(0, currentCharIndex)).X + 550, 35), Color.White);
                     ShapeBatch.Box(new Rectangle(0, lineSpacing * i + verticalOffset, typingWindow.Width, 35), new Color(255, 255, 255));
                 }
 
             }
         }
 
-        public void DrawTypingGame(SpriteBatch spriteBatch, SpriteFont font, int screenWidth, int screenHeight)
+        public void DrawDay(SpriteBatch spriteBatch, SpriteFont font, int screenWidth, int screenHeight)
         {
             // draw typing game
         }
