@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace Multitasking
@@ -16,8 +17,9 @@ namespace Multitasking
         private KeyboardState previousKeyBoardState;
 
         // prompts
-        private List<String> tutorialPrompts;
-        private List<String> gamePrompts;
+        private List<String> allPrompts;
+        private List<String> letterPrompt;
+        private List<List<String>> taskPrompts;
 
         // gameplay
         private Dictionary<String, Keys> stringToKeys;
@@ -36,10 +38,11 @@ namespace Multitasking
         {
             get
             {
-                if(inTutorial) 
-                    return tutorialPrompts;
-                else 
-                    return gamePrompts;
+                if(inTutorial)
+                    return letterPrompt;
+
+                // CHANGE THIS vvv (currently hardcoded, it should go the current task prompt)
+                return taskPrompts[0];
             }
         }
 
@@ -70,11 +73,12 @@ namespace Multitasking
         }
 
 
-        public TypingGame(Rectangle window)
+        public TypingGame(Rectangle window, int day)
         {
             // initializing variables
-            tutorialPrompts = new List<String>();
-            gamePrompts = new List<String>();
+            allPrompts = new List<String>();
+            letterPrompt = new List<String>();
+            taskPrompts = new List<List<String>>();
             skippedCharacters = new List<String>() { " ", ".", "!", "?", "'", ",", "^" };
             letterKeys = new List<Keys>() { Keys.A, Keys.B, Keys.C, Keys.D, Keys.E, Keys.F, Keys.G, Keys.H, Keys.I, Keys.J, Keys.K, Keys.L, Keys.M,
                                             Keys.N, Keys.O, Keys.P, Keys.Q, Keys.R, Keys.S, Keys.T, Keys.U, Keys.V, Keys.W, Keys.X, Keys.Y, Keys.Z};
@@ -89,8 +93,7 @@ namespace Multitasking
             currentCharIndex = 0;
 
             // scrape files for prompts
-            ScrapeFile(tutorialPrompts, "../../../../resources/prompts/tutorialPrompts.txt");
-            ScrapeFile(gamePrompts, "../../../../resources/prompts/gamePrompts.txt");
+            ScrapeFile("../../../../resources/prompts/day" + day + ".txt");
         }
 
 
@@ -111,12 +114,12 @@ namespace Multitasking
             }
             else
             {
-                while(tutorialPrompts[currentLineIndex].Length == 0)
+                while(letterPrompt[currentLineIndex].Length == 0)
                 {
                     MoveToNewLine();
                 }
 
-                while(skippedCharacters.Contains(tutorialPrompts[currentLineIndex][currentCharIndex].ToString()))
+                while(skippedCharacters.Contains(letterPrompt[currentLineIndex][currentCharIndex].ToString()))
                 {
                     if(CurrentLineState == LineState.Body)
                         currentCharIndex++;
@@ -129,7 +132,7 @@ namespace Multitasking
 
                 endOfPrompt = CurrentPromptState != PromptState.End;
                 exceededKeysPressed = GetPressedLetterCount(keyboardState) <= 2;
-                pressingCurrentKey = keyboardState.IsKeyDown(GetKeyFromChar(tutorialPrompts[currentLineIndex].Substring(currentCharIndex, 1)));
+                pressingCurrentKey = keyboardState.IsKeyDown(GetKeyFromChar(letterPrompt[currentLineIndex].Substring(currentCharIndex, 1)));
                 changedKeyboardState = previousKeyBoardState != keyboardState;
 
                 if(endOfPrompt && exceededKeysPressed && pressingCurrentKey && changedKeyboardState)
@@ -170,12 +173,12 @@ namespace Multitasking
             }
             else
             {
-                while(tutorialPrompts[currentLineIndex].Length == 0)
+                while(letterPrompt[currentLineIndex].Length == 0)
                 {
                     MoveToNewLine();
                 }
 
-                while(skippedCharacters.Contains(tutorialPrompts[currentLineIndex][currentCharIndex].ToString()))
+                while(skippedCharacters.Contains(letterPrompt[currentLineIndex][currentCharIndex].ToString()))
                 {
                     if(CurrentLineState == LineState.Body)
                         currentCharIndex++;
@@ -188,7 +191,7 @@ namespace Multitasking
 
                 endOfPrompt = CurrentPromptState != PromptState.End;
                 exceededKeysPressed = GetPressedLetterCount(keyboardState) <= 2;
-                pressingCurrentKey = keyboardState.IsKeyDown(GetKeyFromChar(tutorialPrompts[currentLineIndex].Substring(currentCharIndex, 1)));
+                pressingCurrentKey = keyboardState.IsKeyDown(GetKeyFromChar(letterPrompt[currentLineIndex].Substring(currentCharIndex, 1)));
                 changedKeyboardState = previousKeyBoardState != keyboardState;
 
                 if(endOfPrompt && exceededKeysPressed && pressingCurrentKey && changedKeyboardState)
@@ -217,30 +220,54 @@ namespace Multitasking
 
         public void DrawDayLetter(SpriteBatch spriteBatch, SpriteFont font, SpriteFont fontBold, Texture2D whitePixel)
         {
-            for(int i = 0; i < tutorialPrompts.Count; i++)
+            for(int i = 0; i < letterPrompt.Count; i++)
             {
                 if(i < currentLineIndex)
                 {
-                    spriteBatch.DrawString(font, tutorialPrompts[i], new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.Yellow);
+                    Debug.WriteLine("currentChar: " + letterPrompt[i]);
+                    spriteBatch.DrawString(font, letterPrompt[i], new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.Yellow);
                 }
                 else if(i > currentLineIndex)
                 {
-                    spriteBatch.DrawString(font, tutorialPrompts[i], new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.Gray);
+                    Debug.WriteLine("currentChar: " + letterPrompt[i]);
+                    if(letterPrompt[i] != "")
+                    {
+                        spriteBatch.DrawString(font, letterPrompt[i], new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.Gray);
+                    }
                 }
                 else
                 {
-                    spriteBatch.DrawString(font, tutorialPrompts[i].Substring(0, tutorialPrompts[i].Length), new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), new Color(31, 0, 171));
-                    spriteBatch.DrawString(fontBold, tutorialPrompts[i].Substring(0, currentCharIndex), new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.White);
-                    spriteBatch.Draw(whitePixel, new Rectangle(0, lineSpacing * i + verticalOffset, (int)font.MeasureString(tutorialPrompts[i].Substring(0, currentCharIndex)).X + 550, 35), Color.White);
+                    Debug.WriteLine("currentChar: " + letterPrompt[i]);
+                    spriteBatch.DrawString(font, letterPrompt[i].Substring(0, letterPrompt[i].Length), new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), new Color(31, 0, 171));
+                    spriteBatch.DrawString(fontBold, letterPrompt[i].Substring(0, currentCharIndex), new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.White);
+                    spriteBatch.Draw(whitePixel, new Rectangle(0, lineSpacing * i + verticalOffset, (int)font.MeasureString(letterPrompt[i].Substring(0, currentCharIndex)).X + 550, 35), Color.White);
                     ShapeBatch.Box(new Rectangle(0, lineSpacing * i + verticalOffset, typingWindow.Width, 35), new Color(255, 255, 255));
                 }
 
             }
         }
 
-        public void DrawDay(SpriteBatch spriteBatch, SpriteFont font, int screenWidth, int screenHeight)
+        public void DrawDay(SpriteBatch spriteBatch, SpriteFont font, SpriteFont fontBold, Texture2D whitePixel)
         {
-            // draw typing game
+            for(int i = 0; i < letterPrompt.Count; i++)
+            {
+                if(i < currentLineIndex)
+                {
+                    spriteBatch.DrawString(font, letterPrompt[i], new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.Yellow);
+                }
+                else if(i > currentLineIndex)
+                {
+                    spriteBatch.DrawString(font, letterPrompt[i], new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.Gray);
+                }
+                else
+                {
+                    spriteBatch.DrawString(font, letterPrompt[i].Substring(0, letterPrompt[i].Length), new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), new Color(31, 0, 171));
+                    spriteBatch.DrawString(fontBold, letterPrompt[i].Substring(0, currentCharIndex), new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.White);
+                    spriteBatch.Draw(whitePixel, new Rectangle(0, lineSpacing * i + verticalOffset, (int)font.MeasureString(letterPrompt[i].Substring(0, currentCharIndex)).X + 550, 35), Color.White);
+                    ShapeBatch.Box(new Rectangle(0, lineSpacing * i + verticalOffset, typingWindow.Width, 35), new Color(255, 255, 255));
+                }
+
+            }
         }
 
 
@@ -249,22 +276,17 @@ namespace Multitasking
 
         // UTILITY METHODS
 
-        public void ScrapeFile(List<String> prompts, String filepath)
+        public void ScrapeFile(String filepath)
         {
             StreamReader reader = new StreamReader(filepath);
-            String currentLineIndex= reader.ReadLine();
+            reader.ReadLine();
+            String currentScrapedLine = reader.ReadLine();
 
-            while(currentLineIndex!= null)
+            while(currentScrapedLine == "" || currentScrapedLine.Substring(0, 2) != "##")
             {
-                String lineToAdd = "";
+                letterPrompt.Add(currentScrapedLine);
 
-                for(int i = 0; i < currentLineIndex.Length; i++)
-                {
-                    lineToAdd += currentLineIndex[i];
-                }
-
-                prompts.Add(lineToAdd);
-                currentLineIndex= reader.ReadLine();
+                currentScrapedLine = reader.ReadLine();
             }
 
             reader.Close();

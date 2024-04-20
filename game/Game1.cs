@@ -101,7 +101,7 @@ namespace Multitasking
             player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 50, 50), screenWidth, playerBulletImg);
             enemyList = new List<ArcadeEnemy>();
             typingWindow = new Rectangle(0, 0, screenWidth, screenHeight);
-            typingGame = new TypingGame(typingWindow);
+            typingGame = new TypingGame(typingWindow, 1);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
             swapRow = true;
             shooterGame = new ShooterGame(_graphics, playerImg, enemyImg, playerBulletImg, this);
@@ -257,7 +257,7 @@ namespace Multitasking
             }
             if (SingleKeyPress(currentKeyboardState, Keys.LeftShift))
             {
-                currentState = GameState.Endless;
+                currentState = GameState.Day;
                 ResetGame();
             }
             if (SingleKeyPress(currentKeyboardState, Keys.Tab))
@@ -685,7 +685,7 @@ namespace Multitasking
         private void ResetGame()
         {
             shooterGame.Reset();
-            typingGame = new TypingGame(typingWindow);
+            typingGame = new TypingGame(typingWindow, 1);
 
         }
     }
