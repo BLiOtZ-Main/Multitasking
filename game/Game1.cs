@@ -27,6 +27,7 @@ namespace Multitasking
         public GameState currentState;
         public GameDay currentDay;
         private TypingGame typingGame;
+        private ShooterGame shooterGame;
         private ArcadePlayer player;
         private List<ArcadeEnemy> enemyList;
         public Rectangle typingWindow;
@@ -102,6 +103,7 @@ namespace Multitasking
             typingGame = new TypingGame(typingWindow);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
             swapRow = true;
+            shooterGame = new ShooterGame(_graphics, playerImg, enemyImg, playerBulletImg, this);
         }
 
         protected override void LoadContent()
@@ -304,69 +306,16 @@ namespace Multitasking
 
         public void UpdateDay(KeyboardState currentKeyboardState, MouseState currentMouseState, GameTime gameTime)
         {
-            // Timer to track when to spawn more enemies
-            enemyTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            shooterGame.UpdateShooter(gameTime, currentDay);
 
-            // Timer to track how much time has passed in the day
-            typingTimer -= gameTime.ElapsedGameTime.TotalSeconds;
-
-            //Switch Statement for anything that changes between the days
             switch (currentDay)
             {
-                //Only day 1 and 2 have something different between them so far
                 case GameDay.Day1:
-                case GameDay.Day3:
-                case GameDay.Day4:
-                case GameDay.Day5:
-                case GameDay.Day6:
-                case GameDay.Day7:
-                case GameDay.Day8:
-                case GameDay.Day9:
-                case GameDay.Day10:
-                case GameDay.Day11:
-                    //Day One Enemy Spawn Logic
-                    if (enemyList.Count == 0)
-                    {
-                        for (int i = 0; i < 7; i++)
-                        {
-                            int enemyPos = EnemyDist;
-                            ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
-                            enemyList.Add(newEnemy);
-                        }
-                    }
-                    else if (enemyTimer <= 0)
-                    {
-                        
-                        if (swapRow)
-                        {
-                            for (int i = 0; i < 6; i++)
-                            {
-                                int enemyPos = EnemyDist;
-                                ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1050 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
-                                enemyList.Add(newEnemy);
-                            }
-                            swapRow = false;
-                        }
-                        else
-                        {
-                            for (int i = 0; i < 7; i++)
-                            {
-                                int enemyPos = EnemyDist;
-                                ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
-                                enemyList.Add(newEnemy);
-                            }
-                            swapRow = true;
-                        }
-                        
-                        enemyTimer = EnemySpawnTime;
-                        boredomMeterWidth += 40;
-                    }
-
                     // Day One clock
-                    if(typingTimer <= 0)
+                    if (typingTimer <= 0)
                     {
                         // Only updates clock if it's not 5:00 pm
-                        if(clockHour != 5)
+                        if (clockHour != 5)
                         {
                             // Checks if time needs to change from 12 - 1
                             if (clockMinute == 5 && clockHour == 12)
@@ -389,136 +338,13 @@ namespace Multitasking
                             typingTimer = TypingTimerReset;
                         }
                     }
-
-
                     break;
-
-                case GameDay.Day2:
-                    //Day Two Enemy Spawn Logic
-                    if (enemyList.Count == 0)
-                    {
-                        for (int i = 0; i < 6; i++)
-                        {
-                            int enemyPos = EnemyDist;
-                            ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1050 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
-                            enemyList.Add(newEnemy);
-                        }
-                    }
-                    else if (enemyTimer <= 0)
-                    {
-
-                        if (swapRow)
-                        {
-                            for (int i = 0; i < 10; i++)
-                            {
-                                int enemyPos = EnemyDist;
-                                ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(990 + (int)(i * EnemyDist), 200, 60, 60), screenHeight, screenWidth, player, playerBulletImg);
-                                enemyList.Add(newEnemy);
-                            }
-                            swapRow = false;
-                        }
-                        else
-                        {
-                            for (int i = 0; i < 7; i++)
-                            {
-                                int enemyPos = EnemyDist;
-                                ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
-                                enemyList.Add(newEnemy);
-                            }
-                            swapRow = true;
-                        }
-
-                        enemyTimer = EnemySpawnTime;
-                        boredomMeterWidth += 40;
-                    }
-                    break;
-
             }
+            
 
 
-            //Enemy collision check
-            foreach(ArcadeEnemy enemy in enemyList)
-            {
-                if(enemy.IsAlive)
-                {
-                    foreach(ArcadeProjectile projectile in player.Projectiles)
-                    {
-                        if(projectile.CheckCollision(enemy))
-                        {
-                            enemy.IsAlive = false;
-                            projectile.Active = false;
-                            score += 10;
-                            boredomMeterWidth -= 10;
-                        }
-                    }
-                }
-            }
-
-            //Temp code to swap to GameOver
-            if(SingleKeyPress(currentKeyboardState, Keys.Enter))
-            {
-                currentState = GameState.GameOver;
-                loseMessage = "(You're debugging right now aren't you?)";
-            }
-
-            player.Update(gameTime);
-
-            //Updates every enemy
-            foreach(ArcadeEnemy e in enemyList)
-            {
-                if(e.IsAlive)
-                {
-                    e.Update(gameTime);
-                }
-            }
-
-            //player collision check
-            foreach(ArcadeEnemy e in enemyList)
-            {
-                foreach(ArcadeProjectile projectile in e.projectiles)
-                {
-                    projectile.Update(gameTime);
-                    if(projectile.CheckCollision(player))
-                    {
-                        player.IsAlive = false;
-                        projectile.Active = false;
-                    }
-                }
-            }
-
-            //updates the player's projectiles
-            foreach(ArcadeProjectile projectile in player.Projectiles)
-            {
-                if(projectile.Active)
-                {
-                    projectile.Update(gameTime);
-                }
-
-            }
-
-            //Is enemies reach the player game over
-            foreach(ArcadeEnemy e in enemyList)
-            {
-                if(e.position.Y >= screenHeight - 200)
-                {
-                    currentState = GameState.GameOver;
-                }
-            }
-
-            //If the player dies game over
-            if(!player.IsAlive)
-            {
-                currentState = GameState.GameOver;
-                loseMessage = "(You destroyed your computer and got fired)";
-            }
-
-            // If boredom meter fills game over
-            if (boredomMeterWidth >= maxBoredom)
-            {
-                currentState = GameState.GameOver;
-                loseMessage = "(You resigned from your job)";
-            }
         }
+            
 
         public void UpdateEndless(KeyboardState currentKeyboardState, MouseState currentMouseState, GameTime gameTime)
         {
@@ -652,7 +478,7 @@ namespace Multitasking
 
         // DRAW METHODS
         public void DrawMainMenu(SpriteBatch spriteBatch)
-        {
+        { 
             _spriteBatch.DrawString(menuFont, "multitasking", new Vector2((screenWidth / 2) - (menuFont.MeasureString("multitasking").X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, "by.....................omni_absence", new Vector2((screenWidth / 2) - (typingFont.MeasureString("by.....................omni_absence").X / 2), 400), backgroundColor);
             _spriteBatch.DrawString(typingFont, "ENTER.........................start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.........................start").X / 2), 500), Color.White);
@@ -732,59 +558,15 @@ namespace Multitasking
             //Reset the windows to the right sizes because the demo messes them up otherwise
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
-            boredomMeterBorder = new Rectangle((screenWidth / 2) + 125, 60, maxBoredom, 30);
-            boredomMeter = new Rectangle(boredomMeterBorder.X, boredomMeterBorder.Y, boredomMeterWidth, boredomMeterBorder.Height);
-            
 
             //Temp code to visualize the two game window
             ShapeBatch.Box(typingWindow, Color.LightGray);
             ShapeBatch.Box(shooterWindow, Color.White);
-            ShapeBatch.BoxOutline(boredomMeterBorder, Color.White);
-            ShapeBatch.Box(boredomMeter, Color.White);
 
             _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
-            _spriteBatch.DrawString(typingFont, "Space Game Again TM", new Vector2(1200, 100), Color.Black);
-            _spriteBatch.DrawString(typingFont, $"Score: {score}", new Vector2(1000, 100), Color.Blue);
-            _spriteBatch.DrawString(typingFont, "boredom", new Vector2(boredomMeterBorder.X + (float)(0.5 * boredomMeterBorder.Width) - (typingFont.MeasureString("boredom").X / 2), 30),  Color.White);
             _spriteBatch.DrawString(typingFont, String.Format("{0}:{1}0", clockHour, clockMinute), new Vector2(220, 100), Color.Blue);
 
-            // Draws player sprite
-            player.Draw(_spriteBatch, Color.White);
-
-            //draws each player projectile
-            foreach(ArcadeProjectile projectile in player.Projectiles)
-            {
-                if(projectile.Active)
-                {
-                    projectile.Draw(_spriteBatch, Color.White);
-                }
-            }
-
-            //Draws each enemy
-            foreach(ArcadeEnemy e in enemyList)
-            {
-                if(e.IsAlive)
-                {
-                    e.Draw(_spriteBatch, Color.White);
-                }
-
-            }
-
-            //Draws each enemy projectile
-            foreach(ArcadeEnemy e in enemyList)
-            {
-                foreach(ArcadeProjectile projectile in e.projectiles)
-                {
-                    if(projectile.Active)
-                    {
-                        projectile.Draw(_spriteBatch, Color.Red);
-                    }
-                }
-            }
-            
-            // boredom meter logic
-
-
+            shooterGame.DrawShooterGame(_spriteBatch, typingFont);
         }
 
         public void DrawEndless(SpriteBatch spriteBatch)
@@ -842,7 +624,7 @@ namespace Multitasking
         public void DrawGameOver(SpriteBatch spriteBatch)
         {
             _spriteBatch.DrawString(menuFont, "game over", new Vector2((screenWidth / 2) - (menuFont.MeasureString("game over").X / 2), 300), Color.White);
-            _spriteBatch.DrawString(typingFont, loseMessage, new Vector2((screenWidth / 2) - (typingFont.MeasureString(loseMessage).X / 2), 400), Color.White);
+            _spriteBatch.DrawString(typingFont, shooterGame.loseMessage, new Vector2((screenWidth / 2) - (typingFont.MeasureString(shooterGame.loseMessage).X / 2), 400), Color.White);
             _spriteBatch.DrawString(typingFont, "ENTER..........................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.....................main menu").X / 2), 500), Color.White);
             _spriteBatch.DrawString(typingFont, "TAB.....................leaderboard", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB.....................leaderboard").X / 2), 550), Color.White);
             _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 600), Color.White);
@@ -900,14 +682,9 @@ namespace Multitasking
 
         private void ResetGame()
         {
-            player.IsAlive = true;
-            enemyList.Clear();
-            player.Projectiles.Clear();
-            enemyTimer = EnemySpawnTime;
+            shooterGame.Reset();
             typingGame = new TypingGame(typingWindow);
-            score = 0;
-            swapRow = true;
-            boredomMeterWidth = 250;
+
         }
     }
 }
