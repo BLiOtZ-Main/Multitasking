@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using static System.Formats.Asn1.AsnWriter;
 using Microsoft.Xna.Framework.Graphics;
 using System.Reflection.Metadata;
+using System.ComponentModel.DataAnnotations;
 
 namespace Multitasking
 {
@@ -21,8 +22,12 @@ namespace Multitasking
         public const int EnemyDist = 70;
         public double enemyTimer;
         public double boredomTimer;
+        public double typingTimer;
         public const double EnemySpawnTime = 4;
         public const double BoredomTime = 0.5;
+        public const double TypingTimerReset = 4;
+        public int clockHour;
+        public int clockMinute;
         public const int maxBoredom = 500;
         public int boredomMeterWidth;
         public int score;
@@ -61,6 +66,9 @@ namespace Multitasking
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
             enemyTimer = EnemySpawnTime;
             boredomTimer = BoredomTime;
+            typingTimer = TypingTimerReset;
+            clockHour = 9;
+            clockMinute = 0;
 
             player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 50, 50), screenWidth, playerBulletImg);
             enemyList = new List<ArcadeEnemy>();
@@ -346,6 +354,9 @@ namespace Multitasking
             score = 0;
             swapRow = true;
             boredomMeterWidth = 250;
+            clockHour = 9;
+            clockMinute = 0;
+            typingTimer = TypingTimerReset;
         }
 
         public void DeathReset()
@@ -356,6 +367,46 @@ namespace Multitasking
             enemyTimer = EnemySpawnTime;
             score = 0;
             swapRow = true;
+        }
+
+        /// <summary>
+        /// Updates the clock in the top left
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void UpdateClock(GameTime gameTime)
+        {
+            typingTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            if (typingTimer <= 0)
+            {
+                // Only updates clock if it's not 5:00 pm
+                if (clockHour != 5)
+                {
+                    // Checks if time needs to change from 12 - 1
+                    if (clockMinute == 5 && clockHour == 12)
+                    {
+                        clockHour = 1;
+                        clockMinute = 0;
+                    }
+                    // Checks if the hour number needs to change
+                    else if (clockMinute == 5)
+                    {
+                        clockHour++;
+                        clockMinute = 0;
+                    }
+                    // Otherwise just increments minute
+                    else
+                    {
+                        clockMinute++;
+                    }
+
+                }
+                typingTimer = TypingTimerReset;
+            }
+        }
+
+        public String PrintClock()
+        {
+            return String.Format("{0}:{1}0", clockHour, clockMinute);
         }
 
 

@@ -55,10 +55,6 @@ namespace Multitasking
         public const int EnemyDist = 70;
         public double enemyTimer;
         public const double EnemySpawnTime = 4;
-        public double typingTimer;
-        public const double TypingTimerReset = 4;
-        public int clockHour;
-        public int clockMinute;
         public double time;
         public int timeFinal;
         public int score1 = 0;
@@ -91,9 +87,6 @@ namespace Multitasking
             screenWidth = _graphics.GraphicsDevice.Viewport.Width;
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
             enemyTimer = EnemySpawnTime;
-            typingTimer = TypingTimerReset;
-            clockHour = 9;
-            clockMinute = 0;
             time = 0;
 
             // important
@@ -312,43 +305,7 @@ namespace Multitasking
         public void UpdateDay(KeyboardState currentKeyboardState, MouseState currentMouseState, GameTime gameTime)
         {
             shooterGame.UpdateShooter(gameTime, currentDay);
-            typingTimer -= gameTime.ElapsedGameTime.TotalSeconds;
-
-            switch (currentDay)
-            {
-                case GameDay.Day1:
-                    // Day One clock
-                    if (typingTimer <= 0)
-                    {
-                        // Only updates clock if it's not 5:00 pm
-                        if (clockHour != 5)
-                        {
-                            // Checks if time needs to change from 12 - 1
-                            if (clockMinute == 5 && clockHour == 12)
-                            {
-                                clockHour = 1;
-                                clockMinute = 0;
-                            }
-                            // Checks if the hour number needs to change
-                            else if (clockMinute == 5)
-                            {
-                                clockHour++;
-                                clockMinute = 0;
-                            }
-                            // Otherwise just increments minute
-                            else
-                            {
-                                clockMinute++;
-                            }
-
-                        }
-                        typingTimer = TypingTimerReset;
-                    }
-                    break;
-            }
-            
-
-
+            shooterGame.UpdateClock(gameTime);
         }
             
 
@@ -572,7 +529,7 @@ namespace Multitasking
 
             _spriteBatch.Draw(spaceBackground, new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200), Color.White);
             _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
-            _spriteBatch.DrawString(typingFont, String.Format("{0}:{1}0", clockHour, clockMinute), new Vector2(220, 100), Color.Blue);
+            _spriteBatch.DrawString(typingFont, shooterGame.PrintClock(), new Vector2(220, 100), Color.Blue);
 
             shooterGame.DrawShooterGame(_spriteBatch, typingFont);
         }
