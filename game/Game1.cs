@@ -46,6 +46,7 @@ namespace Multitasking
         public Texture2D enemyImg;
         public Texture2D playerBulletImg;
         public Texture2D whitePixel;
+        public Texture2D spaceBackground;
         public Color backgroundColor = new Color(31, 0, 171);
 
         // numbers
@@ -122,6 +123,8 @@ namespace Multitasking
             enemyImg = Content.Load<Texture2D>("Turtle");
             playerBulletImg = Content.Load<Texture2D>("PlayerBullet");
             whitePixel = Content.Load<Texture2D>("WhitePixel");
+            spaceBackground = Content.Load<Texture2D>("NewSpaceBackground");
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -561,10 +564,12 @@ namespace Multitasking
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
 
+
             //Temp code to visualize the two game window
             ShapeBatch.Box(typingWindow, Color.LightGray);
             ShapeBatch.Box(shooterWindow, Color.White);
 
+            _spriteBatch.Draw(spaceBackground, new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200), Color.White);
             _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, String.Format("{0}:{1}0", clockHour, clockMinute), new Vector2(220, 100), Color.Blue);
 
