@@ -20,7 +20,9 @@ namespace Multitasking
         //Numbers
         public const int EnemyDist = 70;
         public double enemyTimer;
+        public double boredomTimer;
         public const double EnemySpawnTime = 4;
+        public const double BoredomTime = 0.5;
         public const int maxBoredom = 500;
         public int boredomMeterWidth;
         public int score;
@@ -58,6 +60,7 @@ namespace Multitasking
             screenWidth = _graphics.GraphicsDevice.Viewport.Width;
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
             enemyTimer = EnemySpawnTime;
+            boredomTimer = BoredomTime;
 
             player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 50, 50), screenWidth, playerBulletImg);
             enemyList = new List<ArcadeEnemy>();
@@ -72,6 +75,8 @@ namespace Multitasking
 
             //Timer to track when to spawn more enemies
             enemyTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            boredomTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            
 
             //Switch Statement for anything that changes between the days
             switch (currentDay)
@@ -124,7 +129,12 @@ namespace Multitasking
                         }
 
                         enemyTimer = EnemySpawnTime;
-                        boredomMeterWidth += 40;
+                    }
+
+                    if(boredomTimer <= 0)
+                    {
+                        boredomMeterWidth += 3;
+                        boredomTimer = BoredomTime;
                     }
 
                     break;
@@ -167,7 +177,12 @@ namespace Multitasking
                         }
 
                         enemyTimer = EnemySpawnTime;
-                        boredomMeterWidth += 40;
+                    }
+
+                    if (boredomTimer <= 0)
+                    {
+                        boredomMeterWidth += 3;
+                        boredomTimer = BoredomTime;
                     }
                     break;
 
