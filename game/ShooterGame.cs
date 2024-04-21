@@ -253,7 +253,9 @@ namespace Multitasking
             {
                 if (e.position.Y >= screenHeight - 200)
                 {
-                    game1.currentState = GameState.GameOver;
+                    boredomMeterWidth += 200;
+                    DeathReset();
+                    break;
                 }
             }
 

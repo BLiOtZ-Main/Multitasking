@@ -56,7 +56,7 @@ namespace Multitasking
         public double enemyTimer;
         public const double EnemySpawnTime = 4;
         public double typingTimer;
-        public const double TypingTimerReset = 6;
+        public const double TypingTimerReset = 4;
         public int clockHour;
         public int clockMinute;
         public double time;
@@ -312,6 +312,7 @@ namespace Multitasking
         public void UpdateDay(KeyboardState currentKeyboardState, MouseState currentMouseState, GameTime gameTime)
         {
             shooterGame.UpdateShooter(gameTime, currentDay);
+            typingTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
             switch (currentDay)
             {
@@ -340,8 +341,8 @@ namespace Multitasking
                                 clockMinute++;
                             }
 
-                            typingTimer = TypingTimerReset;
                         }
+                        typingTimer = TypingTimerReset;
                     }
                     break;
             }
