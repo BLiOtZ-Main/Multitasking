@@ -252,8 +252,8 @@ namespace Multitasking
             //If the player dies game over
             if (!player.IsAlive)
             {
-                game1.currentState = GameState.GameOver;
-                loseMessage = "(You destroyed your computer and got fired)";
+                boredomMeterWidth += 100;
+                DeathReset();
             }
 
             // If boredom meter fills game over
@@ -329,6 +329,16 @@ namespace Multitasking
             score = 0;
             swapRow = true;
             boredomMeterWidth = 250;
+        }
+
+        public void DeathReset()
+        {
+            player.IsAlive = true;
+            enemyList.Clear();
+            player.Projectiles.Clear();
+            enemyTimer = EnemySpawnTime;
+            score = 0;
+            swapRow = true;
         }
 
 
