@@ -51,7 +51,15 @@ namespace Multitasking
         
         public KeyboardState previousKeyboardState;
 
-
+        /// <summary>
+        /// ShooterGame constructor that is used to initialize all of the assets used, graphics settings, and a game1
+        /// object that allows us to use this code in Game1
+        /// </summary>
+        /// <param name="_graphics">Graphics manager for the graphics settings changes</param> 
+        /// <param name="playerImg">Player image asset</param> 
+        /// <param name="enemyImg">Enemy image asset</param> 
+        /// <param name="playerBulletImg">Player bullet asset</param> 
+        /// <param name="game1">Required Game1 object for initialization</param> 
         public ShooterGame(GraphicsDeviceManager _graphics, Texture2D playerImg, Texture2D enemyImg, Texture2D playerBulletImg, Game1 game1)
         {
             this.game1 = game1;
@@ -73,7 +81,12 @@ namespace Multitasking
             player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 50, 50), screenWidth, playerBulletImg);
             enemyList = new List<ArcadeEnemy>();
         }
-
+        /// <summary>
+        /// Update method for running the proper game logic that is used on the shooter side of the screen
+        /// Includes collision checking, inputs, enemy spawn logic, lose conditions, etc.
+        /// </summary>
+        /// <param name="gameTime">GameTime required for updating properly in game1</param> 
+        /// <param name="currentDay">Current day state that will be used when determining enemy spawn logic/themes</param> 
         public void UpdateShooter(GameTime gameTime, GameDay currentDay)
         {
             //Update input states
@@ -289,7 +302,12 @@ namespace Multitasking
             }
 
         }
-
+        /// <summary>
+        /// Draw method for creating the ui of the shooter game. The ui includes the box for the shooter game,
+        /// the boredom meter, player/enemy/projectiles sprites, etc.
+        /// </summary>
+        /// <param name="_spriteBatch">Necessary spritebatch that's required for drawing</param> 
+        /// <param name="typingFont">Font used when drawing labels for the shooter game</param> 
         public void DrawShooterGame(SpriteBatch _spriteBatch, SpriteFont typingFont)
         {
             //Ui Drawing
@@ -345,6 +363,10 @@ namespace Multitasking
             }
         }
 
+        /// <summary>
+        /// Reset method for restarting the game from scratch. Clears all lists / revives player, resets all timers,
+        /// resets all ui components, and resets enemy spawn logic
+        /// </summary>
         public void Reset()
         {
             player.IsAlive = true;
@@ -359,6 +381,10 @@ namespace Multitasking
             typingTimer = TypingTimerReset;
         }
 
+        /// <summary>
+        /// Death reset method for when a player is hit with a projectile. Revives player, clears all lists,
+        /// resets spawn logic for enemies, and resets score
+        /// </summary>
         public void DeathReset()
         {
             player.IsAlive = true;
@@ -372,7 +398,7 @@ namespace Multitasking
         /// <summary>
         /// Updates the clock in the top left
         /// </summary>
-        /// <param name="gameTime"></param>
+        /// <param name="gameTime">Required gametime method for gathering correct time values</param> 
         public void UpdateClock(GameTime gameTime)
         {
             typingTimer -= gameTime.ElapsedGameTime.TotalSeconds;
@@ -404,6 +430,10 @@ namespace Multitasking
             }
         }
 
+        /// <summary>
+        /// Formatted string used for the ui
+        /// </summary>
+        /// <returns>Returns a formatted string for the clock in the ui</returns> 
         public String PrintClock()
         {
             return String.Format("{0}:{1}0", clockHour, clockMinute);

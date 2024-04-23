@@ -68,6 +68,9 @@ namespace Multitasking
         public KeyboardState previousKeyboardState;
         public MouseState previousMouseState;
 
+        /// <summary>
+        /// Game1 constructor
+        /// </summary>
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -75,6 +78,11 @@ namespace Multitasking
             IsMouseVisible = true;
         }
 
+        /// <summary>
+        /// Initializes the height and width of the screen for gameplay. Also includes multiple
+        /// initializations for gameplay windows, game states, players/enemies, enemy movement logic,
+        /// and the actual gameplay loops for the shooter and typing games.
+        /// </summary>
         protected override void Initialize()
         {
             _graphics.PreferredBackBufferWidth = 1900;
@@ -100,7 +108,9 @@ namespace Multitasking
             swapRow = true;
             shooterGame = new ShooterGame(_graphics, playerImg, enemyImg, playerBulletImg, this);
         }
-
+        /// <summary>
+        /// Loads the assets to be used in the game, sprites and fonts are found here
+        /// </summary>
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -119,7 +129,11 @@ namespace Multitasking
             spaceBackground = Content.Load<Texture2D>("NewSpaceBackground");
 
         }
-
+        /// <summary>
+        /// Contains a switch for the basic gameplay loop / finite state machine. Has multiple
+        /// sub-methods for updating certain parts of the game, such as menus and gameplay loops
+        /// </summary>
+        /// <param name="gameTime">required GameTime object for update methods</param>
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) { Exit(); }
@@ -135,42 +149,42 @@ namespace Multitasking
             {
                 // main menu
                 case GameState.MainMenu:
-                    UpdateMainMenu(currentKeyboardState, currentMouseState);
+                    UpdateMainMenu(currentKeyboardState);
                     break;
 
                 // settings screen
                 case GameState.Settings:
-                    UpdateSettings(currentKeyboardState, currentMouseState);
+                    UpdateSettings(currentKeyboardState);
                     break;
 
                 // start of day screen
                 case GameState.DayStart:
-                    UpdateDayStart(currentKeyboardState, currentMouseState);
+                    UpdateDayStart(currentKeyboardState);
                     break;
 
                 // pre day message
                 case GameState.DayLetter:
-                    UpdateDayLetter(currentKeyboardState, currentMouseState);
+                    UpdateDayLetter(currentKeyboardState);
                     break;
 
                 //day gameplay
                 case GameState.Day:
-                    UpdateDay(currentKeyboardState, currentMouseState, gameTime);
+                    UpdateDay(gameTime);
                     break;
 
                 //endless gameplay
                 case GameState.Endless:
-                    UpdateEndless(currentKeyboardState, currentMouseState, gameTime);
+                    UpdateEndless(currentKeyboardState, gameTime);
                     break;
 
                 // game over screen
                 case GameState.GameOver:
-                    UpdateGameOver(currentKeyboardState, currentMouseState);
+                    UpdateGameOver(currentKeyboardState);
                     break;
 
                 //leaderboard screen
                 case GameState.LeaderBoard:
-                    UpdateLeaderBoard(currentKeyboardState, currentMouseState);
+                    UpdateLeaderBoard(currentKeyboardState);
                     break;
             }
 
@@ -180,7 +194,11 @@ namespace Multitasking
             // write code above
             base.Update(gameTime);
         }
-
+        /// <summary>
+        /// Draw method also contains a switch statement for the fsm, only drawing what's in that certain state
+        /// also contains a toggle for player godmode, which draws when it's active
+        /// </summary>
+        /// <param name="gameTime">required GameTime object for draw methods</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(backgroundColor);
@@ -188,6 +206,7 @@ namespace Multitasking
             ShapeBatch.Begin(GraphicsDevice);
             // write code below
 
+            // message for when god mode is enabled
             if (player.GodMode)
             {
                 _spriteBatch.DrawString(typingFont, "God Mode Enabled (Restart Game to Disable)", new Vector2(20, 20), Color.White);
@@ -197,42 +216,42 @@ namespace Multitasking
             {
                 // main menu
                 case GameState.MainMenu:
-                    DrawMainMenu(_spriteBatch);
+                    DrawMainMenu();
                     break;
 
                 // settings screen
                 case GameState.Settings:
-                    DrawSettings(_spriteBatch);
+                    DrawSettings();
                     break;
                 
                 // start of day screen
                 case GameState.DayStart:
-                    DrawDayStart(_spriteBatch);
+                    DrawDayStart();
                     break;
                 
                 // pre day message
                 case GameState.DayLetter:
-                    DrawDayLetter(_spriteBatch);
+                    DrawDayLetter();
                     break;
 
                 // gameplay
                 case GameState.Day:
-                    DrawDay(_spriteBatch);
+                    DrawDay();
                     break;
 
                 // endless
                 case GameState.Endless:
-                    DrawEndless(_spriteBatch);
+                    DrawEndless();
                     break;
 
                 // game over screen
                 case GameState.GameOver:
-                    DrawGameOver(_spriteBatch);
+                    DrawGameOver();
                     break;
 
                 // leaderboard screen
                 case GameState.LeaderBoard:
-                    DrawLeaderBoard(_spriteBatch);
+                    DrawLeaderBoard();
                     break;
             }
 
@@ -244,7 +263,12 @@ namespace Multitasking
 
 
         // UPDATE METHODS
-        public void UpdateMainMenu(KeyboardState currentKeyboardState, MouseState currentMouseState)
+
+        /// <summary>
+        /// Updates the main menu based on a key press to take you to other states
+        /// </summary>
+        /// <param name="currentKeyboardState">Used for user input (menu switching)</param>
+        public void UpdateMainMenu(KeyboardState currentKeyboardState)
         {
             if(SingleKeyPress(currentKeyboardState, Keys.Enter))
             {
@@ -260,21 +284,29 @@ namespace Multitasking
             {
                 currentState = GameState.Settings;
             }
-            if (SingleKeyPress(currentKeyboardState, Keys.OemTilde))
-            {
-                player.GodMode = true;
-            }
-        }
 
-        public void UpdateSettings(KeyboardState currentKeyboardState, MouseState currentMouseState)
+        }
+        /// <summary>
+        /// Updates the settings menu of the game
+        /// </summary>
+        /// <param name="currentKeyboardState">Used for user input (menu switching) or godmode toggle</param>
+        public void UpdateSettings(KeyboardState currentKeyboardState)
         {
             if(SingleKeyPress(currentKeyboardState, Keys.Tab))
             {
                 currentState = GameState.MainMenu;
             }
-        }
 
-        public void UpdateDayStart(KeyboardState currentKeyboardState, MouseState currentMouseState)
+            if (SingleKeyPress(currentKeyboardState, Keys.OemTilde))
+            {
+                player.GodMode = true;
+            }
+        }
+        /// <summary>
+        /// Updates the day selection menu
+        /// </summary>
+        /// <param name="currentKeyboardState">Used for user input (menu switching)</param>
+        public void UpdateDayStart(KeyboardState currentKeyboardState)
         {
             if(SingleKeyPress(currentKeyboardState, Keys.Space))
             {
@@ -289,8 +321,11 @@ namespace Multitasking
                 currentDay--;
             }
         }
-
-        public void UpdateDayLetter(KeyboardState currentKeyboardState, MouseState currentMouseState)
+        /// <summary>
+        /// Updates the current letter of the typing game
+        /// </summary>
+        /// <param name="currentKeyboardState">Used for user input (menu switching)</param>
+        public void UpdateDayLetter(KeyboardState currentKeyboardState)
         {
             currentState = typingGame.UpdateDayLetter(currentState);
 
@@ -301,15 +336,22 @@ namespace Multitasking
                 typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
             }
         }
-
-        public void UpdateDay(KeyboardState currentKeyboardState, MouseState currentMouseState, GameTime gameTime)
+        /// <summary>
+        /// Updates the gameplay loop for a day in the game
+        /// </summary>
+        /// <param name="gameTime">GameTime object used for updating the clock/shooter</param>
+        public void UpdateDay(GameTime gameTime)
         {
             shooterGame.UpdateShooter(gameTime, currentDay);
             shooterGame.UpdateClock(gameTime);
         }
             
-
-        public void UpdateEndless(KeyboardState currentKeyboardState, MouseState currentMouseState, GameTime gameTime)
+        /// <summary>
+        /// Updates the entire gameplay loop for endless
+        /// </summary>
+        /// <param name="currentKeyboardState">Checks for user input (debug purposes)</param>
+        /// <param name="gameTime">GameTime object used for timer logic</param>
+        public void UpdateEndless(KeyboardState currentKeyboardState, GameTime gameTime)
         {
             enemyTimer -= gameTime.ElapsedGameTime.TotalSeconds;
             time += gameTime.ElapsedGameTime.TotalSeconds;
@@ -417,8 +459,11 @@ namespace Multitasking
 
 
         }
-
-        public void UpdateGameOver(KeyboardState currentKeyboardState, MouseState currentMouseState)
+        /// <summary>
+        /// Update for the game over screen
+        /// </summary>
+        /// <param name="currentKeyboardState">Used for user input (menu switching)</param>
+        public void UpdateGameOver(KeyboardState currentKeyboardState)
         {
             if(SingleKeyPress(currentKeyboardState, Keys.Enter))
             {
@@ -429,8 +474,11 @@ namespace Multitasking
                 currentState = GameState.LeaderBoard;
             }
         }
-
-        public void UpdateLeaderBoard(KeyboardState currentKeyboardState, MouseState currentMouseState)
+        /// <summary>
+        /// Updates the leaderboard menu
+        /// </summary>
+        /// <param name="currentKeyboardState">Used for user input (menu switching)</param>
+        public void UpdateLeaderBoard(KeyboardState currentKeyboardState)
         {
             if (SingleKeyPress(currentKeyboardState, Keys.Enter))
             {
@@ -440,7 +488,10 @@ namespace Multitasking
 
 
         // DRAW METHODS
-        public void DrawMainMenu(SpriteBatch spriteBatch)
+        /// <summary>
+        /// Draws out the various icons / instructions for the main menu
+        /// </summary>
+        public void DrawMainMenu()
         { 
             _spriteBatch.DrawString(menuFont, "multitasking", new Vector2((screenWidth / 2) - (menuFont.MeasureString("multitasking").X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, "by.....................omni_absence", new Vector2((screenWidth / 2) - (typingFont.MeasureString("by.....................omni_absence").X / 2), 400), backgroundColor);
@@ -451,56 +502,66 @@ namespace Multitasking
             ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("by.....................omni_absence").X / 2 - 8, 400, (int)typingFont.MeasureString("by.....................omni_absence").X + 16, 35), new Color(255, 255, 255));
 
         }
-
-        public void DrawSettings(SpriteBatch spriteBatch)
+        /// <summary>
+        /// Draws out the various icons/instructions for the settings
+        /// </summary>
+        public void DrawSettings()
         {
             _spriteBatch.DrawString(menuFont, "settings", new Vector2((screenWidth / 2) - (menuFont.MeasureString("settings").X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, "TILDE(`)....................GodMode", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TILDE(`)....................GodMode").X / 2), 450), Color.White);
             _spriteBatch.DrawString(typingFont, "TAB............................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB............................menu").X / 2), 500), Color.White);
             _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 550), Color.White);
         }
-
-        public void DrawDayStart(SpriteBatch spriteBatch)
+        /// <summary>
+        /// Contains a switch statement for managing the different days that will
+        /// be displayed by the DrawDayStartManager method
+        /// </summary>
+        public void DrawDayStart()
         {
             switch(currentDay)
             {
                 case GameDay.Day1:
-                    DrawDayStartManager(spriteBatch, 1, "12.20.1999", "post payday blues");
+                    DrawDayStartManager(1, "12.20.1999", "post payday blues");
                     break;
                 case GameDay.Day2:
-                    DrawDayStartManager(spriteBatch, 2, "12.21.1999", "???");
+                    DrawDayStartManager(2, "12.21.1999", "???");
                     break;
                 case GameDay.Day3:
-                    DrawDayStartManager(spriteBatch, 3, "12.22.1999", "update day");
+                    DrawDayStartManager(3, "12.22.1999", "update day");
                     break;
                 case GameDay.Day4:
-                    DrawDayStartManager(spriteBatch, 4, "12.23.1999", "millenium bug");
+                    DrawDayStartManager(4, "12.23.1999", "millenium bug");
                     break;
                 case GameDay.Day5:
-                    DrawDayStartManager(spriteBatch, 5, "12.24.1999", "holiday party");
+                    DrawDayStartManager(5, "12.24.1999", "holiday party");
                     break;
                 case GameDay.Day6:
-                    DrawDayStartManager(spriteBatch, 6, "12.25.1999", "a blue screen of death christmas");
+                    DrawDayStartManager(6, "12.25.1999", "a blue screen of death christmas");
                     break;
                 case GameDay.Day7:
-                    DrawDayStartManager(spriteBatch, 7, "12.27.1999", "prod notes");
+                    DrawDayStartManager(7, "12.27.1999", "prod notes");
                     break;
                 case GameDay.Day8:
-                    DrawDayStartManager(spriteBatch, 8, "12.28.1999", "CAPS LOCK");
+                    DrawDayStartManager(8, "12.28.1999", "CAPS LOCK");
                     break;
                 case GameDay.Day9:
-                    DrawDayStartManager(spriteBatch, 9, "12.29.1999", "???");
+                    DrawDayStartManager(9, "12.29.1999", "???");
                     break;
                 case GameDay.Day10:
-                    DrawDayStartManager(spriteBatch, 10, "12.30.1999", "???");
+                    DrawDayStartManager(10, "12.30.1999", "???");
                     break;
                 case GameDay.Day11:
-                    DrawDayStartManager(spriteBatch, 11, "12.31.1999", "payday");
+                    DrawDayStartManager(11, "12.31.1999", "payday");
                     break;
             }
         }
-
-        public void DrawDayStartManager(SpriteBatch spriteBatch, int dayNumber, String date, String dayName)
+        /// <summary>
+        /// Draws the menu for selecting a day (level select)
+        /// </summary>
+        /// <param name="dayNumber">Number used in the selected day</param>
+        /// <param name="date">Flavor text for use in the selected day</param>
+        /// <param name="dayName">Name of the day that is selected</param>
+        public void DrawDayStartManager(int dayNumber, String date, String dayName)
         {
             _spriteBatch.DrawString(menuFont, "day " + dayNumber, new Vector2((screenWidth / 2) - (menuFont.MeasureString("day " + dayNumber).X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, dayName, new Vector2((screenWidth / 2) - (typingFont.MeasureString(dayName).X / 2), 400), backgroundColor);
@@ -511,12 +572,18 @@ namespace Multitasking
             ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString(dayName).X / 2 - 8, 400, (int)typingFont.MeasureString(dayName).X + 16, 35), new Color(255, 255, 255));
         }
 
-        public void DrawDayLetter(SpriteBatch spriteBatch)
+        /// <summary>
+        /// Draws the letter for typing in the day
+        /// </summary>
+        public void DrawDayLetter()
         {
             typingGame.DrawDayLetter(_spriteBatch, typingFont, typingFontBold, whitePixel);
         }
 
-        public void DrawDay(SpriteBatch spriteBatch)
+        /// <summary>
+        /// Draws the different windows and indicators for a day, as well as the shooter game
+        /// </summary>
+        public void DrawDay()
         {
             //Reset the windows to the right sizes because the demo messes them up otherwise
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
@@ -533,8 +600,11 @@ namespace Multitasking
 
             shooterGame.DrawShooterGame(_spriteBatch, typingFont);
         }
-
-        public void DrawEndless(SpriteBatch spriteBatch)
+        /// <summary>
+        /// Draws the endless gamemode using the different windows and indicators for a day
+        /// Also draws out many ui features for the game
+        /// </summary>
+        public void DrawEndless()
         {
             //Reset the windows to the right sizes because the demo messes them up otherwise
             typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
@@ -551,42 +621,12 @@ namespace Multitasking
             _spriteBatch.DrawString(typingFont, $"Score: {score}", new Vector2(1000, 100), Color.Blue);
             _spriteBatch.DrawString(typingFont, $"Time: {timeFinal}", new Vector2(1550, 100), Color.Blue);
 
-            // Draws player sprite
-            player.Draw(_spriteBatch, Color.White);
-
-            //draws each player projectile
-            foreach (ArcadeProjectile projectile in player.Projectiles)
-            {
-                if (projectile.Active)
-                {
-                    projectile.Draw(_spriteBatch, Color.White);
-                }
-            }
-
-            //Draws each enemy
-            foreach (ArcadeEnemy e in enemyList)
-            {
-                if (e.IsAlive)
-                {
-                    e.Draw(_spriteBatch, Color.White);
-                }
-
-            }
-
-            //Draws each enemy projectile
-            foreach (ArcadeEnemy e in enemyList)
-            {
-                foreach (ArcadeProjectile projectile in e.projectiles)
-                {
-                    if (projectile.Active)
-                    {
-                        projectile.Draw(_spriteBatch, Color.Red);
-                    }
-                }
-            }
+            shooterGame.DrawShooterGame(_spriteBatch, typingFont);
         }
-
-        public void DrawGameOver(SpriteBatch spriteBatch)
+        /// <summary>
+        /// Draws the game over screen + instructions for where the player can go
+        /// </summary>
+        public void DrawGameOver()
         {
             _spriteBatch.DrawString(menuFont, "game over", new Vector2((screenWidth / 2) - (menuFont.MeasureString("game over").X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, shooterGame.loseMessage, new Vector2((screenWidth / 2) - (typingFont.MeasureString(shooterGame.loseMessage).X / 2), 400), Color.White);
@@ -596,7 +636,7 @@ namespace Multitasking
         }
 
         //placeholder for what leaderboard might look like when finished
-        public void DrawLeaderBoard(SpriteBatch spriteBatch)
+        public void DrawLeaderBoard()
         {
             
             if (score > score1)
@@ -617,6 +657,7 @@ namespace Multitasking
             _spriteBatch.DrawString(menuFont, "leaderboard", new Vector2((screenWidth / 2) - (menuFont.MeasureString("leaderboard").X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, "FIRST........................." + score1, new Vector2((screenWidth / 2) - (typingFont.MeasureString("FIRST.........................").X / 2), 500), Color.White);
             _spriteBatch.DrawString(typingFont, "SECOND........................" + score2, new Vector2((screenWidth / 2) - (typingFont.MeasureString("SECOND........................").X / 2), 550), Color.White);
+            _spriteBatch.DrawString(typingFont, "THIRD........................." + score3, new Vector2((screenWidth / 2) - (typingFont.MeasureString("THIRD.........................").X / 2), 600), Color.White);
             _spriteBatch.DrawString(typingFont, "THIRD........................." + score3, new Vector2((screenWidth / 2) - (typingFont.MeasureString("THIRD.........................").X / 2), 600), Color.White);
             _spriteBatch.DrawString(typingFont, "ENTER..........................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.....................main menu").X / 2), 700), Color.White);
             _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 750), Color.White);

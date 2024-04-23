@@ -30,10 +30,9 @@ namespace Multitasking
         /// <summary>
         /// public parameterized constructor that creates an Arcade Player object
         /// </summary>
-        /// <param name="texture"></param>
-        /// <param name="position"></param>
-        /// <param name="windowHeight"></param>
-        /// <param name="windowWidth"></param>
+        /// <param name="texture"></param> texture for the player object
+        /// <param name="position"></param> position for the player object (used in other logic)
+        /// <param name="windowWidth"></param> window width integer used for screen wrap logic
         public ArcadePlayer(Texture2D texture, Rectangle position, int windowWidth, Texture2D projectileTexture)
             : base(texture, position)
         {
@@ -61,18 +60,26 @@ namespace Multitasking
             get { return isAlive; }
             set { isAlive = value; }
         }
-
+        /// <summary>
+        /// get property for the list of projectiles
+        /// </summary>
         public List<ArcadeProjectile> Projectiles
         {
             get { return projectiles; }
         }
-
+        /// <summary>
+        /// get/set property for GodMode checks in other
+        /// methods
+        /// </summary>
         public bool GodMode
         {
             get { return godMode; }
             set { godMode = value; }
         }
-
+        /// <summary>
+        /// Update method for player. Includes the logic necessary for movement/auto firing
+        /// </summary>
+        /// <param name="gameTime"> required GameTime object for update methods </param> 
         public override void Update(GameTime gameTime)
         {
             // Allows player to move left and right using

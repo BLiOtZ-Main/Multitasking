@@ -39,17 +39,16 @@ namespace Multitasking
         private Random rng = new Random();
 
         //List of all enemies
-       
-
         public List<ArcadeProjectile> projectiles;
 
         /// <summary>
-        /// public parameterized constructor for arcade enemies
+        /// public parameterized constructor for arcade enemies.
+        /// includes references to a player/projectile object, as well as movement logic variables
         /// </summary>
-        /// <param name="texture"></param>
-        /// <param name="position"></param>
-        /// <param name="windowHeight"></param>
-        /// <param name="windowWidth"></param>
+        /// <param name="texture">texture for an enemy</param>
+        /// <param name="position">position of an enemy (used for hitboxes as well)</param>
+        /// <param name="windowHeight">window height for downscrolling logic</param>
+        /// <param name="windowWidth">window width for downscrolling logic</param>
         public ArcadeEnemy (Texture2D texture, Rectangle position, int windowHeight, int windowWidth, ArcadePlayer player, Texture2D projectileTexture)
             : base(texture, position)
         {
@@ -80,15 +79,10 @@ namespace Multitasking
         public bool IsAlive { get { return isAlive; } set {  isAlive = value;  } }
 
         /// <summary>
-        /// Property to get the list of enemies
+        /// Update method. Updates different aspects of the enemies, such as movement and shooting
+        /// as well as a check on whether their projectiles hit a player
         /// </summary>
-
-
-
-        /// <summary>
-        /// Update method
-        /// </summary>
-        /// <param name="gameTime"></param>
+        /// <param name="gameTime">required GameTime object in update methods</param>
         public override void Update(GameTime gameTime)
         {
             //Checks if a projectile collides
