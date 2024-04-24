@@ -17,8 +17,8 @@ namespace Multitasking
         /// <summary>
         /// Protected parameterized constructor
         /// </summary>
-        /// <param name="texture"></param>
-        /// <param name="position"></param>
+        /// <param name="texture">Asset passed in from a child class</param>
+        /// <param name="position">Position passed in from a child class</param>
         protected ArcadeGameObject (Texture2D texture, Rectangle position)
         {
             this.texture = texture;
@@ -29,8 +29,8 @@ namespace Multitasking
         /// Virtual method for drawing a SpriteBatch,
         /// can be overridden by child classes
         /// </summary>
-        /// <param name="sb"></param>
-        /// <param name="color"></param>
+        /// <param name="sb">Required SpriteBatch object for drawing</param>
+        /// <param name="color">Color to be used in the draw method</param>
         public virtual void Draw(SpriteBatch sb, Color color)
         {
             sb.Draw(texture, position, color);
@@ -40,7 +40,7 @@ namespace Multitasking
         /// Implemented by child classes to update themselves
         /// for the current frame
         /// </summary>
-        /// <param name="gameTime"></param>
+        /// <param name="gameTime">Required GameTime object for update methods</param>
         public abstract void Update(GameTime gameTime);
     }
 }

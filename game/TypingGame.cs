@@ -63,9 +63,9 @@ namespace Multitasking
         {
             get
             {
-                if(currentCharIndex < CurrentPrompt[currentLineIndex].Length - 1) 
+                if(currentCharIndex < CurrentPrompt[currentLineIndex].Length) 
                     return LineState.Body;
-                else if(currentCharIndex == CurrentPrompt[currentLineIndex].Length - 1) 
+                else if(currentCharIndex == CurrentPrompt[currentLineIndex].Length) 
                     return LineState.LastChar;
                 else 
                     return LineState.End;
@@ -114,42 +114,14 @@ namespace Multitasking
             }
             else
             {
-                while(letterPrompt[currentLineIndex].Length == 0)
-                {
-                    MoveToNewLine();
-                }
-
-                while(skippedCharacters.Contains(letterPrompt[currentLineIndex][currentCharIndex].ToString()))
-                {
-                    if(CurrentLineState == LineState.Body)
-                        currentCharIndex++;
-
-                    if(CurrentLineState == LineState.LastChar)
-                    {
-                        MoveToNewLine();
-                    }
-                }
-
-                endOfPrompt = CurrentPromptState != PromptState.End;
+                endOfPrompt = currentLineIndex != -1;
                 exceededKeysPressed = GetPressedLetterCount(keyboardState) <= 2;
                 pressingCurrentKey = keyboardState.IsKeyDown(GetKeyFromChar(letterPrompt[currentLineIndex].Substring(currentCharIndex, 1)));
                 changedKeyboardState = previousKeyBoardState != keyboardState;
 
                 if(endOfPrompt && exceededKeysPressed && pressingCurrentKey && changedKeyboardState)
                 {
-                    if(CurrentLineState == LineState.Body)
-                        currentCharIndex++;
-
-                    if(CurrentLineState == LineState.LastChar)
-                    {
-                        currentCharIndex = 0;
-
-                        if(CurrentPromptState == PromptState.LastLine)
-                            currentLineIndex = -1;
-                        else
-                            currentLineIndex++;
-                    }
-
+                    MoveToNextAvailableChar(currentState);
                 }
 
                 previousKeyBoardState = keyboardState;
@@ -175,7 +147,7 @@ namespace Multitasking
             {
                 while(letterPrompt[currentLineIndex].Length == 0)
                 {
-                    MoveToNewLine();
+                    MoveToNextLine();
                 }
 
                 while(skippedCharacters.Contains(letterPrompt[currentLineIndex][currentCharIndex].ToString()))
@@ -185,7 +157,7 @@ namespace Multitasking
 
                     if(CurrentLineState == LineState.LastChar)
                     {
-                        MoveToNewLine();
+                        MoveToNextLine();
                     }
                 }
 
@@ -222,22 +194,31 @@ namespace Multitasking
         {
             for(int i = 0; i < letterPrompt.Count; i++)
             {
+
                 if(i < currentLineIndex)
                 {
-                    Debug.WriteLine("currentChar: " + letterPrompt[i]);
                     spriteBatch.DrawString(font, letterPrompt[i], new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.Yellow);
                 }
                 else if(i > currentLineIndex)
                 {
-                    Debug.WriteLine("currentChar: " + letterPrompt[i]);
-                    if(letterPrompt[i] != "")
+                    letterPrompt[i] = letterPrompt[i].TrimEnd();
+                    bool flag = true;
+
+                    for(int j = 0; j < letterPrompt[i].Length; j++)
                     {
+                        if(!font.Characters.Contains(letterPrompt[i][j]))
+                        {
+                            flag = false;
+                        }
+                    }
+
+                    if(flag)
+                    { 
                         spriteBatch.DrawString(font, letterPrompt[i], new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.Gray);
                     }
                 }
                 else
                 {
-                    Debug.WriteLine("currentChar: " + letterPrompt[i]);
                     spriteBatch.DrawString(font, letterPrompt[i].Substring(0, letterPrompt[i].Length), new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), new Color(31, 0, 171));
                     spriteBatch.DrawString(fontBold, letterPrompt[i].Substring(0, currentCharIndex), new Vector2((typingWindow.Width / 2) - 400, lineSpacing * i + verticalOffset), Color.White);
                     spriteBatch.Draw(whitePixel, new Rectangle(0, lineSpacing * i + verticalOffset, (int)font.MeasureString(letterPrompt[i].Substring(0, currentCharIndex)).X + 550, 35), Color.White);
@@ -282,10 +263,9 @@ namespace Multitasking
             reader.ReadLine();
             String currentScrapedLine = reader.ReadLine();
 
-            while(currentScrapedLine == "" || currentScrapedLine.Substring(0, 2) != "##")
+            while(!currentScrapedLine.Contains("##"))
             {
                 letterPrompt.Add(currentScrapedLine);
-
                 currentScrapedLine = reader.ReadLine();
             }
 
@@ -316,14 +296,54 @@ namespace Multitasking
                 return Keys.None;
         }
 
-        public void MoveToNewLine()
+        public void MoveToNextAvailableChar(GameState currentState)
+        {
+            currentCharIndex++;
+
+            if(currentCharIndex == letterPrompt[currentLineIndex].Length)
+            {
+                MoveToNextLine();
+            }
+
+            while(skippedCharacters.Contains(letterPrompt[currentLineIndex][currentCharIndex].ToString()))
+            {
+                if(currentCharIndex == letterPrompt[currentLineIndex].Length)
+                {
+                    MoveToNextLine();
+                }
+                else
+                {
+                    currentCharIndex++;
+                }
+            }
+        }
+
+        public void MoveToNextLine()
         {
             currentCharIndex = 0;
 
-            if(CurrentPromptState == PromptState.LastLine)
+            if(currentLineIndex == letterPrompt.Count)
+            {
                 currentLineIndex = -1;
+            }
             else
+            {
+                Debug.WriteLine("New line!");
                 currentLineIndex++;
+            }
+
+            while(letterPrompt[currentLineIndex] == "")
+            {
+                if(currentLineIndex == letterPrompt.Count)
+                {
+                    currentLineIndex = -1;
+                }
+                else
+                {
+                    Debug.WriteLine("\tAnother New line!");
+                    currentLineIndex++;
+                }
+            }
         }
     }
 }
