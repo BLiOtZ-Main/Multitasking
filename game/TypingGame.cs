@@ -22,6 +22,7 @@ namespace Multitasking
         private List<List<String>> taskPrompts;
 
         // gameplay
+        private GameState currentState;
         private Dictionary<String, Keys> stringToKeys;
         private List<String> skippedCharacters;
         private List<Keys> letterKeys;
@@ -79,6 +80,7 @@ namespace Multitasking
             allPrompts = new List<String>();
             letterPrompt = new List<String>();
             taskPrompts = new List<List<String>>();
+            currentState = new GameState();
             skippedCharacters = new List<String>() { " ", ".", "!", "?", "'", ",", "^" };
             letterKeys = new List<Keys>() { Keys.A, Keys.B, Keys.C, Keys.D, Keys.E, Keys.F, Keys.G, Keys.H, Keys.I, Keys.J, Keys.K, Keys.L, Keys.M,
                                             Keys.N, Keys.O, Keys.P, Keys.Q, Keys.R, Keys.S, Keys.T, Keys.U, Keys.V, Keys.W, Keys.X, Keys.Y, Keys.Z};
@@ -94,6 +96,8 @@ namespace Multitasking
 
             // scrape files for prompts
             ScrapeFile("../../../../resources/prompts/day" + day + ".txt");
+            MoveToNextAvailableChar();
+            Debug.WriteLine("letterPromptCount: " + letterPrompt.Count);
         }
 
 
@@ -102,6 +106,7 @@ namespace Multitasking
         public GameState UpdateDayLetter(GameState currentState)
         {
             KeyboardState keyboardState = Keyboard.GetState();
+            this.currentState = currentState;
             bool endOfPrompt;
             bool exceededKeysPressed;
             bool pressingCurrentKey;
@@ -121,7 +126,7 @@ namespace Multitasking
 
                 if(endOfPrompt && exceededKeysPressed && pressingCurrentKey && changedKeyboardState)
                 {
-                    MoveToNextAvailableChar(currentState);
+                    TypeChar();
                 }
 
                 previousKeyBoardState = keyboardState;
@@ -296,52 +301,70 @@ namespace Multitasking
                 return Keys.None;
         }
 
-        public void MoveToNextAvailableChar(GameState currentState)
+        public void TypeChar()
         {
-            currentCharIndex++;
-
-            if(currentCharIndex == letterPrompt[currentLineIndex].Length)
+            if(currentLineIndex != -1)
             {
-                MoveToNextLine();
+                currentCharIndex++;
+                MoveToNextAvailableChar();
             }
+        }
 
-            while(skippedCharacters.Contains(letterPrompt[currentLineIndex][currentCharIndex].ToString()))
+        public void MoveToNextAvailableChar()
+        {
+            Debug.WriteLine("currentLineIndex: " + currentLineIndex);
+            if(currentLineIndex != -1)
             {
                 if(currentCharIndex == letterPrompt[currentLineIndex].Length)
                 {
                     MoveToNextLine();
                 }
-                else
+
+                if(currentLineIndex != -1)
                 {
-                    currentCharIndex++;
+                    while(skippedCharacters.Contains(letterPrompt[currentLineIndex][currentCharIndex].ToString()))
+                    {
+                        currentCharIndex++;
+
+                        if(currentCharIndex == letterPrompt[currentLineIndex].Length)
+                        {
+                            MoveToNextLine();
+                        }
+                    }
                 }
             }
         }
 
         public void MoveToNextLine()
         {
-            currentCharIndex = 0;
+            if(currentLineIndex != -1)
+            {
+                Debug.WriteLine("SPECIAL currentLineIndex: " + currentLineIndex);
+                currentCharIndex = 0;
 
-            if(currentLineIndex == letterPrompt.Count)
-            {
-                currentLineIndex = -1;
-            }
-            else
-            {
-                Debug.WriteLine("New line!");
-                currentLineIndex++;
-            }
-
-            while(letterPrompt[currentLineIndex] == "")
-            {
-                if(currentLineIndex == letterPrompt.Count)
+                if(currentLineIndex == letterPrompt.Count - 1)
                 {
                     currentLineIndex = -1;
                 }
                 else
                 {
-                    Debug.WriteLine("\tAnother New line!");
                     currentLineIndex++;
+                    MoveToNextAvailableChar();
+                }
+
+                if(currentLineIndex != -1)
+                {
+                    while(letterPrompt[currentLineIndex] == "")
+                    {
+                        if(currentLineIndex == letterPrompt.Count)
+                        {
+                            currentLineIndex = -1;
+                        }
+                        else
+                        {
+                            currentLineIndex++;
+                        }
+                    }
                 }
             }
         }
