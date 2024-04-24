@@ -12,9 +12,9 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace Multitasking
 {
-    public enum GameState { MainMenu, Settings, DayStart, DayLetter, Day, GameOver, LeaderBoard, Endless }
+    public enum GameState { MainMenu, Settings, DayStart, DayLetter, Day, GameOver, LeaderBoard, Endless,  Pause }
 
-    public enum GameDay { Day1, Day2, Day3, Day4, Day5, Day6, Day7, Day8, Day9, Day10, Day11 }
+    public enum GameDay { Day1, Day2, Day3, Day4, Day5, Day6, Day7, Day8, Day9, Day10, Day11, }
     
     
     public class Game1 : Game
@@ -172,6 +172,9 @@ namespace Multitasking
                 case GameState.LeaderBoard:
                     UpdateLeaderBoard(currentKeyboardState, currentMouseState);
                     break;
+                case GameState.Pause:
+                    UpdatePause(currentKeyboardState, currentMouseState);
+                    break;
             }
 
             previousKeyboardState = currentKeyboardState;
@@ -234,6 +237,10 @@ namespace Multitasking
                 case GameState.LeaderBoard:
                     DrawLeaderBoard(_spriteBatch);
                     break;
+
+                case GameState.Pause:
+                    DrawPause(_spriteBatch);
+                    break;
             }
 
             // write code above
@@ -274,6 +281,18 @@ namespace Multitasking
             }
         }
 
+        public void UpdatePause(KeyboardState currentKeyboardState, MouseState currentMouseState)
+        {
+            if (SingleKeyPress(currentKeyboardState, Keys.Enter))
+            {
+                currentState = GameState.Day;
+            }
+            if (SingleKeyPress(currentKeyboardState, Keys.Tab))
+            {
+                currentState = GameState.MainMenu;
+            }
+        }
+
         public void UpdateDayStart(KeyboardState currentKeyboardState, MouseState currentMouseState)
         {
             if(SingleKeyPress(currentKeyboardState, Keys.Space))
@@ -306,6 +325,11 @@ namespace Multitasking
         {
             shooterGame.UpdateShooter(gameTime, currentDay);
             shooterGame.UpdateClock(gameTime);
+
+            if (SingleKeyPress(currentKeyboardState, Keys.Enter))
+            {
+                currentState = GameState.Pause;
+            }
         }
             
 
@@ -459,6 +483,15 @@ namespace Multitasking
             _spriteBatch.DrawString(typingFont, "TAB............................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB............................menu").X / 2), 500), Color.White);
             _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 550), Color.White);
         }
+    
+
+        public void DrawPause(SpriteBatch spriteBatch)
+        {
+            _spriteBatch.DrawString(menuFont, "paused", new Vector2((screenWidth / 2) - (menuFont.MeasureString("paused").X / 2), 300), Color.White);
+            _spriteBatch.DrawString(typingFont, "Enter........................resume", new Vector2((screenWidth / 2) - (typingFont.MeasureString("Enter........................resume").X / 2), 450), Color.White);
+            _spriteBatch.DrawString(typingFont, "TAB............................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB............................menu").X / 2), 500), Color.White);
+            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 550), Color.White);
+        }
 
         public void DrawDayStart(SpriteBatch spriteBatch)
         {
@@ -525,13 +558,13 @@ namespace Multitasking
 
             //Temp code to visualize the two game window
             ShapeBatch.Box(typingWindow, Color.LightGray);
-            ShapeBatch.Box(shooterWindow, Color.White);
+            ShapeBatch.Box(shooterWindow, Color.White);  
 
             _spriteBatch.Draw(spaceBackground, new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200), Color.White);
             _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, shooterGame.PrintClock(), new Vector2(220, 100), Color.Blue);
 
-            shooterGame.DrawShooterGame(_spriteBatch, typingFont);
+            shooterGame.DrawShooterGame(_spriteBatch, typingFont, currentDay);
         }
 
         public void DrawEndless(SpriteBatch spriteBatch)
