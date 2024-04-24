@@ -319,7 +319,6 @@ namespace Multitasking
         /// <param name="_spriteBatch">Necessary spritebatch that's required for drawing</param> 
         /// <param name="typingFont">Font used when drawing labels for the shooter game</param> 
         public void DrawShooterGame(SpriteBatch _spriteBatch, SpriteFont typingFont)
-        public void DrawShooterGame(SpriteBatch _spriteBatch, SpriteFont typingFont)
         {
             //Ui Drawing
 

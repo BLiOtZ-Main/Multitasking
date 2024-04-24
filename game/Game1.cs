@@ -169,7 +169,7 @@ namespace Multitasking
 
                 //day gameplay
                 case GameState.Day:
-                    UpdateDay(gameTime);
+                    UpdateDay(gameTime, currentKeyboardState);
                     break;
 
                 //endless gameplay
@@ -187,7 +187,7 @@ namespace Multitasking
                     UpdateLeaderBoard(currentKeyboardState);
                     break;
                 case GameState.Pause:
-                    UpdatePause(currentKeyboardState, currentMouseState);
+                    UpdatePause(currentKeyboardState);
                     break;
             }
 
@@ -229,7 +229,7 @@ namespace Multitasking
                 
                 // start of day screen
                 case GameState.DayStart:
-                    DrawDayStart();
+                    DrawDayStart(_spriteBatch);
                     break;
                 
                 // pre day message
@@ -258,7 +258,7 @@ namespace Multitasking
                     break;
 
                 case GameState.Pause:
-                    DrawPause(_spriteBatch);
+                    DrawPause();
                     break;
             }
 
@@ -299,13 +299,30 @@ namespace Multitasking
         /// <param name="currentKeyboardState">Used for user input (menu switching) or godmode toggle</param>
         public void UpdateSettings(KeyboardState currentKeyboardState)
         {
-            if(SingleKeyPress(currentKeyboardState, Keys.Tab))
+            if (SingleKeyPress(currentKeyboardState, Keys.Tab))
             {
                 currentState = GameState.MainMenu;
             }
+        }
 
+        /// <summary>
+        /// Updates the pause menu of the game
+        /// </summary>
+        /// <param name="currentKeyboardState"></param>
+        public void UpdatePause(KeyboardState currentKeyboardState)
+        {
+            if (SingleKeyPress(currentKeyboardState, Keys.Enter))
+            {
+                currentState = GameState.Day;
+            }
 
-            public void UpdateDayStart(KeyboardState currentKeyboardState, MouseState currentMouseState)
+            if (SingleKeyPress(currentKeyboardState, Keys.Tab))
+            {
+                currentState = GameState.MainMenu;
+            }
+        }
+
+        public void UpdateDayStart(KeyboardState currentKeyboardState)
         {
             if(SingleKeyPress(currentKeyboardState, Keys.Space))
             {
@@ -339,7 +356,7 @@ namespace Multitasking
         /// Updates the gameplay loop for a day in the game
         /// </summary>
         /// <param name="gameTime">GameTime object used for updating the clock/shooter</param>
-        public void UpdateDay(GameTime gameTime)
+        public void UpdateDay(GameTime gameTime, KeyboardState currentKeyboardState)
         {
             shooterGame.UpdateShooter(gameTime, currentDay);
             shooterGame.UpdateClock(gameTime);
@@ -517,6 +534,13 @@ namespace Multitasking
             _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 550), Color.White);
         }
 
+        public void DrawPause()
+        {
+            _spriteBatch.DrawString(menuFont, "paused", new Vector2((screenWidth / 2) - (menuFont.MeasureString("paused").X / 2), 300), Color.White);
+            _spriteBatch.DrawString(typingFont, "Enter........................resume", new Vector2((screenWidth / 2) - (typingFont.MeasureString("Enter........................resume").X / 2), 450), Color.White);
+            _spriteBatch.DrawString(typingFont, "TAB............................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB............................menu").X / 2), 500), Color.White);
+            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 550), Color.White);
+        }
 
         public void DrawDayStart(SpriteBatch spriteBatch)
         {
@@ -600,7 +624,7 @@ namespace Multitasking
             _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, shooterGame.PrintClock(), new Vector2(220, 100), Color.Blue);
 
-            shooterGame.DrawShooterGame(_spriteBatch, typingFont, currentDay);
+            shooterGame.DrawShooterGame(_spriteBatch, typingFont);
         }
         /// <summary>
         /// Draws the endless gamemode using the different windows and indicators for a day
