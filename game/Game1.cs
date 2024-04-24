@@ -618,9 +618,8 @@ namespace Multitasking
 
             //Temp code to visualize the two game window
             ShapeBatch.Box(typingWindow, Color.LightGray);
-            ShapeBatch.Box(shooterWindow, Color.White);  
+            ShapeBatch.Box(shooterWindow, Color.White);
 
-            _spriteBatch.Draw(spaceBackground, new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200), Color.White);
             _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
             _spriteBatch.DrawString(typingFont, shooterGame.PrintClock(), new Vector2(220, 100), Color.Blue);
 

@@ -103,20 +103,8 @@ namespace Multitasking
             enemyTimer -= gameTime.ElapsedGameTime.TotalSeconds;
             boredomTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (drawLoad)
-            {
-                loadBarWidth += 1;
+            
 
-                if (loadBarWidth == loadBarMax)
-                {
-                    loadBarWidth = 0;
-                    drawLoad = false;
-                }
-
-                DeathReset();
-            }
-            else
-            {
                 //Switch Statement for anything that changes between the days
                 switch (currentDay)
                 {
@@ -217,7 +205,7 @@ namespace Multitasking
                         break;
 
                 }
-            }
+            
 
             //GameObject Updates
 
@@ -225,6 +213,19 @@ namespace Multitasking
             {
                 boredomMeterWidth += 3;
                 boredomTimer = BoredomTime;
+            }
+
+            if (drawLoad)
+            {
+                loadBarWidth += 1;
+
+                if (loadBarWidth == loadBarMax)
+                {
+                    loadBarWidth = 0;
+                    drawLoad = false;
+                }
+
+                DeathReset();
             }
 
             //Updates the Player
@@ -300,6 +301,7 @@ namespace Multitasking
             if (!player.IsAlive)
             {
                 boredomMeterWidth += 30;
+                loadBarWidth = 5;
                 drawLoad = true;
               
             }
@@ -321,6 +323,7 @@ namespace Multitasking
         public void DrawShooterGame(SpriteBatch _spriteBatch, SpriteFont typingFont)
         {
             //Ui Drawing
+            _spriteBatch.Draw(game1.spaceBackground, new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200), Color.White);
 
             //Creates/Resets the Boredom meter
             boredomMeterBorder = new Rectangle((screenWidth / 2) + 125, 60, maxBoredom, 30);
@@ -346,8 +349,7 @@ namespace Multitasking
             if (drawLoad)
             {
                 _spriteBatch.DrawString(typingFont, "Loading", new Vector2(loadMeterBorder.X + (float)(0.5 * loadMeterBorder.Width) - (typingFont.MeasureString("Loading").X / 2), 400), Color.White);
-                ShapeBatch.BoxOutline(loadMeterBorder, Color.White);
-                ShapeBatch.Box(loadMeter, Color.White);
+                _spriteBatch.Draw(game1.whitePixel, loadMeter, Color.White);
             }
             else
             {
