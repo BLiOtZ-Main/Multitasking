@@ -105,7 +105,7 @@ namespace Multitasking
             currentDay = GameDay.Day1;
             player = new ArcadePlayer(playerImg, new Rectangle(3 * (screenWidth / 4), screenHeight - 200, 50, 50), screenWidth, playerBulletImg);
             enemyList = new List<ArcadeEnemy>();
-            typingWindow = new Rectangle(0, 0, screenWidth, screenHeight);
+            typingWindow = new Rectangle(200, 100, screenWidth / 2, screenHeight - 200);
             typingGame = new TypingGame(typingWindow, 1);
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
             swapRow = true;
@@ -374,6 +374,7 @@ namespace Multitasking
         {
             shooterGame.UpdateShooter(gameTime, currentDay);
             shooterGame.UpdateClock(gameTime);
+            typingGame.UpdateDay();
 
             if (SingleKeyPress(currentKeyboardState, Keys.Enter))
             {
@@ -619,7 +620,7 @@ namespace Multitasking
         /// </summary>
         public void DrawDayLetter()
         {
-            typingGame.DrawDayLetter(_spriteBatch, typingFont, typingFontBold, whitePixel);
+            typingGame.DrawDayLetter(_spriteBatch, typingFont, typingFontBold, whitePixel, screenWidth, screenHeight);
         }
 
         /// <summary>
@@ -633,13 +634,12 @@ namespace Multitasking
 
 
             //Temp code to visualize the two game window
-            ShapeBatch.Box(typingWindow, Color.LightGray);
             ShapeBatch.Box(shooterWindow, Color.White);
 
-            _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
-            _spriteBatch.DrawString(typingFont, shooterGame.PrintClock(), new Vector2(220, 100), Color.Blue);
+            _spriteBatch.DrawString(typingFont, shooterGame.PrintClock(), new Vector2(75, 100), Color.Yellow);
 
             shooterGame.DrawShooterGame(_spriteBatch, typingFont);
+            typingGame.DrawDay(_spriteBatch, typingFont, typingFontBold, whitePixel);
         }
         /// <summary>
         /// Draws the endless gamemode using the different windows and indicators for a day
