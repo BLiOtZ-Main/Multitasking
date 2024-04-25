@@ -133,7 +133,6 @@ namespace Multitasking
             music = Content.Load<Song>(musicFile);
             MediaPlayer.Play(music);
             MediaPlayer.IsRepeating = true;
-            MediaPlayer.MediaStateChanged += MediaPlayer_MediaStateChanged;
         }
         /// <summary>
         /// Contains a switch for the basic gameplay loop / finite state machine. Has multiple
@@ -309,6 +308,14 @@ namespace Multitasking
             if (SingleKeyPress(currentKeyboardState, Keys.Tab))
             {
                 currentState = GameState.MainMenu;
+            }
+            if (SingleKeyPress(currentKeyboardState, Keys.Up))
+            {
+                MediaPlayer.Volume += 0.1f;
+            }
+            if (SingleKeyPress(currentKeyboardState, Keys.Down))
+            {
+                MediaPlayer.Volume -= 0.1f;
             }
         }
 
@@ -537,8 +544,10 @@ namespace Multitasking
         {
             _spriteBatch.DrawString(menuFont, "settings", new Vector2((screenWidth / 2) - (menuFont.MeasureString("settings").X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, "TILDE(`)....................GodMode", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TILDE(`)....................GodMode").X / 2), 450), Color.White);
-            _spriteBatch.DrawString(typingFont, "TAB............................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB............................menu").X / 2), 500), Color.White);
-            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 550), Color.White);
+            _spriteBatch.DrawString(typingFont, "UP ARROW..................VOLUME UP", new Vector2((screenWidth / 2) - (typingFont.MeasureString("UP ARROW..................VOLUME UP").X / 2), 500), Color.White);
+            _spriteBatch.DrawString(typingFont, "DOWN ARROW..............VOLUME DOWN", new Vector2((screenWidth / 2) - (typingFont.MeasureString("DOWN ARROW..............VOLUME DOWN").X / 2), 550), Color.White);
+            _spriteBatch.DrawString(typingFont, "TAB............................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB............................menu").X / 2), 600), Color.White);
+            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 650), Color.White);
         }
 
         public void DrawPause()
@@ -723,17 +732,6 @@ namespace Multitasking
             shooterGame.Reset();
             typingGame = new TypingGame(typingWindow, 1);
 
-        }
-        /// <summary>
-        /// Volume Control
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void MediaPlayer_MediaStateChanged(object sender, EventArgs e)
-        {
-            // 0.0f is silent, 1.0f is full volume
-            MediaPlayer.Volume -= 0.1f;
-            MediaPlayer.Play(music);
         }
     }
 }
