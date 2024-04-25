@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -36,6 +37,8 @@ namespace Multitasking
         public Rectangle boredomMeter;
         public string loseMessage;
         bool swapRow;
+        Song music;
+        string musicFile = "AdhesiveWombat - Night Shade  NO COPYRIGHT 8-bit Music";
 
         // assets
         public SpriteFont typingFont;
@@ -115,7 +118,7 @@ namespace Multitasking
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             // write code below
-
+            
 
             // assets
             typingFont = Content.Load<SpriteFont>("typingFont");
@@ -127,7 +130,10 @@ namespace Multitasking
             playerBulletImg = Content.Load<Texture2D>("PlayerBullet");
             whitePixel = Content.Load<Texture2D>("WhitePixel");
             spaceBackground = Content.Load<Texture2D>("NewSpaceBackground");
-
+            music = Content.Load<Song>(musicFile);
+            MediaPlayer.Play(music);
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.MediaStateChanged += MediaPlayer_MediaStateChanged;
         }
         /// <summary>
         /// Contains a switch for the basic gameplay loop / finite state machine. Has multiple
@@ -138,7 +144,8 @@ namespace Multitasking
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) { Exit(); }
             // write code below
-            
+            if (MediaPlayer.State == MediaState.Stopped) MediaPlayer.Play(music);
+            else if (MediaPlayer.State == MediaState.Paused) MediaPlayer.Resume();
 
             // update input states
             KeyboardState currentKeyboardState = Keyboard.GetState();
@@ -716,6 +723,17 @@ namespace Multitasking
             shooterGame.Reset();
             typingGame = new TypingGame(typingWindow, 1);
 
+        }
+        /// <summary>
+        /// Volume Control
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void MediaPlayer_MediaStateChanged(object sender, EventArgs e)
+        {
+            // 0.0f is silent, 1.0f is full volume
+            MediaPlayer.Volume -= 0.1f;
+            MediaPlayer.Play(music);
         }
     }
 }
