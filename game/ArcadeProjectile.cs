@@ -92,7 +92,7 @@ namespace Multitasking
             
             if (playerProjectile)
             {
-                if (position.Y > 100)
+                if (position.Y > 105)
                 {
                     //The projectile goes up
                     position.Y -= rng.Next(4,10);
@@ -105,7 +105,7 @@ namespace Multitasking
             //if the enemy is shooting
             else
             {
-                if (position.Y < 950)
+                if (position.Y < 910)
                 {
                     //The projectile goes down
                     position.Y += rng.Next(4,10);
