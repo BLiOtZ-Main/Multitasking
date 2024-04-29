@@ -257,9 +257,11 @@ namespace Multitasking
                     break;
 
                 // endless
+                /*
                 case GameState.Endless:
                     DrawEndless();
                     break;
+                */
 
                 // game over screen
                 case GameState.GameOver:
@@ -653,6 +655,7 @@ namespace Multitasking
         /// Draws the endless gamemode using the different windows and indicators for a day
         /// Also draws out many ui features for the game
         /// </summary>
+        /*
         public void DrawEndless()
         {
             //Reset the windows to the right sizes because the demo messes them up otherwise
@@ -672,6 +675,7 @@ namespace Multitasking
 
             shooterGame.DrawShooterGame(_spriteBatch, typingFont);
         }
+        */
         /// <summary>
         /// Draws the game over screen + instructions for where the player can go
         /// </summary>
@@ -687,21 +691,21 @@ namespace Multitasking
         
         public void DrawLeaderBoard()
         {
-            
-            if (score > score1)
+            int currentScore = score;
+            if (currentScore > score1)
             {
                 score3 = score2;
                 score2 = score1;
-                score1 = score;
+                score1 = currentScore;
             }
-            else if (score > score2 && score <= score1)
+            else if (currentScore > score2 && currentScore <= score1)
             {
                 score3 = score2;
-                score2 = score;
+                score2 = currentScore;
             }
-            else if (score > score3 && score < score1 && score <= score2)
+            else if (currentScore > score3 && currentScore < score1 && currentScore <= score2)
             {
-                score3 = score;
+                score3 = currentScore;
             }
             _spriteBatch.DrawString(menuFont, "leaderboard", new Vector2((screenWidth / 2) - (menuFont.MeasureString("leaderboard").X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, "FIRST........................." + score1, new Vector2((screenWidth / 2) - (typingFont.MeasureString("FIRST.........................").X / 2), 500), Color.White);

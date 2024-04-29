@@ -272,6 +272,7 @@ namespace Multitasking
                     if (projectile.CheckCollision(player))
                     {
                         soundEffects[0].Play();
+                        score -= 100;
                         player.IsAlive = false;
                         projectile.Active = false;
                     }
@@ -382,9 +383,6 @@ namespace Multitasking
                     }
                 }
             }
-   
-
-            
 
         }
 
@@ -408,7 +406,7 @@ namespace Multitasking
 
         /// <summary>
         /// Death reset method for when a player is hit with a projectile. Revives player, clears all lists,
-        /// resets spawn logic for enemies, and resets score
+        /// resets spawn logic for enemies
         /// </summary>
         public void DeathReset()
         {
@@ -416,7 +414,6 @@ namespace Multitasking
             enemyList.Clear();
             player.Projectiles.Clear();
             enemyTimer = EnemySpawnTime;
-            score = 0;
             swapRow = true;
         }
 
