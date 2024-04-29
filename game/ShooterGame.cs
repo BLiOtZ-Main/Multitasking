@@ -218,15 +218,7 @@ namespace Multitasking
 
             if (drawLoad)
             {
-                loadBarWidth += 1;
-
-                if (loadBarWidth == loadBarMax)
-                {
-                    loadBarWidth = 0;
-                    drawLoad = false;
-                }
-
-                DeathReset();
+                LoadScreen();
             }
 
             //Updates the Player
@@ -488,15 +480,16 @@ namespace Multitasking
 
         private void LoadScreen()
         {
-  
+
             loadBarWidth += 1;
 
-            if(loadBarWidth == loadBarMax)
+            if (loadBarWidth == loadBarMax)
             {
                 loadBarWidth = 0;
-                DeathReset();
                 drawLoad = false;
             }
+
+            DeathReset();
         }
     }
 }
