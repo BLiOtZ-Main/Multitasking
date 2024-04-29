@@ -187,10 +187,11 @@ namespace Multitasking
                     break;
 
                 //endless gameplay
+                /*
                 case GameState.Endless:
                     UpdateEndless(currentKeyboardState, gameTime);
                     break;
-
+                */
                 // game over screen
                 case GameState.GameOver:
                     UpdateGameOver(currentKeyboardState);
@@ -397,6 +398,7 @@ namespace Multitasking
         /// </summary>
         /// <param name="currentKeyboardState">Checks for user input (debug purposes)</param>
         /// <param name="gameTime">GameTime object used for timer logic</param>
+        /*
         public void UpdateEndless(KeyboardState currentKeyboardState, GameTime gameTime)
         {
             enemyTimer -= gameTime.ElapsedGameTime.TotalSeconds;
@@ -505,6 +507,7 @@ namespace Multitasking
 
 
         }
+        */
         /// <summary>
         /// Update for the game over screen
         /// </summary>
@@ -691,7 +694,7 @@ namespace Multitasking
         
         public void DrawLeaderBoard()
         {
-            int currentScore = score;
+            int currentScore = shooterGame.score;
             if (currentScore > score1)
             {
                 score3 = score2;
