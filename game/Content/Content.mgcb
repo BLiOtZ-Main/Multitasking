@@ -19,6 +19,12 @@
 /processorParam:Quality=Best
 /build:AdhesiveWombat - Night Shade  NO COPYRIGHT 8-bit Music.mp3
 
+#begin crash.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:crash.mp3
+
 #begin EnemyBullet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -30,6 +36,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:EnemyBullet.png
+
+#begin fire(enemy).mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:fire(enemy).mp3
 
 #begin Main Ship - Base - Full health.png
 /importer:TextureImporter

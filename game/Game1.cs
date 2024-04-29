@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -39,6 +40,9 @@ namespace Multitasking
         bool swapRow;
         Song music;
         string musicFile = "AdhesiveWombat - Night Shade  NO COPYRIGHT 8-bit Music";
+        List<SoundEffect> soundEffects;
+        string enemyShot = "fire(enemy)";
+        string die = "crash";
 
         // assets
         public SpriteFont typingFont;
@@ -79,6 +83,7 @@ namespace Multitasking
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            soundEffects = new List<SoundEffect>();
         }
 
         /// <summary>
@@ -133,6 +138,9 @@ namespace Multitasking
             music = Content.Load<Song>(musicFile);
             MediaPlayer.Play(music);
             MediaPlayer.IsRepeating = true;
+            MediaPlayer.Volume = 0.5f;
+            soundEffects.Add(Content.Load<SoundEffect>(die)); //0
+            soundEffects.Add(Content.Load<SoundEffect>(enemyShot)); //1
         }
         /// <summary>
         /// Contains a switch for the basic gameplay loop / finite state machine. Has multiple
@@ -372,7 +380,7 @@ namespace Multitasking
         /// <param name="gameTime">GameTime object used for updating the clock/shooter</param>
         public void UpdateDay(GameTime gameTime, KeyboardState currentKeyboardState)
         {
-            shooterGame.UpdateShooter(gameTime, currentDay);
+            shooterGame.UpdateShooter(gameTime, currentDay, soundEffects);
             shooterGame.UpdateClock(gameTime);
 
             if (SingleKeyPress(currentKeyboardState, Keys.Enter))
@@ -676,7 +684,7 @@ namespace Multitasking
             _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 600), Color.White);
         }
 
-        //placeholder for what leaderboard might look like when finished
+        
         public void DrawLeaderBoard()
         {
             

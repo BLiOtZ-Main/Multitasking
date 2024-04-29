@@ -10,6 +10,7 @@ using static System.Formats.Asn1.AsnWriter;
 using Microsoft.Xna.Framework.Graphics;
 using System.Reflection.Metadata;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Multitasking
 {
@@ -92,7 +93,7 @@ namespace Multitasking
         /// </summary>
         /// <param name="gameTime">GameTime required for updating properly in game1</param> 
         /// <param name="currentDay">Current day state that will be used when determining enemy spawn logic/themes</param> 
-        public void UpdateShooter(GameTime gameTime, GameDay currentDay)
+        public void UpdateShooter(GameTime gameTime, GameDay currentDay, List<SoundEffect> soundEffects)
         {
             //Update input states
             KeyboardState currentKeyboardState = Keyboard.GetState();
@@ -278,6 +279,7 @@ namespace Multitasking
                     projectile.Update(gameTime);
                     if (projectile.CheckCollision(player))
                     {
+                        soundEffects[0].Play();
                         player.IsAlive = false;
                         projectile.Active = false;
                     }
@@ -380,6 +382,7 @@ namespace Multitasking
                 {
                     foreach (ArcadeProjectile projectile in e.projectiles)
                     {
+                        
                         if (projectile.Active)
                         {
                             projectile.Draw(_spriteBatch, Color.Red);
