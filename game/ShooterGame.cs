@@ -341,7 +341,7 @@ namespace Multitasking
 
             //Draws Ui Labels
             _spriteBatch.DrawString(typingFont, "Space Game Again TM", new Vector2(1200, 100), Color.Black);
-            _spriteBatch.DrawString(typingFont, $"Score: {score}", new Vector2(1000, 100), Color.Blue);
+            _spriteBatch.DrawString(typingFont, $"Score: {score}", new Vector2(1000, 100), Color.Yellow);
             _spriteBatch.DrawString(typingFont, "boredom", new Vector2(boredomMeterBorder.X + (float)(0.5 * boredomMeterBorder.Width) - (typingFont.MeasureString("boredom").X / 2), 30), Color.White);
 
             //Gameplay Drawing
