@@ -225,11 +225,6 @@ namespace Multitasking
             ShapeBatch.Begin(GraphicsDevice);
             // write code below
 
-            // message for when god mode is enabled
-            if (shooterGame.player.GodMode)
-            {
-                _spriteBatch.DrawString(typingFont, "God Mode Enabled (Restart Game to Disable)", new Vector2(20, 20), Color.White);
-            }
             //FSM managing GameStates
             switch (currentState)
             {
@@ -484,7 +479,16 @@ namespace Multitasking
         public void DrawSettings()
         {
             _spriteBatch.DrawString(menuFont, "settings", new Vector2((screenWidth / 2) - (menuFont.MeasureString("settings").X / 2), 300), Color.White);
-            _spriteBatch.DrawString(typingFont, "TILDE(`)....................GodMode", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TILDE(`)....................GodMode").X / 2), 450), Color.White);
+            
+            if (shooterGame.player.GodMode == true)
+            {
+                _spriteBatch.DrawString(typingFont, "TILDE(`)....................GodMode", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TILDE(`)....................GodMode").X / 2), 450), Color.Yellow);
+            }
+            else
+            {
+                _spriteBatch.DrawString(typingFont, "TILDE(`)....................GodMode", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TILDE(`)....................GodMode").X / 2), 450), Color.White);
+            }
+
             _spriteBatch.DrawString(typingFont, "UP ARROW..................VOLUME UP", new Vector2((screenWidth / 2) - (typingFont.MeasureString("UP ARROW..................VOLUME UP").X / 2), 500), Color.White);
             _spriteBatch.DrawString(typingFont, "DOWN ARROW..............VOLUME DOWN", new Vector2((screenWidth / 2) - (typingFont.MeasureString("DOWN ARROW..............VOLUME DOWN").X / 2), 550), Color.White);
             _spriteBatch.DrawString(typingFont, "TAB............................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB............................menu").X / 2), 600), Color.White);

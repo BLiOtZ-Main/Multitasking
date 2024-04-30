@@ -269,6 +269,8 @@ namespace Multitasking
                 foreach (ArcadeProjectile projectile in e.projectiles)
                 {
                     projectile.Update(gameTime);
+                    
+
                     if (projectile.CheckCollision(player))
                     {
                         if (!player.GodMode)
@@ -379,7 +381,6 @@ namespace Multitasking
                 {
                     foreach (ArcadeProjectile projectile in e.projectiles)
                     {
-                        
                         if (projectile.Active)
                         {
                             projectile.Draw(_spriteBatch, Color.Red);
