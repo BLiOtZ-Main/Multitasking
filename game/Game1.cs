@@ -104,7 +104,7 @@ namespace Multitasking
             screenWidth = _graphics.GraphicsDevice.Viewport.Width;
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
             enemyTimer = EnemySpawnTime;
-            time = 0;
+            time = 1;
 
             // important
             currentState = GameState.MainMenu;
@@ -302,6 +302,7 @@ namespace Multitasking
             }
             if (SingleKeyPress(currentKeyboardState, Keys.LeftShift))
             {
+                time = 0;
                 currentState = GameState.Endless;
                 ResetGame();
             }
@@ -653,7 +654,6 @@ namespace Multitasking
         {
             shooterGame.Reset();
             typingGame = new TypingGame(typingWindow, 1);
-            time = 0;
         }
     }
 }
