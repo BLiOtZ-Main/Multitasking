@@ -280,7 +280,7 @@ namespace Multitasking
         /// </summary>
         /// <param name="filepath">the path to the text file</param>
         /// <param name="day">the current day</param>
-        public void ScrapeFile(String filepath, int day)
+        private void ScrapeFile(String filepath, int day)
         {
             // starts the StreamReader
             StreamReader reader = new StreamReader(filepath);
@@ -330,7 +330,7 @@ namespace Multitasking
         /// </summary>
         /// <param name="keyboardState">the player's current KeyboardState</param>
         /// <returns>the number of letters the player pressed this frame</returns>
-        public int GetPressedLetterCount(KeyboardState keyboardState)
+        private int GetPressedLetterCount(KeyboardState keyboardState)
         {
             // gathers every key the player pressed
             Keys[] pressedKeys = keyboardState.GetPressedKeys();
@@ -354,7 +354,7 @@ namespace Multitasking
         /// </summary>
         /// <param name="character">a character</param>
         /// <returns>the key associated with the character</returns>
-        public Keys GetKeyFromChar(String character)
+        private Keys GetKeyFromChar(String character)
         {
             character = character.ToLower();
 
@@ -367,7 +367,7 @@ namespace Multitasking
         /// <summary>
         /// types a character in the typing simulator
         /// </summary>
-        public void TypeChar()
+        private void TypeChar()
         {
             // checks if we are actually within a prompt
             if(currentLineIndex != -1)
@@ -384,7 +384,7 @@ namespace Multitasking
         /// this means ignoring spaces, punctuation, and 
         /// new lines.
         /// </summary>
-        public void MoveToNextAvailableChar()
+        private void MoveToNextAvailableChar()
         {
             // checks if we are actually within a prompt
             if(currentLineIndex != -1)
@@ -418,7 +418,7 @@ namespace Multitasking
         /// moves the current character to a new line
         /// and resets all variables accordingly.
         /// </summary>
-        public void MoveToNextLine()
+        private void MoveToNextLine()
         {
             // checks to make sure we are still in the prompt
             if(currentLineIndex != -1)
@@ -442,7 +442,7 @@ namespace Multitasking
                 if(currentLineIndex != -1)
                 {
                     // skips passed any empty lines
-                    while(CurrentPrompt[currentLineIndex] == "")
+                    while(CurrentPrompt[currentLineIndex] == "" && currentLineIndex != -1)
                     {
                         // if we hit the end of the prompt, update the line index accordingly
                         if(currentLineIndex == CurrentPrompt.Count)
