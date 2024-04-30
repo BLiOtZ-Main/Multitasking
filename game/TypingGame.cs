@@ -66,7 +66,7 @@ namespace Multitasking
             taskTwoPrompt = new List<String>();
             taskThreePrompt = new List<String>();
             currentState = new GameState();
-            skippedCharacters = new List<String>() { " ", ".", "!", "?", "'", ",", "^" };
+            skippedCharacters = new List<String>() { " ", ".", "!", "?", "'", ",", "^", "$" };
             letterKeys = new List<Keys>() { Keys.A, Keys.B, Keys.C, Keys.D, Keys.E, Keys.F, Keys.G, Keys.H, Keys.I, Keys.J, Keys.K, Keys.L, Keys.M,
                                             Keys.N, Keys.O, Keys.P, Keys.Q, Keys.R, Keys.S, Keys.T, Keys.U, Keys.V, Keys.W, Keys.X, Keys.Y, Keys.Z};
             stringToKeys = new Dictionary<string, Keys>() { { "a", Keys.A }, { "b", Keys.B }, { "c", Keys.C }, { "d", Keys.D }, { "e", Keys.E }, { "f", Keys.F },
@@ -427,7 +427,7 @@ namespace Multitasking
                 currentCharIndex = 0;
 
                 // if this is the end of the prompt, update the line index accordingly
-                if(currentLineIndex == letterPrompt.Count - 1)
+                if(currentLineIndex == CurrentPrompt.Count - 1)
                 {
                     currentLineIndex = -1;
                 }
@@ -442,17 +442,19 @@ namespace Multitasking
                 if(currentLineIndex != -1)
                 {
                     // skips passed any empty lines
-                    while(letterPrompt[currentLineIndex] == "")
+                    while(CurrentPrompt[currentLineIndex] == "")
                     {
                         // if we hit the end of the prompt, update the line index accordingly
-                        if(currentLineIndex == letterPrompt.Count)
+                        if(currentLineIndex == CurrentPrompt.Count)
                         {
                             currentLineIndex = -1;
                         }
                         // otherwise, just increment the line index
                         else
                         {
+                            Debug.WriteLine("========NEW LINE========== (empty line)");
                             currentLineIndex++;
+                            MoveToNextAvailableChar();
                         }
                     }
                 }
