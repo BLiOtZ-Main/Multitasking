@@ -36,7 +36,7 @@ namespace Multitasking
         public const int loadBarMax = 500;
 
         //Gameplay
-        private ArcadePlayer player;
+        public ArcadePlayer player;
         private List<ArcadeEnemy> enemyList;
         bool swapRow;
 
@@ -271,9 +271,13 @@ namespace Multitasking
                     projectile.Update(gameTime);
                     if (projectile.CheckCollision(player))
                     {
-                        soundEffects[0].Play();
-                        score -= 100;
-                        player.IsAlive = false;
+                        if (!player.GodMode)
+                        {
+                            soundEffects[0].Play();
+                            score -= 100;
+                            player.IsAlive = false;
+                        }
+
                         projectile.Active = false;
                     }
                 }
@@ -488,5 +492,6 @@ namespace Multitasking
 
             DeathReset();
         }
+
     }
 }

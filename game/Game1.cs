@@ -226,7 +226,7 @@ namespace Multitasking
             // write code below
 
             // message for when god mode is enabled
-            if (player.GodMode)
+            if (shooterGame.player.GodMode)
             {
                 _spriteBatch.DrawString(typingFont, "God Mode Enabled (Restart Game to Disable)", new Vector2(20, 20), Color.White);
             }
@@ -332,7 +332,7 @@ namespace Multitasking
             }
             if (SingleKeyPress(currentKeyboardState, Keys.OemTilde))
             {
-                player.GodMode = true;
+                shooterGame.player.GodMode = true;
             }
         }
 

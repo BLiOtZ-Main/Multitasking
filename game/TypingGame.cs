@@ -91,7 +91,7 @@ namespace Multitasking
         /// <summary>
         /// frame by frame updates to the typing simulator. mainly checks
         /// if the user is pressing the right keys or not, and progresses
-        /// the current prompt accordingly.
+        /// the current prompt accordingly.F
         /// </summary>
         /// <param name="currentState">the current game state</param>
         /// <returns>the new (or same) game state</returns>
