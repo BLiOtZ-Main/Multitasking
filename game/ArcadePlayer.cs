@@ -90,18 +90,18 @@ namespace Multitasking
             if (kbState.IsKeyDown(Keys.Left))
             {
                 position.X -= Speed;
-                if (position.X < (windowWidth / 2) - 15)
+                if (position.X < (windowWidth / 2) + 7)
                 {
-                    position.X = windowWidth - 285;
+                    position.X = windowWidth - 265;
                 }
             }
 
             if (kbState.IsKeyDown(Keys.Right))
             {
                 position.X += Speed;
-                if (position.X > windowWidth - 285)
+                if (position.X > windowWidth - 265)
                 {
-                    position.X = (windowWidth / 2) - 15;
+                    position.X = (windowWidth / 2) + 7;
                 }
             }
             
