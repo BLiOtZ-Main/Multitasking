@@ -71,7 +71,6 @@ namespace Multitasking
         public const int maxBoredom = 500;
         public int boredomMeterWidth;
         public int score;
-        public ArrayList scoreList;
 
         // input
         public KeyboardState previousKeyboardState;
@@ -106,7 +105,6 @@ namespace Multitasking
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
             enemyTimer = EnemySpawnTime;
             time = 0;
-            scoreList = new ArrayList();
 
             // important
             currentState = GameState.MainMenu;
@@ -190,11 +188,11 @@ namespace Multitasking
                     break;
 
                 //endless gameplay
-                /*
+                
                 case GameState.Endless:
                     UpdateEndless(currentKeyboardState, gameTime);
                     break;
-                */
+                
                 // game over screen
                 case GameState.GameOver:
                     UpdateGameOver(currentKeyboardState);
@@ -261,11 +259,11 @@ namespace Multitasking
                     break;
 
                 // endless
-                /*
+                
                 case GameState.Endless:
                     DrawEndless();
                     break;
-                */
+                
 
                 // game over screen
                 case GameState.GameOver:
@@ -304,7 +302,7 @@ namespace Multitasking
             }
             if (SingleKeyPress(currentKeyboardState, Keys.LeftShift))
             {
-                currentState = GameState.Day;
+                currentState = GameState.Endless;
                 ResetGame();
             }
             if (SingleKeyPress(currentKeyboardState, Keys.Tab))
@@ -395,122 +393,26 @@ namespace Multitasking
                 currentState = GameState.Pause;
             }
         }
-            
+
         /// <summary>
-        /// Updates the entire gameplay loop for endless
+        /// Updates the entire gameplay loop for endless 
         /// </summary>
         /// <param name="currentKeyboardState">Checks for user input (debug purposes)</param>
         /// <param name="gameTime">GameTime object used for timer logic</param>
-        /*
+
         public void UpdateEndless(KeyboardState currentKeyboardState, GameTime gameTime)
         {
-            enemyTimer -= gameTime.ElapsedGameTime.TotalSeconds;
             time += gameTime.ElapsedGameTime.TotalSeconds;
+            shooterGame.UpdateShooter(gameTime, currentDay, soundEffects);
+            typingGame.UpdateDay();
 
-            //Creates a new row of enemies every ____ seconds
-            if (enemyList.Count == 0)
-            {
-                for (int i = 0; i < 7; i++)
-                {
-                    int enemyPos = EnemyDist;
-                    ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
-                    enemyList.Add(newEnemy);
-
-                }
-            }
-            else if (enemyTimer <= 0)
-            {
-                for (int i = 0; i < 7; i++)
-                {
-                    int enemyPos = EnemyDist;
-                    ArcadeEnemy newEnemy = new ArcadeEnemy(enemyImg, new Rectangle(1000 + (int)(1.4 * i * EnemyDist), 200, 75, 75), screenHeight, screenWidth, player, playerBulletImg);
-                    enemyList.Add(newEnemy);
-
-                }
-                enemyTimer = EnemySpawnTime;
-            }
-
-
-
-            //Enemy collision check
-            foreach (ArcadeEnemy enemy in enemyList)
-            {
-                if (enemy.IsAlive)
-                {
-                    foreach (ArcadeProjectile projectile in player.Projectiles)
-                    {
-                        if (projectile.CheckCollision(enemy))
-                        {
-                            enemy.IsAlive = false;
-                            projectile.Active = false;
-                            score += 10;
-                            boredomMeterWidth -= 15;
-                        }
-                    }
-                }
-            }
-
-            //Temp code to swap to GameOver
             if (SingleKeyPress(currentKeyboardState, Keys.Enter))
             {
-                currentState = GameState.GameOver;
-                loseMessage = "(You should try the real game now)";
+                currentState = GameState.Pause;
             }
-
-            player.Update(gameTime);
-
-            //Updates every enemy
-            foreach (ArcadeEnemy e in enemyList)
-            {
-                if (e.IsAlive)
-                {
-                    e.Update(gameTime);
-                }
-            }
-
-            //player collision check
-            foreach (ArcadeEnemy e in enemyList)
-            {
-                foreach (ArcadeProjectile projectile in e.projectiles)
-                {
-                    projectile.Update(gameTime);
-                    if (projectile.CheckCollision(player))
-                    {
-                        player.IsAlive = false;
-                        projectile.Active = false;
-                    }
-                }
-            }
-
-            //updates the player's projectiles
-            foreach (ArcadeProjectile projectile in player.Projectiles)
-            {
-                if (projectile.Active)
-                {
-                    projectile.Update(gameTime);
-                }
-
-            }
-
-            //Is enemies reach the player game over
-            foreach (ArcadeEnemy e in enemyList)
-            {
-                if (e.position.Y >= screenHeight - 200)
-                {
-                    currentState = GameState.GameOver;
-                }
-            }
-
-            //If the player dies game over
-            if (!player.IsAlive)
-            {
-                currentState = GameState.GameOver;
-                loseMessage = "(You should try the real game now)";
-            }
-
 
         }
-        */
+        
         /// <summary>
         /// Update for the game over screen
         /// </summary>
@@ -524,7 +426,7 @@ namespace Multitasking
             if (SingleKeyPress(currentKeyboardState, Keys.Tab))
             {
                 int currentScore = shooterGame.score;
-
+                currentScore = currentScore * (int)time;
                 if (currentScore > score1)
                 {
                     score3 = score2;
@@ -565,9 +467,9 @@ namespace Multitasking
             _spriteBatch.DrawString(menuFont, "multitasking", new Vector2((screenWidth / 2) - (menuFont.MeasureString("multitasking").X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, "by.....................omni_absence", new Vector2((screenWidth / 2) - (typingFont.MeasureString("by.....................omni_absence").X / 2), 400), backgroundColor);
             _spriteBatch.DrawString(typingFont, "ENTER.........................start", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.........................start").X / 2), 500), Color.White);
-            //_spriteBatch.DrawString(typingFont, "LEFT SHIFT.............endless mode", new Vector2((screenWidth / 2) - (typingFont.MeasureString("LEFT SHIFT.............endless mode").X / 2), 550), Color.White);
-            _spriteBatch.DrawString(typingFont, "TAB........................settings", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB........................settings").X / 2), 550), Color.White);
-            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 600), Color.White);
+            _spriteBatch.DrawString(typingFont, "LEFT SHIFT.............endless mode", new Vector2((screenWidth / 2) - (typingFont.MeasureString("LEFT SHIFT.............endless mode").X / 2), 550), Color.White);
+            _spriteBatch.DrawString(typingFont, "TAB........................settings", new Vector2((screenWidth / 2) - (typingFont.MeasureString("TAB........................settings").X / 2), 600), Color.White);
+            _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 650), Color.White);
             ShapeBatch.Box(new Rectangle((screenWidth / 2) - (int)typingFont.MeasureString("by.....................omni_absence").X / 2 - 8, 400, (int)typingFont.MeasureString("by.....................omni_absence").X + 16, 35), new Color(255, 255, 255));
 
         }
@@ -678,7 +580,7 @@ namespace Multitasking
         /// Draws the endless gamemode using the different windows and indicators for a day
         /// Also draws out many ui features for the game
         /// </summary>
-        /*
+
         public void DrawEndless()
         {
             //Reset the windows to the right sizes because the demo messes them up otherwise
@@ -686,19 +588,18 @@ namespace Multitasking
             shooterWindow = new Rectangle(screenWidth / 2, 100, screenWidth / 2 - 200, screenHeight - 200);
 
             //time
-            timeFinal = (int)time;
+            timeFinal = (int) time;
+            _spriteBatch.DrawString(typingFont, $"Time: {timeFinal}", new Vector2(75, 100), Color.Yellow);
+
             //Temp code to visualize the two game window
-            ShapeBatch.Box(typingWindow, Color.LightGray);
             ShapeBatch.Box(shooterWindow, Color.White);
 
-            _spriteBatch.DrawString(typingFont, "Typing", new Vector2(530, 100), Color.Black);
-            _spriteBatch.DrawString(typingFont, "Space Game Again TM", new Vector2(1200, 100), Color.Black);
-            _spriteBatch.DrawString(typingFont, $"Score: {score}", new Vector2(1000, 100), Color.Blue);
-            _spriteBatch.DrawString(typingFont, $"Time: {timeFinal}", new Vector2(1550, 100), Color.Blue);
+            //_spriteBatch.DrawString(typingFont, shooterGame.PrintClock(), new Vector2(75, 100), Color.Yellow);
 
             shooterGame.DrawShooterGame(_spriteBatch, typingFont);
+            typingGame.DrawDay(_spriteBatch, typingFont, typingFontBold, whitePixel);
         }
-        */
+        
         /// <summary>
         /// Draws the game over screen + instructions for where the player can go
         /// </summary>
@@ -752,7 +653,7 @@ namespace Multitasking
         {
             shooterGame.Reset();
             typingGame = new TypingGame(typingWindow, 1);
-
+            time = 0;
         }
     }
 }
