@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
@@ -70,6 +71,7 @@ namespace Multitasking
         public const int maxBoredom = 500;
         public int boredomMeterWidth;
         public int score;
+        public ArrayList scoreList;
 
         // input
         public KeyboardState previousKeyboardState;
@@ -104,6 +106,7 @@ namespace Multitasking
             screenHeight = _graphics.GraphicsDevice.Viewport.Height;
             enemyTimer = EnemySpawnTime;
             time = 0;
+            scoreList = new ArrayList();
 
             // important
             currentState = GameState.MainMenu;
@@ -520,6 +523,23 @@ namespace Multitasking
             }
             if (SingleKeyPress(currentKeyboardState, Keys.Tab))
             {
+                int currentScore = shooterGame.score;
+
+                if (currentScore > score1)
+                {
+                    score3 = score2;
+                    score2 = score1;
+                    score1 = currentScore;
+                }
+                else if (currentScore > score2 && currentScore <= score1)
+                {
+                    score3 = score2;
+                    score2 = currentScore;
+                }
+                else if (currentScore > score3 && currentScore < score1 && currentScore <= score2)
+                {
+                    score3 = currentScore;
+                }
                 currentState = GameState.LeaderBoard;
             }
         }
@@ -694,26 +714,12 @@ namespace Multitasking
         
         public void DrawLeaderBoard()
         {
-            int currentScore = shooterGame.score;
-            if (currentScore > score1)
-            {
-                score3 = score2;
-                score2 = score1;
-                score1 = currentScore;
-            }
-            else if (currentScore > score2 && currentScore <= score1)
-            {
-                score3 = score2;
-                score2 = currentScore;
-            }
-            else if (currentScore > score3 && currentScore < score1 && currentScore <= score2)
-            {
-                score3 = currentScore;
-            }
+           
+            
+            
             _spriteBatch.DrawString(menuFont, "leaderboard", new Vector2((screenWidth / 2) - (menuFont.MeasureString("leaderboard").X / 2), 300), Color.White);
             _spriteBatch.DrawString(typingFont, "FIRST........................." + score1, new Vector2((screenWidth / 2) - (typingFont.MeasureString("FIRST.........................").X / 2), 500), Color.White);
             _spriteBatch.DrawString(typingFont, "SECOND........................" + score2, new Vector2((screenWidth / 2) - (typingFont.MeasureString("SECOND........................").X / 2), 550), Color.White);
-            _spriteBatch.DrawString(typingFont, "THIRD........................." + score3, new Vector2((screenWidth / 2) - (typingFont.MeasureString("THIRD.........................").X / 2), 600), Color.White);
             _spriteBatch.DrawString(typingFont, "THIRD........................." + score3, new Vector2((screenWidth / 2) - (typingFont.MeasureString("THIRD.........................").X / 2), 600), Color.White);
             _spriteBatch.DrawString(typingFont, "ENTER..........................menu", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ENTER.....................main menu").X / 2), 700), Color.White);
             _spriteBatch.DrawString(typingFont, "ESC............................quit", new Vector2((screenWidth / 2) - (typingFont.MeasureString("ESC............................quit").X / 2), 750), Color.White);
