@@ -330,6 +330,10 @@ namespace Multitasking
             {
                 MediaPlayer.Volume -= 0.1f;
             }
+            if (SingleKeyPress(currentKeyboardState, Keys.OemTilde))
+            {
+                player.GodMode = true;
+            }
         }
 
         /// <summary>

@@ -302,7 +302,7 @@ namespace Multitasking
             }
 
             // If boredom meter fills game over
-            if (boredomMeterWidth >= maxBoredom)
+            if (boredomMeterWidth >= maxBoredom && player.GodMode)
             {
                 game1.currentState = GameState.GameOver;
                 loseMessage = "(You resigned from your job)";
