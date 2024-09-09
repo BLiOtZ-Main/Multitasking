@@ -16,6 +16,6 @@ _This README contains basic information about the project and its artifacts. If 
 See [resources/README.md](resources/README.md) for details.
 
 ## Other Resources
-- [Google Documentation](https://docs.google.com/document/d/1ngIRcvoICSxxxNgKIoOchE9OuuUZkeZYWJYiXEd4xFc/edit#heading=h.frwgbw6i8sq6) - Link to the team's Google Doc with written project documentation based on the [class template](https://docs.google.com/document/d/1Lom3OQ_XgbtvXoVCYa113UcY4q7x3yPT32sZIBy6vDo/edit?usp=share_link)
+- [Google Documentation]([https://docs.google.com/document/d/1ngIRcvoICSxxxNgKIoOchE9OuuUZkeZYWJYiXEd4xFc/edit#heading=h.frwgbw6i8sq6](https://docs.google.com/document/d/1ngIRcvoICSxxxNgKIoOchE9OuuUZkeZYWJYiXEd4xFc/edit?usp=sharing)) - Link to the team's Google Doc with written project documentation based on the [class template](https://docs.google.com/document/d/1Lom3OQ_XgbtvXoVCYa113UcY4q7x3yPT32sZIBy6vDo/edit?usp=share_link)
 - [Course homepage](https://mycourses.rit.edu/d2l/home/1012413)
 
