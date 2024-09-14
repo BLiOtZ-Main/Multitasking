@@ -1,7 +1,9 @@
 # **Multitasking** by Omni-absent
-![alt text](https://imgur.com/SiekAFx)
-![alt text](https://imgur.com/a/gclggIS)  
+![Screenshot 2024-09-14 000702](https://github.com/user-attachments/assets/79f48a1d-cb45-411e-866f-2158260f6e46)
+![Screenshot 2024-09-14 003003](https://github.com/user-attachments/assets/ba12a756-c285-460e-9de5-233318478692)
+
 ## IGME-106 Spring 2024
+
 
 _This README contains basic information about the project and its artifacts. If kept up to date, it will act as a primary dashboard for the project._
 
